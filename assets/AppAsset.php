@@ -20,12 +20,15 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'fonts/lato/lato.css',
+        'fonts/raleway/raleway.css',
         'css/site.css',
     ];
     public $js = [
     ];
     public $depends = [
         IESupportAsset::class,
+        \rmrevin\yii\fontawesome\AssetBundle::class,
         YiiAsset::class,
         BootstrapAsset::class,
     ];
