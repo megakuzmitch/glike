@@ -1,7 +1,8 @@
 <?php
 
 $config = [
-    'id' => 'Glike',
+    'id' => 'app',
+    'language' => 'ru_RU',
     'defaultRoute' => 'main/default/index',
     'components' => [
         'user' => [
