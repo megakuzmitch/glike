@@ -6,7 +6,8 @@ Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
 $config = [
     'id' => 'glike-console',
-    'bootstrap' => ['gii'],
+    'basePath' => dirname(__DIR__),
+    'bootstrap' => [],
     'controllerNamespace' => 'app\commands',
     /*
     'controllerMap' => [

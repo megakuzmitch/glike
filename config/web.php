@@ -2,16 +2,18 @@
 
 $config = [
     'id' => 'Glike',
+    'defaultRoute' => 'main/default/index',
     'components' => [
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\modules\user\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['user/default/login'],
         ],
         'request' => [
             'cookieValidationKey' => '',
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'main/default/error',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
