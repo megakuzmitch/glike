@@ -21,20 +21,22 @@ class ProfileController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                ],
+//            ],
         ];
     }
 
     public function actionIndex()
     {
+        return $this->render('profile');
+
         return $this->render('index', [
             'model' => $this->findModel(),
         ]);
