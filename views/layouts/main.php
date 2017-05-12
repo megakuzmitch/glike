@@ -27,7 +27,7 @@ AppAsset::register($this);
 
 <?php
     NavBar::begin([
-        'brandLabel' => Html::img('/img/Logo-G.png') . 'Like',
+        'brandLabel' => Html::img('/img/Logo-G.png') . '<span>Like</span>',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse',
@@ -41,7 +41,7 @@ AppAsset::register($this);
 //            Yii::$app->user->isGuest ?
 //                ['label' => 'Регистрация', 'url' => ['/user/default/signup']] :
 //                false,
-            ['label' => 'Профиль', 'url' => ['/user/profile/index']],
+            ['label' => 'Профиль', 'url' => ['/user/tasks/index']],
 //            Yii::$app->user->isGuest ?
 //                ['label' => 'Вход', 'url' => ['/user/default/login']] :
 //                ['label' => 'Выход (' . Yii::$app->user->identity->username . ')',

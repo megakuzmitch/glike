@@ -35,8 +35,6 @@ class ProfileController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('profile');
-
         return $this->render('index', [
             'model' => $this->findModel(),
         ]);
