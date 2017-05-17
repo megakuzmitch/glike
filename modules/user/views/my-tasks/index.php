@@ -31,6 +31,22 @@ use yii\helpers\Url;
                             </div>
                             <form action="<?php echo Url::current() ?>" method="post">
                                 <div class="modal-body">
+
+                                    <ul class="nav nav-pills">
+                                        <li role="presentation" class="active"><a href="#">В контакте</a></li>
+                                        <li role="presentation"><a href="#">Youtube</a></li>
+                                        <li role="presentation"><a href="#">Instagramm</a></li>
+                                        <li role="presentation"><a href="#">Twitter</a></li>
+                                        <li role="presentation"><a href="#">Одноклассники</a></li>
+                                    </ul>
+
+                                    <ul class="nav nav-pills nav-pills-sm">
+                                        <li role="presentation" class="active"><a href="#">Поставить лайк</a></li>
+                                        <li role="presentation" class=""><a href="#">Вступить в группу</a></li>
+                                        <li role="presentation" class=""><a href="#">Добавить в друзья</a></li>
+                                        <li role="presentation" class=""><a href="#">Сделать репост</a></li>
+                                    </ul>
+
                                     <div class="form-group">
                                         <label for="task_link">Ссылка</label>
                                         <input type="text" class="form-control" id="task_link" placeholder="Ссылка">

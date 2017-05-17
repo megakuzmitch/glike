@@ -19,6 +19,13 @@ $config = [
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => [
+                    'js' => YII_DEBUG ? ['js/bootstrap.js'] : ['js/bootstrap.min.js']
+                ]
+            ]
+        ]
     ]
 ];
 

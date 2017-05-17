@@ -3,6 +3,7 @@
 
 <div class="user-tasks">
 
+
     <ul class="nav nav-pills" role="tablist">
         <li role="presentation" class="active"><a href="#vk-tab" aria-controls="vk-tab" role="tab" data-toggle="tab">В контакте</a></li>
         <li role="presentation"><a href="#youtube-tab" aria-controls="youtube-tab" role="tab" data-toggle="tab">Youtube</a></li>
@@ -11,9 +12,20 @@
         <li role="presentation"><a href="#ok-tab" aria-controls="ok-tab" role="tab" data-toggle="tab">Одноклассники</a></li>
     </ul>
 
+
+
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="vk-tab">
+
+            <div class="filter">
+                <ul class="nav nav-pills nav-pills-sm">
+                    <li role="presentation" class="active"><a href="#">Поставить лайк</a></li>
+                    <li role="presentation" class=""><a href="#">Вступить в группу</a></li>
+                    <li role="presentation" class=""><a href="#">Добавить в друзья</a></li>
+                    <li role="presentation" class=""><a href="#">Сделать репост</a></li>
+                </ul>
+            </div>
 
             <div class="task-list">
 

@@ -42,11 +42,11 @@ use yii\helpers\Url;
         </li>
 
         <li role="presentation">
-            <a href="<?//= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i>Заработать</a>
+            <a href="<?= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i>Заработать</a>
         </li>
 
         <li role="presentation">
-            <a href="<?//= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i>Мои задания</a>
+            <a href="<?= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i>Мои задания</a>
         </li>
     </ul>
 </div>
