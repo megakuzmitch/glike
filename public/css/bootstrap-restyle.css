@@ -1,0 +1,124 @@
+.navbar-inverse .navbar-toggle {
+    border-color: #555;
+}
+
+
+.navbar-toggle[data-toggle="offcanvas"] {
+    float: left;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.navmenu, .navbar-offcanvas {
+    width: 250px;
+}
+
+.navmenu {
+    z-index: 1;
+}
+
+.navmenu-fixed-left {
+    border-right: none;
+}
+
+.canvas {
+    position: relative;
+    left: 0;
+    z-index: 2;
+    min-height: 100%;
+    padding: 100px 0 0 0;
+    background: inherit;
+}
+
+.canvas.canvas-slid {
+    border-left: 1px solid #ddd;
+}
+
+@media (min-width: 0) {
+    .navbar-toggle {
+        display: block; /* force showing the toggle */
+    }
+}
+
+@media (min-width: 992px) {
+    body {
+        padding: 0;
+    }
+}
+
+.canvas .navbar-brand,
+.canvas .navbar-toggle[data-toggle="offcanvas"] {
+    position: relative;
+    left: 0;
+    -moz-transition: left 0.3s;
+    -webkit-transition: left 0.3s;
+    -ms-transition: left 0.3s;
+    -o-transition: left 0.3s;
+    transition: left 0.3s;
+}
+
+.canvas-slid .navbar-brand,
+.canvas-slid .navbar-toggle[data-toggle="offcanvas"] {
+    left: -250px;
+    -moz-transition: left 0.3s;
+    -webkit-transition: left 0.3s;
+    -ms-transition: left 0.3s;
+    -o-transition: left 0.3s;
+    transition: left 0.3s;
+}
+
+
+.navmenu .navmenu-header {
+    height: 50px;
+    padding: 15px;
+    background: #2d2d2d;
+    border-bottom: 1px solid #2d2d2d;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    margin-bottom: 15px;
+}
+
+
+.navmenu .navmenu-nav {
+    /*border-right: 1px solid #555;*/
+}
+
+
+.navbar {
+    font-weight: 800;
+    font-size: 14px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    border-radius: 0;
+}
+
+.navbar-inverse {
+    background: #2d2d2d;
+    border-color: #2d2d2d;
+}
+
+.navbar-inverse .navbar-nav > .active > a {
+    background: #ff7878
+}
+
+.navbar .navbar-brand {
+    height: 50px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 25px;
+    text-transform: none;
+}
+
+.navbar .navbar-brand img {
+    height: 50px;
+    margin-right: 3px;
+    display: inline-block;
+}
+
+.navbar .navbar-brand span {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+}

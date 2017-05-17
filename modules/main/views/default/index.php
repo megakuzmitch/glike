@@ -87,8 +87,10 @@ $this->title = Yii::$app->name;
                 </div>
             </div>
 
-            <div class="row centered" style="margin-top: 30px;">
-                <a href="/login" class="btn btn-lg btn-danger">Войти</a>
+            <div class="row centered">
+                <?= \yii\helpers\Html::a('Войти', ['/user/tasks/index'], [
+                        'class' => 'btn btn-danger'
+                ]) ?>
             </div>
         </div><!-- container -->
     </div><!-- DG -->

@@ -18,65 +18,71 @@
             <div class="task-list">
 
                 <div class="row">
-                    <div class="col-lg-3">
-                        <div class="item well">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="item">
+                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
                             <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-rounded">
-                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>
+                                <img src="/img/pic3.jpg" alt="" class="img-circle">
+<!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
                             </div>
                             <div class="actions">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 5 баллов</a>
+                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="item well">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="item">
+                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
                             <div class="info">
-                                <img src="/img/pic.jpg" alt="" class="img-rounded">
-                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>
+                                <img src="/img/pic3.jpg" alt="" class="img-circle">
+                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
                             </div>
                             <div class="actions">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 7 баллов</a>
+                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="item well">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="item">
+                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
                             <div class="info">
-                                <img src="/img/pic2.jpg" alt="" class="img-rounded">
-                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>
+                                <img src="/img/pic3.jpg" alt="" class="img-circle">
+                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
                             </div>
                             <div class="actions">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 4 балла</a>
+                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="item well">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="item">
+                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
                             <div class="info">
-                                <img src="/img/pic2.jpg" alt="" class="img-rounded">
-                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>
+                                <img src="/img/pic3.jpg" alt="" class="img-circle">
+                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
                             </div>
                             <div class="actions">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 4 балла</a>
+                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="item well">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="item">
+                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
                             <div class="info">
-                                <img src="/img/pic.jpg" alt="" class="img-rounded">
-                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>
+                                <img src="/img/pic3.jpg" alt="" class="img-circle">
+                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
                             </div>
                             <div class="actions">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 7 баллов</a>
+                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>

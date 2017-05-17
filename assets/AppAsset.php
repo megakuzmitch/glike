@@ -20,11 +20,16 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'vendor/jasny-bootstrap/jasny-bootstrap.min.css',
         'fonts/lato/lato.css',
         'fonts/raleway/raleway.css',
+        'css/base.css',
+        'css/bootstrap-restyle.css',
+        'css/sidebar.css',
         'css/site.css',
     ];
     public $js = [
+        'vendor/jasny-bootstrap/jasny-bootstrap.min.js',
     ];
     public $depends = [
         IESupportAsset::class,

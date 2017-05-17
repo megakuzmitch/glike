@@ -1,0 +1,69 @@
+
+.user-sidebar {
+    background-color: #ffffff;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    margin-bottom: 20px;
+}
+
+.user-sidebar li > a {
+    color: #555;
+    font-size: 16px;
+}
+
+.user-sidebar li.active a,
+.user-sidebar li.active:hover a{
+    background-color: #f2dede;
+    border-left: 4px solid #ff7878;
+    margin-left: -4px;
+    font-weight: bold;
+}
+
+.user-sidebar li.active a {
+    background-color: #f2dede;
+}
+
+.user-sidebar li:hover i.fa {
+
+}
+
+.user-sidebar li:hover a {
+    background-color: #f6f9fb;
+    border-left: 4px solid #ff7878;
+    margin-left: -4px;
+}
+
+
+.user-sidebar a i.fa {
+    color: #555;
+    font-size: inherit;
+    margin-left: 0;
+    width: 35px;
+}
+
+
+.account-block {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.account-block .avatar {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.account-block .info {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.account-block .info .name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.account-block .info .points {
+
+}
