@@ -1,7 +1,15 @@
 (function( $ ) {
 
+    var settings = {
+        'width': 250,
+        'minimizeWidth': 50,
+        'duration': 500
+    };
+
     var methods = {
         init : function( options ) {
+
+            settings = $.extend(settings, options);
 
             return this.each( function() {
 
@@ -23,20 +31,46 @@
                     });
 
 
-                    $this.bind('swiperight.mobilesidebar', methods.off);
+                    $this.hammer().bind('swiperight.mobilesidebar', methods.swiperight);
+                    $this.hammer().bind('swipeleft.mobilesidebar', methods.swipeleft);
+                    // $this.bind('click.mobilesidebar', methods.click);
+
                     $(window).bind('resize.mobilesidebar', methods.reposition);
 
                 }
             });
         },
 
-        off: function(e) {
+        swiperight: function(e) {
             e.preventDefault();
-            console.log(this);
+            methods.off.apply(this);
+            e.stopPropagation();
+        },
+
+        swipeleft: function(e) {
+            e.preventDefault();
+            methods.out.apply(this);
+            e.stopPropagation();
+        },
+
+        click: function(e) {
+            methods.toggle.apply(this);
+        },
+
+        off: function() {
+            $(this).addClass('open').width(settings.width);
         },
 
         out: function() {
+            $(this).removeClass('open').width(settings.minimizeWidth);
+        },
 
+        toggle: function(e) {
+            if ( $(this).hasClass('open') ) {
+                methods.out.apply(this);
+            } else {
+                methods.off.apply(this);
+            }
         },
 
         destroy : function( ) {
@@ -49,6 +83,7 @@
                 // пространства имён рулят!!11
                 $(window).unbind('.mobilesidebar');
                 $this.unbind('.mobilesidebar');
+                $this.hammer().unbind('.mobilesidebar');
                 $this.removeData('mobilesidebar');
 
             });
