@@ -9,6 +9,7 @@
  * @var $content
  */
 
+use yii\bootstrap\Nav;
 use yii\helpers\Url;
 
 ?>
@@ -21,36 +22,17 @@ use yii\helpers\Url;
 
     <div class="toggle-wrap"><span class="toggle"><i class="fa fa-chevron-right"></i></span></div>
 
-    <div class="navmenu-header"></div>
-
-<!--    <div class="account-block">-->
-<!---->
-<!--        <div class="avatar">-->
-<!--            <img src="/img/pic4.jpg" alt="" class="img-thumbnail">-->
-<!--        </div>-->
-<!---->
-<!--        <div class="info">-->
-<!--            <div class="name">My name</div>-->
-<!--            <div class="points">65 баллов</div>-->
-<!--        </div>-->
-<!---->
-<!--        <a href="#" class="btn btn-danger btn-sm">Настройки профиля</a>-->
-<!---->
-<!--    </div>-->
-
-    <ul class="nav navmenu-nav">
-        <li role="presentation" class="active">
-            <a href="#"><i class="fa fa-user-circle-o"></i><span>Моя страница</span></a>
-        </li>
-
-        <li role="presentation">
-            <a href="<?= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i><span>Заработать</span></a>
-        </li>
-
-        <li role="presentation">
-            <a href="<?= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i><span>Мои задания</span></a>
-        </li>
-    </ul>
+    <?= Nav::widget([
+        'options' => [
+            'class' => 'nav navmenu-nav'
+        ],
+        'encodeLabels' => false,
+        'items' => [
+            ['label' => "<i class='fa fa-user-circle-o'></i><span>Моя страница</span>", 'url' => ['#']],
+            ['label' => "<i class='fa fa-diamond'></i><span>Заработать</span>", 'url' => ['/user/tasks/index']],
+            ['label' => "<i class='fa fa-flag'></i><span>Мои задания</span>", 'url' => ['/user/my-tasks/index']],
+        ]
+    ]) ?>
 </div>
 
 
