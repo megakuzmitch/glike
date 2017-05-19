@@ -35,7 +35,7 @@
                     $this.hammer().bind('swipeleft.mobilesidebar', methods.swipeleft);
                     // $this.bind('click.mobilesidebar', methods.click);
 
-                    $(window).bind('resize.mobilesidebar', methods.reposition);
+                    // $(window).bind('resize.mobilesidebar', methods.reposition);
 
                 }
             });
@@ -59,10 +59,16 @@
 
         off: function() {
             $(this).addClass('open').width(settings.width);
+            if ( $(window).width() >= 768 ) {
+                $('.canvas').css('paddingLeft', settings.width);
+            }
         },
 
         out: function() {
             $(this).removeClass('open').width(settings.minimizeWidth);
+            if ( $(window).width() >= 768 ) {
+                $('.canvas').css('paddingLeft', settings.minimizeWidth);
+            }
         },
 
         toggle: function(e) {
@@ -90,8 +96,12 @@
 
         },
 
-        reposition: function () {
-
+        reposition: function (e) {
+            if ( $(window).width > 768 ) {
+                methods.off.apply(this);
+            } else {
+                methods.out.apply(this);
+            }
         }
     };
 

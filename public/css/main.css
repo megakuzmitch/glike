@@ -226,7 +226,7 @@ i.fa {
   text-transform: none;
 }
 .navbar .navbar-brand img {
-  height: 50px;
+  height: 100%;
   margin-right: 3px;
   display: inline-block;
 }
@@ -404,11 +404,18 @@ i.fa {
   }
   .canvas {
     padding-left: 50px;
+    padding-top: 61px;
     -webkit-transition: padding-left 0.3s;
     -moz-transition: padding-left 0.3s;
     -ms-transition: padding-left 0.3s;
     -o-transition: padding-left 0.3s;
     transition: padding-left 0.3s;
+  }
+  .navbar .navbar-brand {
+    height: 30px;
+  }
+  .navmenu-fixed-left {
+    top: 61px;
   }
 }
 /**
