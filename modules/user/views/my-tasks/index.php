@@ -97,16 +97,20 @@ use yii\helpers\Url;
 
                     <div class="row">
                         <div class="task-block col-lg-8">
-                            <div class="preview">
-                                <img src="/img/pic4.jpg" alt="" class="img-circle">
-                            </div>
 
-                            <div class="info">
-                                <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
-                                <div class="details">
-                                    Добавлено: 25/12/2018
+                            <div class="row">
+                                <div class="preview col-lg-2 col-xs-4">
+                                    <img src="/img/pic4.jpg" alt="" class="img-circle">
+                                </div>
+
+                                <div class="info col-lg-10 col-xs-8">
+                                    <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
+                                    <div class="details">
+                                        Добавлено: 25/12/2018
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <div class="task-block col-lg-4">

@@ -23,16 +23,22 @@
                      * Тут выполняем инициализацию
                      */
 
-                    // var toggleButton = $();
+                    var $toggleButton = $('.toggle-item', $this).first(),
+                        $canvas = $('.canvas').first();
 
                     $(this).data('mobilesidebar', {
                         target : $this,
-                        toggleButton: $('.toggle', $this).find().first()
+                        toggleButton: $toggleButton,
+                        canvas: $canvas
                     });
 
 
                     $this.hammer().bind('swiperight.mobilesidebar', methods.swiperight);
                     $this.hammer().bind('swipeleft.mobilesidebar', methods.swipeleft);
+
+                    $toggleButton.bind('click.mobilesidebar', $this.data('mobilesidebar'), methods.toggle);
+
+
                     // $this.bind('click.mobilesidebar', methods.click);
 
                     // $(window).bind('resize.mobilesidebar', methods.reposition);
@@ -58,24 +64,33 @@
         },
 
         off: function() {
-            $(this).addClass('open').width(settings.width);
+            var data = $(this).data('mobilesidebar');
+
+            data.target.addClass('open').width(settings.width);
+            data.toggleButton.width(settings.width);
             if ( $(window).width() >= 768 ) {
-                $('.canvas').css('paddingLeft', settings.width);
+                data.canvas.css('paddingLeft', settings.width);
             }
         },
 
         out: function() {
-            $(this).removeClass('open').width(settings.minimizeWidth);
+            var data = $(this).data('mobilesidebar');
+
+            data.target.removeClass('open').width(settings.minimizeWidth);
+            data.toggleButton.width(settings.minimizeWidth);
             if ( $(window).width() >= 768 ) {
-                $('.canvas').css('paddingLeft', settings.minimizeWidth);
+                data.canvas.css('paddingLeft', settings.minimizeWidth);
             }
         },
 
         toggle: function(e) {
-            if ( $(this).hasClass('open') ) {
-                methods.out.apply(this);
+
+            var data = e.data;
+
+            if ( data.target.hasClass('open') ) {
+                methods.out.apply(data.target);
             } else {
-                methods.off.apply(this);
+                methods.off.apply(data.target);
             }
         },
 

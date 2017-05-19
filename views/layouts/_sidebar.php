@@ -20,8 +20,6 @@ use yii\helpers\Url;
 
 <div class="navmenu navmenu-fixed-left user-sidebar">
 
-    <div class="toggle-wrap"><span class="toggle"><i class="fa fa-chevron-right"></i></span></div>
-
     <?= Nav::widget([
         'options' => [
             'class' => 'nav navmenu-nav'
@@ -33,6 +31,9 @@ use yii\helpers\Url;
             ['label' => "<i class='fa fa-flag'></i><span>Мои задания</span>", 'url' => ['/user/my-tasks/index']],
         ]
     ]) ?>
+
+    <a href="#" class="toggle-item"><i class="fa fa-chevron-right"></i></a>
+
 </div>
 
 
@@ -43,9 +44,7 @@ use yii\helpers\Url;
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="well">
-                    <?= $content ?>
-                </div>
+                <?= $content ?>
             </div>
         </div>
     </div><!-- /.container -->
