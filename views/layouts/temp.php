@@ -7,6 +7,7 @@ use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -28,51 +29,41 @@ AppAsset::register($this);
 
 <body>
 
-<div class="navmenu navmenu-default navmenu-fixed-left">
-    <a class="navmenu-brand" href="#">Project name</a>
+<div class="navmenu navmenu-fixed-left">
+
+    <div class="navmenu-header"></div>
+
+    <!--    <div class="account-block">-->
+    <!---->
+    <!--        <div class="avatar">-->
+    <!--            <img src="/img/pic4.jpg" alt="" class="img-thumbnail">-->
+    <!--        </div>-->
+    <!---->
+    <!--        <div class="info">-->
+    <!--            <div class="name">My name</div>-->
+    <!--            <div class="points">65 баллов</div>-->
+    <!--        </div>-->
+    <!---->
+    <!--        <a href="#" class="btn btn-danger btn-sm">Настройки профиля</a>-->
+    <!---->
+    <!--    </div>-->
+
     <ul class="nav navmenu-nav">
-        <li><a href="../navmenu/">Slide in</a></li>
-        <li><a href="../navmenu-push/">Push</a></li>
-        <li class="active"><a href="./">Reveal</a></li>
-        <li><a href="../navbar-offcanvas/">Off canvas navbar</a></li>
-    </ul>
-    <ul class="nav navmenu-nav">
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu navmenu-nav">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-            </ul>
+        <li role="presentation" class="active">
+            <a href="#"><i class="fa fa-user-circle-o"></i>Моя страница</a>
+        </li>
+
+        <li role="presentation">
+            <a href="<?= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i>Заработать</a>
+        </li>
+
+        <li role="presentation">
+            <a href="<?= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i>Мои задания</a>
         </li>
     </ul>
 </div>
 
 <div class="canvas">
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-
-        <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas=".canvas">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Brand</a>
-            </div>
-
-        </div><!-- /.container-fluid -->
-    </div>
 
     <div class="container-fluid">
         <div class="page-header">
@@ -84,6 +75,7 @@ AppAsset::register($this);
         <p>Note that in this example, the navmenu doesn't have the <code>offcanvas</code> class, but is placed under the canvas by setting the <code>z-index</code>.</p>
         <p>Also take a look at the examples for a navmenu with <a href="../navmenu">slide in effect</a> and <a href="../navmenu-push">push effect</a>.</p>
     </div><!-- /.container -->
+
 </div>
 
 

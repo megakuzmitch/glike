@@ -29,6 +29,8 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
+//        $this->layout = "@app/views/layouts/temp";
+
         return $this->render('index');
     }
 }

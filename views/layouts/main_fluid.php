@@ -16,13 +16,6 @@ use app\assets\AppAsset;
 
 
 <div class="navbar navbar-inverse navbar-fixed-top">
-
-    <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas=".canvas">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-    </button>
-
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="<?= Url::home() ?>">

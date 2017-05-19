@@ -19,11 +19,11 @@ $this->title = Yii::$app->name;
 
 
     <!-- PORTFOLIO SECTION -->
-    <div id="dg" class="promo">
+    <div class="dark-gray-wrap">
         <div class="container">
             <div class="row centered">
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 soc-block">
                     <div class="tilt">
                         <a href="#"><i class="fa fa-vk"></i></a>
                     </div>
@@ -35,7 +35,7 @@ $this->title = Yii::$app->name;
                     </ul>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 soc-block">
                     <div class="tilt">
                         <a href="#"><i class="fa fa-youtube"></i></a>
                     </div>
@@ -47,7 +47,7 @@ $this->title = Yii::$app->name;
                     </ul>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 soc-block">
                     <div class="tilt">
                         <a href="#"><i class="fa fa-instagram"></i></a>
                     </div>
@@ -61,8 +61,8 @@ $this->title = Yii::$app->name;
 
             </div><!-- row -->
 
-            <div class="row" style="margin-top: 70px;">
-                <div class="col-lg-4 col-lg-offset-2">
+            <div class="row">
+                <div class="col-lg-4 col-lg-offset-2 soc-block">
                     <div class="tilt">
                         <a href="#"><i class="fa fa-twitter"></i></a>
                     </div>
@@ -74,7 +74,7 @@ $this->title = Yii::$app->name;
                     </ul>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 soc-block">
                     <div class="tilt">
                         <a href="#"><i class="fa fa-odnoklassniki"></i></a>
                     </div>
@@ -89,7 +89,7 @@ $this->title = Yii::$app->name;
 
             <div class="row centered">
                 <?= \yii\helpers\Html::a('Войти', ['/user/tasks/index'], [
-                        'class' => 'btn btn-danger'
+                        'class' => 'btn btn-danger btn-lg'
                 ]) ?>
             </div>
         </div><!-- container -->
@@ -97,7 +97,7 @@ $this->title = Yii::$app->name;
 
 
     <!-- FOOTER -->
-    <div id="f">
+    <div class="footer-wrap">
         <div class="container">
             <div class="row centered">
                 <a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-dribbble"></i></a>

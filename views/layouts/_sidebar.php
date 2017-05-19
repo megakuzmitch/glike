@@ -19,6 +19,8 @@ use yii\helpers\Url;
 
 <div class="navmenu navmenu-fixed-left user-sidebar">
 
+    <div class="toggle-wrap"><span class="toggle"><i class="fa fa-chevron-right"></i></span></div>
+
     <div class="navmenu-header"></div>
 
 <!--    <div class="account-block">-->
@@ -38,15 +40,15 @@ use yii\helpers\Url;
 
     <ul class="nav navmenu-nav">
         <li role="presentation" class="active">
-            <a href="#"><i class="fa fa-user-circle-o"></i>Моя страница</a>
+            <a href="#"><i class="fa fa-user-circle-o"></i><span>Моя страница</span></a>
         </li>
 
         <li role="presentation">
-            <a href="<?= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i>Заработать</a>
+            <a href="<?= Url::to(['/user/tasks/index']) ?>"><i class="fa fa-diamond"></i><span>Заработать</span></a>
         </li>
 
         <li role="presentation">
-            <a href="<?= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i>Мои задания</a>
+            <a href="<?= Url::to(['/user/my-tasks/index']) ?>"><i class="fa fa-flag"></i><span>Мои задания</span></a>
         </li>
     </ul>
 </div>

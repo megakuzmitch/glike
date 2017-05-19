@@ -21,9 +21,9 @@ $config = [
         ],
         'assetManager' => [
             'bundles' => [
-                'yii\bootstrap\BootstrapAsset' => [
-                    'js' => YII_DEBUG ? ['js/bootstrap.js'] : ['js/bootstrap.min.js']
-                ]
+//                'yii\bootstrap\BootstrapAsset' => [
+//                    'js' => YII_DEBUG ? ['js/bootstrap.js'] : ['js/bootstrap.min.js']
+//                ]
             ]
         ]
     ]
