@@ -37,8 +37,8 @@ AppAsset::register($this);
         <?php echo Nav::widget([
             'options' => ['class' => 'navbar-nav navbar-right'],
             'items' => array_filter([
-                ['label' => 'Помощь', 'url' => ['/main/default/help']],
-                ['label' => 'О нас', 'url' => ['/main/default/about']]
+                ['label' => 'Помощь', 'url' => ['/main/page/help']],
+                ['label' => 'О нас', 'url' => ['/main/page/about']]
             ]),
         ]); ?>
     </div>

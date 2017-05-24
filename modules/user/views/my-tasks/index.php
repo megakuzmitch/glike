@@ -96,14 +96,14 @@ use yii\helpers\Url;
                 <div class="task">
 
                     <div class="row">
-                        <div class="task-block col-lg-8">
+                        <div class="details col-lg-8">
 
                             <div class="row">
-                                <div class="preview col-lg-2 col-xs-4">
+                                <div class="preview col-lg-2 col-xs-3">
                                     <img src="/img/pic4.jpg" alt="" class="img-circle">
                                 </div>
 
-                                <div class="info col-lg-10 col-xs-8">
+                                <div class="info col-lg-10 col-xs-9">
                                     <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
                                     <div class="details">
                                         Добавлено: 25/12/2018
@@ -113,14 +113,13 @@ use yii\helpers\Url;
 
                         </div>
 
-                        <div class="task-block col-lg-4">
+                        <div class="info col-lg-4">
                             <div class="status">
                                 <a href="#">
                                     <div class="progress-bar" style="width: 30%"></div>
                                     <div>2 / 6 <i class="fa fa-arrow-circle-down"></i></div>
                                 </a>
                             </div>
-
                         </div>
 
                         <div class="col-lg-12">
@@ -138,13 +137,15 @@ use yii\helpers\Url;
 
 
 
-
                 <div class="task done">
+
                     <div class="row">
-                        <div class="task-block col-lg-8">
-                            <div class="preview" style="position: relative">
-                                <img src="/img/pic4.jpg" alt="" class="img-circle">
-                                <i class="fa fa-check-square-o" style="
+                        <div class="details col-lg-8">
+
+                            <div class="row">
+                                <div class="preview col-lg-2 col-xs-3">
+                                    <img src="/img/pic4.jpg" alt="" class="img-circle">
+                                    <i class="fa fa-check-square-o" style="
                                     position: absolute;
                                     font-size: 50px;
                                     top: 50%;
@@ -156,30 +157,31 @@ use yii\helpers\Url;
                                     height: 50px;
                                     width: 50px;
                                 "></i>
-                            </div>
+                                </div>
 
-                            <div class="info">
-                                <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
-                                <div class="details">
-                                    Добавлено: 25/12/2018
+                                <div class="info col-lg-10 col-xs-9">
+                                    <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
+                                    <div class="details">
+                                        Добавлено: 25/12/2018
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
 
-                        <div class="task-block col-lg-4">
+                        <div class="info col-lg-4">
                             <div class="status">
                                 <a href="#">
-                                    <div class="progress-bar" style="width: 100%"></div>
+                                    <div class="progress-bar" style="width: 30%"></div>
                                     <div>400 / 400 <i class="fa fa-arrow-circle-down"></i></div>
                                 </a>
                             </div>
-
                         </div>
 
                         <div class="col-lg-12">
                             <div class="tools">
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-sm btn-default" disabled="disabled"><i class="fa fa-play"></i> Пуск</a>
+                                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-pause"></i> Приостановить</a>
                                     <a href="#" class="btn btn-sm btn-default"><i class="fa fa-edit"></i> Редактировать</a>
                                     <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> Удалить</a>
                                 </div>
@@ -188,7 +190,6 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-
 
 
 

@@ -102,7 +102,8 @@
 
   .account {
     border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    padding: 15px 0;
     white-space: nowrap;
     overflow: hidden;
 
@@ -208,14 +209,23 @@
   .user-sidebar {
     .user-sidebar.minimize;
 
-    &.full {
-      & + .canvas {
-        padding-left: @sidebar-minimize-width;
-      }
+    & + .canvas {
+      margin-top: 61px;
+    }
+  }
+
+  .user-sidebar.full {
+
+    .account > a img {
+      width: 100%;
+      max-width: 100px;
+      height: auto;
+      border: 1px solid #ddd;
+      padding: 4px;
     }
 
     & + .canvas {
-      margin-top: 61px;
+      padding-left: @sidebar-minimize-width;
     }
   }
 
@@ -309,22 +319,12 @@ Task list
 }
 
 
-.my-tasks-list .task .preview {
-  margin-right: 15px;
+.my-tasks-list .task .details {
+  margin-bottom: 15px;
 }
 
 
-.my-tasks-list .task .task-block {
-  line-height: 80px;
-}
-
-.my-tasks-list .task .task-block > div {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 1.25;
-}
-
-.my-tasks-list .task .img-circle {
+.my-tasks-list .task img {
   width: 70px;
   height: 70px;
 }

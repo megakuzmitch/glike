@@ -30,6 +30,9 @@
                     });
 
 
+                    methods.resize.apply($this);
+
+
                     $this.hammer().bind('swiperight.mobilesidebar', methods.swiperight);
                     $this.hammer().bind('swipeleft.mobilesidebar', methods.swipeleft);
 
@@ -108,12 +111,14 @@
 
         },
 
-        reposition: function (e) {
-            if ( $(window).width > 768 ) {
+        resize: function (e) {
+
+            if ( $(window).width() > 768 ) {
                 methods.off.apply(this);
             } else {
                 methods.out.apply(this);
             }
+
         }
     };
 
