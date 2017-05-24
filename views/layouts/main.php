@@ -34,11 +34,11 @@ AppAsset::register($this);
                 ]) ?><span>Like</span>
             </a>
         </div>
-        <?php Nav::widget([
+        <?php echo Nav::widget([
             'options' => ['class' => 'navbar-nav navbar-right'],
             'items' => array_filter([
-                ['label' => 'Главная', 'url' => ['/main/default/index']],
-                ['label' => 'Профиль', 'url' => ['/user/tasks/index']],
+                ['label' => 'Помощь', 'url' => ['/main/default/help']],
+                ['label' => 'О нас', 'url' => ['/main/default/about']]
             ]),
         ]); ?>
     </div>

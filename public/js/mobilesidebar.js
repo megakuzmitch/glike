@@ -1,9 +1,11 @@
 (function( $ ) {
 
     var settings = {
-        'width': 250,
-        'minimizeWidth': 50,
-        'duration': 500
+        width: 250,
+        minimizeWidth: 50,
+        duration: 500,
+        canvasEl: '.canvas',
+        toggleBtn: '.sidebar-toggle'
     };
 
     var methods = {
@@ -16,15 +18,10 @@
                 var $this = $(this),
                     data = $this.data('mobilesidebar');
 
-                // Если плагин ещё не проинициализирован
                 if ( ! data ) {
 
-                    /*
-                     * Тут выполняем инициализацию
-                     */
-
-                    var $toggleButton = $('.toggle-item', $this).first(),
-                        $canvas = $('.canvas').first();
+                    var $toggleButton = $(settings.toggleBtn).first(),
+                        $canvas = $(settings.canvasEl).first();
 
                     $(this).data('mobilesidebar', {
                         target : $this,
@@ -60,34 +57,34 @@
         },
 
         click: function(e) {
+            e.preventDefault();
             methods.toggle.apply(this);
+            e.stopPropagation();
         },
 
         off: function() {
             var data = $(this).data('mobilesidebar');
 
-            data.target.addClass('open').width(settings.width);
-            data.toggleButton.width(settings.width);
-            if ( $(window).width() >= 768 ) {
-                data.canvas.css('paddingLeft', settings.width);
-            }
+            data.target.removeClass('minimize').addClass('full');//.width(settings.width);
+            // if ( $(window).width() >= 768 ) {
+            //     data.canvas.css('paddingLeft', settings.width);
+            // }
         },
 
         out: function() {
             var data = $(this).data('mobilesidebar');
 
-            data.target.removeClass('open').width(settings.minimizeWidth);
-            data.toggleButton.width(settings.minimizeWidth);
-            if ( $(window).width() >= 768 ) {
-                data.canvas.css('paddingLeft', settings.minimizeWidth);
-            }
+            data.target.removeClass('full').addClass('minimize');//.width(settings.minimizeWidth);
+            // if ( $(window).width() >= 768 ) {
+            //     data.canvas.css('paddingLeft', settings.minimizeWidth);
+            // }
         },
 
         toggle: function(e) {
 
             var data = e.data;
 
-            if ( data.target.hasClass('open') ) {
+            if ( data.target.hasClass('full') ) {
                 methods.out.apply(data.target);
             } else {
                 methods.off.apply(data.target);

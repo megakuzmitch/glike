@@ -11,7 +11,7 @@ $config = [
             'loginUrl' => ['user/default/login'],
         ],
         'request' => [
-            'cookieValidationKey' => '',
+            'cookieValidationKey' => 'GZK683ggYTKtaIA9Ai0238rhfdshf',
         ],
         'errorHandler' => [
             'errorAction' => 'main/default/error',

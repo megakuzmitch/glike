@@ -18,7 +18,16 @@ use yii\helpers\Url;
 <? $this->beginContent('@app/views/layouts/_body.php') ?>
 
 
-<div class="navmenu navmenu-fixed-left user-sidebar">
+<div class="navmenu navmenu-fixed-left user-sidebar minimize">
+
+    <div class="account">
+        <a href="#"><img src="/img/pic4.jpg" alt="Img" class="img-circle"></a>
+        <div class="info">
+            <div class="name">My name</div>
+            <div class="points">65 баллов</div>
+            <a href="#" class="btn btn-sm btn-primary">Пополнить</a>
+        </div>
+    </div>
 
     <?= Nav::widget([
         'options' => [
@@ -26,13 +35,10 @@ use yii\helpers\Url;
         ],
         'encodeLabels' => false,
         'items' => [
-            ['label' => "<i class='fa fa-user-circle-o'></i><span>Моя страница</span>", 'url' => ['#']],
             ['label' => "<i class='fa fa-diamond'></i><span>Заработать</span>", 'url' => ['/user/tasks/index']],
             ['label' => "<i class='fa fa-flag'></i><span>Мои задания</span>", 'url' => ['/user/my-tasks/index']],
         ]
     ]) ?>
-
-    <a href="#" class="toggle-item"><i class="fa fa-chevron-right"></i></a>
 
 </div>
 
