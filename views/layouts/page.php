@@ -6,12 +6,14 @@
 
 <?php $this->beginContent('@app/views/layouts/_body.php') ?>
 
-    <?= $this->render('_navbar') ?>
+<?= $this->render('_navbar') ?>
 
-    <div class="main">
+<div class="page">
 
+    <div class="container">
         <?= $content ?>
-
     </div>
+
+</div>
 
 <?php $this->endContent() ?>

@@ -10,13 +10,10 @@
  */
 
 use yii\bootstrap\Nav;
-use yii\helpers\Url;
 
 ?>
 
-
-<? $this->beginContent('@app/views/layouts/_body.php') ?>
-
+<?php $this->beginContent('@app/views/layouts/_body.php') ?>
 
 <div class="navmenu navmenu-fixed-left user-sidebar full">
 
@@ -37,8 +34,6 @@ use yii\helpers\Url;
         </li>
     </ul>
 
-
-
     <?= Nav::widget([
         'options' => [
             'class' => 'nav navmenu-nav'
@@ -54,22 +49,8 @@ use yii\helpers\Url;
 
 </div>
 
-
 <div class="canvas">
-
-    <? $this->beginContent('@app/views/layouts/main_fluid.php') ?>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
-                <?= $content ?>
-            </div>
-        </div>
-    </div><!-- /.container -->
-
-    <? $this->endContent() ?>
+    <?= $content; ?>
 </div>
 
 <? $this->endContent() ?>
-
-

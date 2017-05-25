@@ -13,7 +13,7 @@ use yii\web\Controller;
 
 class TasksController extends Controller
 {
-    public $layout = '@app/views/layouts/_sidebar';
+    public $layout = '@app/views/layouts/user';
 
     public function actionIndex()
     {

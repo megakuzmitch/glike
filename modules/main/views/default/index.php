@@ -88,9 +88,15 @@ $this->title = Yii::$app->name;
             </div>
 
             <div class="row centered">
-                <?= \yii\helpers\Html::a('Войти', ['/user/tasks/index'], [
+                <?= \yii\helpers\Html::a('Войти', Yii::$app->user->loginUrl, [
                         'class' => 'btn btn-danger btn-lg'
                 ]) ?>
+                <br>
+
+                <div class="lead">
+                    Временная ссылка для просмотра внутренних страниц <a href="<?= \yii\helpers\Url::to(['/user/tasks/index']) ?>">тыц</a>
+
+                </div>
             </div>
         </div><!-- container -->
     </div><!-- DG -->

@@ -20,12 +20,22 @@ return [
             'class' => 'yii\db\Connection',
             'charset' => 'utf8',
         ],
+        'eauth' => require('eauth.php'),
+        'i18n' => [
+            'translations' => [
+                'eauth' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@eauth/messages',
+                ],
+            ],
+        ],
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
                 '' => 'main/default/index',
+                'login/<service:google|twitter|facebook|instagram|vkontakte|odnoklassniki>' => 'user/default/login',
                 'contact' => 'main/contact/index',
                 '<_a:error>' => 'main/default/<_a>',
                 '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',

@@ -2,6 +2,7 @@
 
 namespace app\modules\user\models;
 
+use nodge\eauth\ErrorException;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +30,8 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_WAIT = 2;
+
+    public $profile;
 
     /**
      * @inheritdoc
@@ -111,9 +114,39 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
+
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+//        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+
+        if (Yii::$app->getSession()->has('user-'.$id)) {
+            return new self(Yii::$app->getSession()->get('user-'.$id));
+        }
+        else {
+            return isset(self::$users[$id]) ? new self(self::$users[$id]) : null;
+        }
+    }
+
+    /**
+     * @param \nodge\eauth\ServiceBase $service
+     * @return User
+     * @throws \nodge\eauth\ErrorException
+     */
+    public static function findByEAuth($service) {
+        if (!$service->getIsAuthenticated()) {
+            throw new ErrorException('EAuth user should be authenticated before creating identity.');
+        }
+
+        $id = $service->getServiceName().'-'.$service->getId();
+        $attributes = array(
+            'id' => $id,
+            'username' => $service->getAttribute('name'),
+            'authKey' => md5($id),
+            'profile' => $service->getAttributes(),
+        );
+        $attributes['profile']['service'] = $service->getServiceName();
+        Yii::$app->getSession()->set('user-'.$id, $attributes);
+        return new self($attributes);
     }
 
     /**

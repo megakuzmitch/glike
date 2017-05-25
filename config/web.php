@@ -8,7 +8,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\modules\user\models\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['user/default/login'],
+            'loginUrl' => '/user/default/login',
         ],
         'request' => [
             'cookieValidationKey' => 'GZK683ggYTKtaIA9Ai0238rhfdshf',

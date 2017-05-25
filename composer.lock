@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "da6b12ae3c3fe19f6ce4eb08664ebedc",
+    "content-hash": "0081e8ab79e088181a1e3dfe040a39a6",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -467,6 +467,167 @@
             "time": "2017-04-12T09:00:24+00:00"
         },
         {
+            "name": "lusitanian/oauth",
+            "version": "v0.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Lusitanian/PHPoAuthLib.git",
+                "reference": "4ce8c488971410233eb3b1e6d9ac4e81debb41d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/4ce8c488971410233eb3b1e6d9ac4e81debb41d5",
+                "reference": "4ce8c488971410233eb3b1e6d9ac4e81debb41d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*",
+                "predis/predis": "0.8.*@dev",
+                "symfony/http-foundation": "~2.1"
+            },
+            "suggest": {
+                "ext-openssl": "Allows for usage of secure connections with the stream-based HTTP client.",
+                "predis/predis": "Allows using the Redis storage backend.",
+                "symfony/http-foundation": "Allows using the Symfony Session storage backend."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "OAuth": "src",
+                    "OAuth\\Unit": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Desberg",
+                    "email": "david@daviddesberg.com"
+                },
+                {
+                    "name": "Pieter Hordijk",
+                    "email": "info@pieterhordijk.com"
+                }
+            ],
+            "description": "PHP 5.3+ oAuth 1/2 Library",
+            "keywords": [
+                "Authentication",
+                "authorization",
+                "oauth",
+                "security"
+            ],
+            "time": "2015-09-09T06:43:02+00:00"
+        },
+        {
+            "name": "nodge/lightopenid",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nodge/LightOpenID.git",
+                "reference": "a5492cc0c932c557b7e9b54a6e5bbd85cc5fa041"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nodge/LightOpenID/zipball/a5492cc0c932c557b7e9b54a6e5bbd85cc5fa041",
+                "reference": "a5492cc0c932c557b7e9b54a6e5bbd85cc5fa041",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "openid.php",
+                    "provider/provider.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT License"
+            ],
+            "authors": [
+                {
+                    "name": "Mewp",
+                    "homepage": "http://code.google.com/p/lightopenid/"
+                },
+                {
+                    "name": "Ignat Ignatov",
+                    "homepage": "https://github.com/iignatov/LightOpenID"
+                }
+            ],
+            "description": "Lightweight PHP5 library for easy OpenID authentication.",
+            "homepage": "https://github.com/Nodge/LightOpenID",
+            "keywords": [
+                "Authentication",
+                "OpenId"
+            ],
+            "time": "2013-08-31T16:48:56+00:00"
+        },
+        {
+            "name": "nodge/yii2-eauth",
+            "version": "2.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nodge/yii2-eauth.git",
+                "reference": "04798651fdb3a0db9ed5272330f18b26733507a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nodge/yii2-eauth/zipball/04798651fdb3a0db9ed5272330f18b26733507a0",
+                "reference": "04798651fdb3a0db9ed5272330f18b26733507a0",
+                "shasum": ""
+            },
+            "require": {
+                "lib-curl": "*",
+                "lusitanian/oauth": "~0.3.0",
+                "nodge/lightopenid": "~1.1.0",
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "bootstrap": "nodge\\eauth\\Bootstrap"
+            },
+            "autoload": {
+                "psr-4": {
+                    "nodge\\eauth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "New BSD License"
+            ],
+            "authors": [
+                {
+                    "name": "Maxim Zemskov",
+                    "email": "nodge@yandex.ru",
+                    "homepage": "http://nodge.ru/"
+                }
+            ],
+            "description": "Yii2 EAuth Extension. EAuth allows to authenticate users with accounts on other websites (Google, Facebook, Twitter, etc).",
+            "homepage": "https://github.com/Nodge/yii2-eauth",
+            "keywords": [
+                "Authentication",
+                "OpenId",
+                "eauth",
+                "extension",
+                "oauth",
+                "yii2"
+            ],
+            "time": "2017-04-09T20:23:01+00:00"
+        },
+        {
             "name": "rmrevin/yii2-fontawesome",
             "version": "2.17.1",
             "source": {
@@ -912,16 +1073,16 @@
         },
         {
             "name": "codeception/base",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/base.git",
-                "reference": "07f89a0ec4b850bebd8e5f48ea6f1aa9b13e4a48"
+                "reference": "c3beb9ff7fe829e4d9b66c1fdfcc99e85cad485f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/base/zipball/07f89a0ec4b850bebd8e5f48ea6f1aa9b13e4a48",
-                "reference": "07f89a0ec4b850bebd8e5f48ea6f1aa9b13e4a48",
+                "url": "https://api.github.com/repos/Codeception/base/zipball/c3beb9ff7fe829e4d9b66c1fdfcc99e85cad485f",
+                "reference": "c3beb9ff7fe829e4d9b66c1fdfcc99e85cad485f",
                 "shasum": ""
             },
             "require": {
@@ -931,7 +1092,7 @@
                 "guzzlehttp/psr7": "~1.0",
                 "php": ">=5.4.0 <8.0",
                 "phpunit/php-code-coverage": ">=2.2.4 <6.0",
-                "phpunit/phpunit": ">4.8.20 <6.0",
+                "phpunit/phpunit": ">4.8.20 <7.0",
                 "phpunit/phpunit-mock-objects": ">2.3 <5.0",
                 "sebastian/comparator": ">1.1 <3.0",
                 "sebastian/diff": "^1.4",
@@ -1000,7 +1161,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2017-05-22T23:55:43+00:00"
+            "time": "2017-05-24T01:15:53+00:00"
         },
         {
             "name": "codeception/specify",

@@ -9,6 +9,7 @@ use yii\web\Controller;
  */
 class DefaultController extends Controller
 {
+    public $layout = '@app/views/layouts/page';
 
     /**
      * @inheritdoc
@@ -29,8 +30,7 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-//        $this->layout = "@app/views/layouts/temp";
-
+        $this->layout = "@app/views/layouts/main";
         return $this->render('index');
     }
 }
