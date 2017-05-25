@@ -20,7 +20,6 @@
   z-index: 1001;
   background-color: #fff;
   margin-bottom: 20px;
-  padding-top: 20px;
   border-right: 1px solid #ddd;
 
   -webkit-box-shadow: 1px 0 3px 0 #797979;
@@ -38,7 +37,7 @@
     white-space: nowrap;
     overflow: hidden;
 
-    a {
+    & > a {
       max-height: 100%;
       color: #555;
       font-size: 16px;
@@ -72,18 +71,21 @@
       z-index: 1;
     }
 
-    &:hover a {
+    &:hover {
       background-color: #f6f9fb;
-      border-left: 4px solid #ff7878;
-      margin-left: -4px;
+      //border-left: 4px solid #ff7878;
+      & > a {
+        background-color: transparent;
+      }
     }
 
-    &.active a,
-    &.active:hover a {
+    &.active,
+    &.active:hover {
       background-color: #f2dede;
-      border-left: 4px solid #ff7878;
-      margin-left: -4px;
-      font-weight: bold;
+
+      & > a {
+        font-weight: bold;
+      }
     }
   }
 
@@ -101,22 +103,24 @@
 
 
   .account {
+    border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     margin-bottom: 0;
-    padding: 15px 0;
     white-space: nowrap;
-    overflow: hidden;
 
     & > a {
       display: inline-block;
-      width: 100px;
-      padding: 0 15px 15px;
-      vertical-align: top;
+      vertical-align: middle;
+      
+      i.fa {
+        display: none;
+        position: relative;
+        left: 1px;
+      }
 
       img {
-        width: 100%;
-        max-width: 100px;
-        height: auto;
+        width: 100px;
+        height: 100px;
         border: 1px solid #ddd;
         padding: 4px;
       }
@@ -124,16 +128,9 @@
 
 
     & > .info {
-      width: 140px;
       display: inline-block;
-      /* height: 0; */
+      vertical-align: middle;
       overflow: hidden;
-
-      -webkit-transition: height 0.3s;
-      -moz-transition: height 0.3s;
-      -ms-transition: height 0.3s;
-      -o-transition: height 0.3s;
-      transition: height 0.3s;
 
       .name {
         margin-bottom: 5px;
@@ -145,6 +142,33 @@
       }
     }
   }
+
+
+
+  .sidebar-toggle {
+    float: none;
+    display: inline-block;
+    border: none;
+    margin: 10px 0;
+    padding: 10px 15px;
+    left: 0;
+    -webkit-transition: left 0.3s;
+    -moz-transition: left 0.3s;
+    -ms-transition: left 0.3s;
+    -o-transition: left 0.3s;
+    transition: left 0.3s;
+
+    .icon-bar {
+      background-color: #555;
+      width: 20px;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -ms-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
+    }
+  }
+
 
 
   &.full {
@@ -161,6 +185,30 @@
     .account {
       .info {
         height: auto;
+      }
+    }
+
+    .sidebar-toggle {
+      left: 200px;
+
+      .icon-bar:first-child {
+        -webkit-transform: translateY(6px) rotate(45deg);
+        -moz-transform: translateY(6px) rotate(45deg);
+        -ms-transform: translateY(6px) rotate(45deg);
+        -o-transform: translateY(6px) rotate(45deg);
+        transform: translateY(6px) rotate(45deg);
+
+        & + .icon-bar {
+          opacity: 0;
+        }
+      }
+
+      .icon-bar:last-child {
+        -webkit-transform: translateY(-6px) rotate(-45deg);
+        -moz-transform: translateY(-6px) rotate(-45deg);
+        -ms-transform: translateY(-6px) rotate(-45deg);
+        -o-transform: translateY(-6px) rotate(-45deg);
+        transform: translateY(-6px) rotate(-45deg);
       }
     }
   }
@@ -182,28 +230,28 @@
         height: 0;
       }
 
-      & > a img {
-        border: none;
-        padding: 0;
-        height: 16px;
-        width: auto;
+      & > a {
+        i.fa {
+          display: inline-block;
+        }
+        img {
+          display: none;
+        }
       }
+    }
+
+    .sidebar-toggle {
+      left: 0;
     }
   }
 
-}
-
-.sidebar-toggle {
-  display: block;
-  float: left;
 }
 
 @media (max-width: 768px) {
 
   .sidebar-toggle {
     padding: 7px;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0 0 0 15px;
   }
 
   .user-sidebar {
@@ -216,12 +264,16 @@
 
   .user-sidebar.full {
 
-    .account > a img {
-      width: 100%;
-      max-width: 100px;
-      height: auto;
-      border: 1px solid #ddd;
-      padding: 4px;
+    .account {
+      & > a {
+        i.fa {
+          display: none;
+        }
+
+        img {
+          display: inline-block;
+        }
+      }
     }
 
     & + .canvas {

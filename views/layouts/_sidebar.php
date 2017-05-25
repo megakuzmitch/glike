@@ -20,14 +20,24 @@ use yii\helpers\Url;
 
 <div class="navmenu navmenu-fixed-left user-sidebar full">
 
-    <div class="account">
-        <a href="#"><img src="/img/pic4.jpg" alt="Img" class="img-circle"></a>
-        <div class="info">
-            <div class="name">My name</div>
-            <div class="points">65 баллов</div>
-            <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
-        </div>
-    </div>
+    <button type="button" class="navbar-toggle sidebar-toggle" data-toggle="canvas" data-target=".user-sidebar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+
+    <ul class="nav navmenu-nav">
+        <li class="account">
+            <a href="#"><i class='fa fa-user-circle-o'></i><img src="/img/pic4.jpg" alt="Img" class="img-circle"></a>
+            <div class="info">
+                <div class="name">My name</div>
+                <div class="points">65 баллов</div>
+                <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
+            </div>
+        </li>
+    </ul>
+
+
 
     <?= Nav::widget([
         'options' => [

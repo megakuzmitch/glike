@@ -218,6 +218,16 @@ i.fa {
 .navbar-inverse .navbar-nav > .active > a {
   background: #ff7878;
 }
+.navbar .navbar-header {
+  float: left;
+  display: inline-block;
+}
+.navbar .navbar-right {
+  float: right;
+}
+.navbar .navbar-right li {
+  display: inline-block;
+}
 .navbar .navbar-brand {
   height: 50px;
   padding-top: 0;
@@ -226,8 +236,11 @@ i.fa {
   text-transform: none;
 }
 @media (max-width: 768px) {
-  .navbar .navbar-brand {
-    padding-left: 0;
+  .navbar .navbar-right {
+    margin: 0;
+  }
+  .navbar .navbar-right li a {
+    padding: 5px 15px;
   }
 }
 .navbar .navbar-brand img {
@@ -339,7 +352,6 @@ i.fa {
   z-index: 1001;
   background-color: #fff;
   margin-bottom: 20px;
-  padding-top: 20px;
   border-right: 1px solid #ddd;
   -webkit-box-shadow: 1px 0 3px 0 #797979;
   -moz-box-shadow: 1px 0 3px 0 #797979;
@@ -354,19 +366,19 @@ i.fa {
   white-space: nowrap;
   overflow: hidden;
 }
-.user-sidebar li a {
+.user-sidebar li > a {
   max-height: 100%;
   color: #555;
   font-size: 16px;
   padding: 15px;
 }
-.user-sidebar li a i.fa {
+.user-sidebar li > a i.fa {
   color: #555;
   font-size: inherit;
   margin-left: 0;
   width: 35px;
 }
-.user-sidebar li a span {
+.user-sidebar li > a span {
   -webkit-transition: opacity 0.3s;
   -moz-transition: opacity 0.3s;
   -ms-transition: opacity 0.3s;
@@ -384,16 +396,18 @@ i.fa {
   position: absolute;
   z-index: 1;
 }
-.user-sidebar li:hover a {
+.user-sidebar li:hover {
   background-color: #f6f9fb;
-  border-left: 4px solid #ff7878;
-  margin-left: -4px;
 }
-.user-sidebar li.active a,
-.user-sidebar li.active:hover a {
+.user-sidebar li:hover > a {
+  background-color: transparent;
+}
+.user-sidebar li.active,
+.user-sidebar li.active:hover {
   background-color: #f2dede;
-  border-left: 4px solid #ff7878;
-  margin-left: -4px;
+}
+.user-sidebar li.active > a,
+.user-sidebar li.active:hover > a {
   font-weight: bold;
 }
 .user-sidebar + .canvas {
@@ -406,35 +420,30 @@ i.fa {
   transition: padding-left 0.3s;
 }
 .user-sidebar .account {
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   margin-bottom: 0;
-  padding: 15px 0;
   white-space: nowrap;
-  overflow: hidden;
 }
 .user-sidebar .account > a {
   display: inline-block;
-  width: 100px;
-  padding: 0 15px 15px;
-  vertical-align: top;
+  vertical-align: middle;
+}
+.user-sidebar .account > a i.fa {
+  display: none;
+  position: relative;
+  left: 1px;
 }
 .user-sidebar .account > a img {
-  width: 100%;
-  max-width: 100px;
-  height: auto;
+  width: 100px;
+  height: 100px;
   border: 1px solid #ddd;
   padding: 4px;
 }
 .user-sidebar .account > .info {
-  width: 140px;
   display: inline-block;
-  /* height: 0; */
+  vertical-align: middle;
   overflow: hidden;
-  -webkit-transition: height 0.3s;
-  -moz-transition: height 0.3s;
-  -ms-transition: height 0.3s;
-  -o-transition: height 0.3s;
-  transition: height 0.3s;
 }
 .user-sidebar .account > .info .name {
   margin-bottom: 5px;
@@ -442,6 +451,28 @@ i.fa {
 }
 .user-sidebar .account > .info .points {
   margin-bottom: 5px;
+}
+.user-sidebar .sidebar-toggle {
+  float: none;
+  display: inline-block;
+  border: none;
+  margin: 10px 0;
+  padding: 10px 15px;
+  left: 0;
+  -webkit-transition: left 0.3s;
+  -moz-transition: left 0.3s;
+  -ms-transition: left 0.3s;
+  -o-transition: left 0.3s;
+  transition: left 0.3s;
+}
+.user-sidebar .sidebar-toggle .icon-bar {
+  background-color: #555;
+  width: 20px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
 }
 .user-sidebar.full {
   width: 250px;
@@ -455,6 +486,26 @@ i.fa {
 .user-sidebar.full .account .info {
   height: auto;
 }
+.user-sidebar.full .sidebar-toggle {
+  left: 200px;
+}
+.user-sidebar.full .sidebar-toggle .icon-bar:first-child {
+  -webkit-transform: translateY(6px) rotate(45deg);
+  -moz-transform: translateY(6px) rotate(45deg);
+  -ms-transform: translateY(6px) rotate(45deg);
+  -o-transform: translateY(6px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
+}
+.user-sidebar.full .sidebar-toggle .icon-bar:first-child + .icon-bar {
+  opacity: 0;
+}
+.user-sidebar.full .sidebar-toggle .icon-bar:last-child {
+  -webkit-transform: translateY(-6px) rotate(-45deg);
+  -moz-transform: translateY(-6px) rotate(-45deg);
+  -ms-transform: translateY(-6px) rotate(-45deg);
+  -o-transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
+}
 .user-sidebar.minimize {
   width: 50px;
 }
@@ -467,21 +518,19 @@ i.fa {
 .user-sidebar.minimize .account .info {
   height: 0;
 }
-.user-sidebar.minimize .account > a img {
-  border: none;
-  padding: 0;
-  height: 16px;
-  width: auto;
+.user-sidebar.minimize .account > a i.fa {
+  display: inline-block;
 }
-.sidebar-toggle {
-  display: block;
-  float: left;
+.user-sidebar.minimize .account > a img {
+  display: none;
+}
+.user-sidebar.minimize .sidebar-toggle {
+  left: 0;
 }
 @media (max-width: 768px) {
   .sidebar-toggle {
     padding: 7px;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0 0 0 15px;
   }
   .user-sidebar {
     width: 50px;
@@ -495,21 +544,23 @@ i.fa {
   .user-sidebar .account .info {
     height: 0;
   }
+  .user-sidebar .account > a i.fa {
+    display: inline-block;
+  }
   .user-sidebar .account > a img {
-    border: none;
-    padding: 0;
-    height: 16px;
-    width: auto;
+    display: none;
+  }
+  .user-sidebar .sidebar-toggle {
+    left: 0;
   }
   .user-sidebar + .canvas {
     margin-top: 61px;
   }
+  .user-sidebar.full .account > a i.fa {
+    display: none;
+  }
   .user-sidebar.full .account > a img {
-    width: 100%;
-    max-width: 100px;
-    height: auto;
-    border: 1px solid #ddd;
-    padding: 4px;
+    display: inline-block;
   }
   .user-sidebar.full + .canvas {
     padding-left: 50px;
