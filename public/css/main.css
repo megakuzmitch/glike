@@ -191,9 +191,6 @@ hr {
 .centered {
   text-align: center;
 }
-.centered > * {
-  display: inline-block;
-}
 .soc-block {
   margin-bottom: 60px;
 }
@@ -687,4 +684,24 @@ Task list
 }
 .user-tasks .filter {
   margin-bottom: 30px;
+}
+.eauth .eauth-list {
+  margin: 0;
+}
+.eauth .eauth-list li.eauth-service {
+  display: block;
+  text-align: center;
+  margin: 0 0 15px;
+}
+.eauth .eauth-list li.eauth-service .eauth-service-link {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+}
+.eauth .eauth-list li.eauth-service .eauth-service-link:before,
+.eauth .eauth-list li.eauth-service .eauth-service-link:after {
+  left: 10px;
+  margin-left: 0;
+  top: 50%;
+  margin-top: -16px;
 }

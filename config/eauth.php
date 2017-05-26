@@ -23,25 +23,25 @@ return [
             'clientSecret' => '...',
             'title' => 'Google',
         ],
-        'twitter' => [
-            // register your app here: https://dev.twitter.com/apps/new
-            'class' => 'nodge\eauth\services\TwitterOAuth1Service',
-            'key' => '...',
-            'secret' => '...',
-        ],
+//        'twitter' => [
+//            // register your app here: https://dev.twitter.com/apps/new
+//            'class' => 'nodge\eauth\services\TwitterOAuth1Service',
+//            'key' => '...',
+//            'secret' => '...',
+//        ],
         /* 'yandex' => [
             // register your app here: https://oauth.yandex.ru/client/my
             'class' => 'nodge\eauth\services\YandexOAuth2Service',
             'clientId' => '...',
             'clientSecret' => '...',
             'title' => 'Yandex',
-        ], */
-        'facebook' => [
-            // register your app here: https://developers.facebook.com/apps/
-            'class' => 'nodge\eauth\services\FacebookOAuth2Service',
-            'clientId' => '...',
-            'clientSecret' => '...',
-        ],
+//        ], */
+//        'facebook' => [
+//            // register your app here: https://developers.facebook.com/apps/
+//            'class' => 'nodge\eauth\services\FacebookOAuth2Service',
+//            'clientId' => '...',
+//            'clientSecret' => '...',
+//        ],
         /* 'yahoo' => [
             'class' => 'nodge\eauth\services\YahooOpenIDService',
             //'realm' => '*.example.org', // your domain, can be with wildcard to authenticate on subdomains.
@@ -77,12 +77,12 @@ return [
             //'realm' => '*.example.org', // your domain, can be with wildcard to authenticate on subdomains.
             'apiKey' => '...', // Optional. You can get it here: https://steamcommunity.com/dev/apikey
         ], */
-        'instagram' => [
-            // register your app here: https://instagram.com/developer/register/
-            'class' => 'nodge\eauth\services\InstagramOAuth2Service',
-            'clientId' => '...',
-            'clientSecret' => '...',
-        ],
+//        'instagram' => [
+//            // register your app here: https://instagram.com/developer/register/
+//            'class' => 'nodge\eauth\services\InstagramOAuth2Service',
+//            'clientId' => '...',
+//            'clientSecret' => '...',
+//        ],
         'vkontakte' => [
             // register your app here: https://vk.com/editapp?act=create&site=1
             'class' => 'nodge\eauth\services\VKontakteOAuth2Service',
@@ -95,14 +95,14 @@ return [
             'clientId' => '...',
             'clientSecret' => '...',
         ], */
-        'odnoklassniki' => [
-            // register your app here: http://dev.odnoklassniki.ru/wiki/pages/viewpage.action?pageId=13992188
-            // ... or here: http://www.odnoklassniki.ru/dk?st.cmd=appsInfoMyDevList&st._aid=Apps_Info_MyDev
-            'class' => 'nodge\eauth\services\OdnoklassnikiOAuth2Service',
-            'clientId' => '...',
-            'clientSecret' => '...',
-            'clientPublic' => '...',
-            'title' => 'Odnoklas.',
-        ],
+//        'odnoklassniki' => [
+//            // register your app here: http://dev.odnoklassniki.ru/wiki/pages/viewpage.action?pageId=13992188
+//            // ... or here: http://www.odnoklassniki.ru/dk?st.cmd=appsInfoMyDevList&st._aid=Apps_Info_MyDev
+//            'class' => 'nodge\eauth\services\OdnoklassnikiOAuth2Service',
+//            'clientId' => '...',
+//            'clientSecret' => '...',
+//            'clientPublic' => '...',
+//            'title' => 'Odnoklas.',
+//        ],
     ],
 ];

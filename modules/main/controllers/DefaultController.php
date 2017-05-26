@@ -2,6 +2,7 @@
 
 namespace app\modules\main\controllers;
 
+use Yii;
 use yii\web\Controller;
 
 /**
@@ -30,6 +31,10 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
+        if ( ! Yii::$app->user->isGuest ) {
+            $this->redirect(['/user/tasks/index']);
+        }
+
         $this->layout = "@app/views/layouts/main";
         return $this->render('index');
     }

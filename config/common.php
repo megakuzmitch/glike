@@ -7,6 +7,11 @@ $params = ArrayHelper::merge(
     require(__DIR__ . '/params-local.php')
 );
 
+$eauth = ArrayHelper::merge(
+    require(__DIR__ . '/eauth.php'),
+    require(__DIR__ . '/eauth-local.php')
+);
+
 return [
     'name' => 'GLike',
     'basePath' => dirname(__DIR__),
@@ -20,7 +25,7 @@ return [
             'class' => 'yii\db\Connection',
             'charset' => 'utf8',
         ],
-        'eauth' => require('eauth.php'),
+        'eauth' => $eauth,
         'i18n' => [
             'translations' => [
                 'eauth' => [
@@ -35,10 +40,10 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'main/default/index',
-                'login/<service:google|twitter|facebook|instagram|vkontakte|odnoklassniki>' => 'user/default/login',
                 'contact' => 'main/contact/index',
                 '<_a:error>' => 'main/default/<_a>',
                 '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',
+                '<login/<service:google|twitter|facebook|instagram|vkontakte|odnoklassniki>' => 'user/default/login',
                 '<_m:[\w\-]+>/<_c:[\w\-]+>/<_a:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/<_a>',
                 '<_m:[\w\-]+>/<_c:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/view',
                 '<_m:[\w\-]+>' => '<_m>/default/index',

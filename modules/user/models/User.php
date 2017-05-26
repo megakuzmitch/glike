@@ -173,6 +173,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->auth_key;
     }
 
+    public function setAuthKey($key)
+    {
+        $this->auth_key = $key;
+    }
+
     /**
      * @inheritdoc
      */
