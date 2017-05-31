@@ -3,11 +3,13 @@
 namespace app\modules\user\controllers;
 
 use app\modules\user\models\LoginForm;
+use app\modules\user\models\Service;
 use app\modules\user\models\User;
 use nodge\eauth\openid\ControllerBehavior;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 
 /**
@@ -69,14 +71,17 @@ class DefaultController extends Controller
         if ( isset($serviceName) ) {
             /** @var $eauth \nodge\eauth\ServiceBase */
             $eauth = Yii::$app->get('eauth')->getIdentity($serviceName);
+
             $eauth->setRedirectUrl(Yii::$app->getUser()->getReturnUrl());
             $eauth->setCancelUrl(Yii::$app->getUrlManager()->createAbsoluteUrl(Yii::$app->user->loginUrl));
 
             try {
+
                 if ($eauth->authenticate()) {
 //                  var_dump($eauth->getIsAuthenticated(), $eauth->getAttributes()); exit;
 
                     $identity = User::findByEAuth($eauth);
+
                     Yii::$app->getUser()->login($identity);
 
                     // special redirect with closing popup window
@@ -88,18 +93,18 @@ class DefaultController extends Controller
                 }
             }
             catch (\nodge\eauth\ErrorException $e) {
+
                 // save error to show it later
                 Yii::$app->getSession()->setFlash('error', 'EAuthException: '.$e->getMessage());
 
                 // close popup window and redirect to cancelUrl
 //              $eauth->cancel();
+
                 $eauth->redirect($eauth->getCancelUrl());
             }
         }
 
-        return $this->render('login', [
-            'model' => new LoginForm()
-        ]);
+        return $this->render('login');
     }
 
     public function actionLogout()

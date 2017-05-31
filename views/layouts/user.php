@@ -1,18 +1,25 @@
 <?php
 
 /* @var $this \yii\web\View */
-use yii\bootstrap\Nav;
+use app\widgets\Alert;
 
 /* @var $content string */
 ?>
 
 <? $this->beginContent('@app/views/layouts/_sidebar.php') ?>
 
-    <?= $this->render('_navbar_fluid') ?>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+
+            <?= $this->render('_navbar') ?>
+
+        </div>
+    </div>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
+                <?= Alert::widget() ?>
                 <?= $content ?>
             </div>
         </div>

@@ -23,11 +23,20 @@ use yii\bootstrap\Nav;
         <span class="icon-bar"></span>
     </button>
 
+    <?
+    /**
+     * @var $user \app\modules\user\models\User
+     * @var $profile \app\modules\user\models\Profile
+     */
+    $user = Yii::$app->user->getIdentity();
+    $profile = $user->profile;
+    ?>
+
     <ul class="nav navmenu-nav">
         <li class="account">
-            <a href="#"><i class='fa fa-user-circle-o'></i><img src="/img/pic4.jpg" alt="Img" class="img-circle"></a>
+            <a href="#"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->avatar ?>" alt="Img" class="img-circle"></a>
             <div class="info">
-                <div class="name"><?= Yii::$app->user->getIdentity()->profile['name'] ?></div>
+                <div class="name"><?= $profile->name ?></div>
                 <div class="points">0 баллов</div>
                 <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
             </div>
@@ -56,6 +65,9 @@ use yii\bootstrap\Nav;
 </div>
 
 <div class="canvas">
+
+    <? \nodge\eauth\oauth\SessionTokenStorage::class ?>
+
     <?= $content; ?>
 </div>
 

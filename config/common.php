@@ -38,16 +38,21 @@ return [
             'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
                 '' => 'main/default/index',
-                'contact' => 'main/contact/index',
-                '<_a:error>' => 'main/default/<_a>',
+
+                'page/<pageName:about|help>' => 'main/page/view',
+
+                'login/<service:vkontakte|google>' => 'user/default/login',
                 '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',
-                '<login/<service:google|twitter|facebook|instagram|vkontakte|odnoklassniki>' => 'user/default/login',
-                '<_m:[\w\-]+>/<_c:[\w\-]+>/<_a:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/<_a>',
-                '<_m:[\w\-]+>/<_c:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/view',
-                '<_m:[\w\-]+>' => '<_m>/default/index',
+
+                '<_a:error>' => 'main/default/<_a>',
+
                 '<_m:[\w\-]+>/<_c:[\w\-]+>' => '<_m>/<_c>/index',
+                '<_m:[\w\-]+>' => '<_m>/default/index',
+                '<_m:[\w\-]+>/<_c:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/view',
+                '<_m:[\w\-]+>/<_c:[\w\-]+>/<_a:[\w\-]+>/<id:\d+>' => '<_m>/<_c>/<_a>',
             ],
         ],
         'mailer' => [

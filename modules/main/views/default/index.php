@@ -88,7 +88,7 @@ $this->title = Yii::$app->name;
             </div>
 
             <div class="row centered">
-                <?= \yii\helpers\Html::a('Войти', [Yii::$app->user->loginUrl], [
+                <?= \yii\helpers\Html::a('Войти', \yii\helpers\Url::to(['/user/default/login']), [
                         'class' => 'btn btn-danger btn-lg'
                 ]) ?>
             </div>

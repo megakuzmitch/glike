@@ -2,6 +2,7 @@
 
 namespace app\modules\main\controllers;
 
+use Yii;
 use yii\web\Controller;
 
 /**
@@ -13,25 +14,17 @@ use yii\web\Controller;
 
 class PageController extends Controller
 {
-
     /**
      * Displays contact page.
      *
-     * @param null $id
+     * @param string $pageName
      * @return string
      */
-    public function actionView($id = null)
+    public function actionView($pageName)
     {
-        return $this->render('index');
-    }
-
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    public function actionHelp()
-    {
-        return $this->render('help');
+        if ( ! Yii::$app->user->isGuest ) {
+            $this->layout = '@app/views/layouts/user';
+        }
+        return $this->render($pageName);
     }
 }

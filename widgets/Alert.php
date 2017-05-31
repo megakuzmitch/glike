@@ -1,5 +1,5 @@
 <?php
-namespace common\widgets;
+namespace app\widgets;
 use Yii;
 use yii\bootstrap\Widget;
 
@@ -31,7 +31,7 @@ class Alert extends Widget
      * - $value is the bootstrap alert type (i.e. danger, success, info, warning)
      */
     public $alertTypes = [
-        'error'   => 'alert-danger',
+        'error'   => 'alert-error',
         'danger'  => 'alert-danger',
         'success' => 'alert-success',
         'info'    => 'alert-info',
@@ -46,6 +46,7 @@ class Alert extends Widget
         parent::init();
         $session = Yii::$app->session;
         $flashes = $session->getAllFlashes();
+
         $appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
         foreach ($flashes as $type => $data) {
             if (isset($this->alertTypes[$type])) {

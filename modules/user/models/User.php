@@ -4,10 +4,12 @@ namespace app\modules\user\models;
 
 use nodge\eauth\ErrorException;
 use Yii;
+use yii\base\Exception;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 use yii\web\IdentityInterface;
 
 /**
@@ -16,22 +18,14 @@ use yii\web\IdentityInterface;
  * @property integer $id
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $username
  * @property string $auth_key
  * @property string $email_confirm_token
- * @property string $password_hash
- * @property string $password_reset_token
  * @property string $email
- * @property integer $status
  */
 class User extends ActiveRecord implements IdentityInterface
 {
 
-    const STATUS_BLOCKED = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_WAIT = 2;
-
-    public $profile;
+    protected $_profile;
 
     /**
      * @inheritdoc
@@ -41,25 +35,28 @@ class User extends ActiveRecord implements IdentityInterface
         return '{{%user}}';
     }
 
+    public function getServices()
+    {
+        return $this->hasMany(Service::className(), ['user_id' => 'id']);
+    }
+
+    public function getProfile() {
+        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
+    }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            ['username', 'required'],
-            ['username', 'match', 'pattern' => '#^[\w_-]+$#is'],
-            ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+//            ['username', 'match', 'pattern' => '#^[\w_-]+$#is'],
+//            ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
+//            ['username', 'string', 'min' => 2, 'max' => 255],
 
-            ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
             ['email', 'string', 'max' => 255],
-
-            ['status', 'integer'],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
         ];
     }
 
@@ -72,9 +69,7 @@ class User extends ActiveRecord implements IdentityInterface
             'id' => 'ID',
             'created_at' => 'Создан',
             'updated_at' => 'Обновлён',
-            'username' => 'Имя пользователя',
             'email' => 'Email',
-            'status' => 'Статус',
         ];
     }
 
@@ -89,42 +84,20 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getStatusName()
-    {
-        return ArrayHelper::getValue(self::getStatusesArray(), $this->status);
-    }
-
-
-    /**
-     * @return array
-     */
-    public static function getStatusesArray()
-    {
-        return [
-            self::STATUS_BLOCKED => 'Заблокирован',
-            self::STATUS_ACTIVE => 'Активен',
-            self::STATUS_WAIT => 'Ожидает подтверждения',
-        ];
-    }
-
     /**
      * @inheritdoc
      */
 
     public static function findIdentity($id)
     {
-//        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id]);
 
-        if (Yii::$app->getSession()->has('user-'.$id)) {
-            return new self(Yii::$app->getSession()->get('user-'.$id));
-        }
-        else {
-            return isset(self::$users[$id]) ? new self(self::$users[$id]) : null;
-        }
+//        if (Yii::$app->getSession()->has('user-'.$id)) {
+//            return new self(Yii::$app->getSession()->get('user-'.$id));
+//        }
+//        else {
+//            return isset(self::$users[$id]) ? new self(self::$users[$id]) : null;
+//        }
     }
 
     /**
@@ -137,17 +110,94 @@ class User extends ActiveRecord implements IdentityInterface
             throw new ErrorException('EAuth user should be authenticated before creating identity.');
         }
 
-        $id = $service->getServiceName().'-'.$service->getId();
-        $attributes = array(
-            'id' => $id,
-            'username' => $service->getAttribute('name'),
-            'authKey' => md5($id),
-            'profile' => $service->getAttributes(),
-        );
-        $attributes['profile']['service'] = $service->getServiceName();
-        Yii::$app->getSession()->set('user-'.$id, $attributes);
-        return new self($attributes);
+        $identityAttributes = [
+            'email' => $service->getAttribute('email'),
+        ];
+        $profileAttributes = [
+            'first_name' => $service->getAttribute('first_name'),
+            'last_name' => $service->getAttribute('last_name'),
+            'avatar' => $service->getAttribute('avatar'),
+        ];
+
+
+        /**
+         * @var $identity User
+         */
+        $identity = self::find()
+            ->joinWith('services')
+            ->where([
+                'service.service_name' => $service->getServiceName(),
+                'service.identity_id' => $service->getId()
+            ])
+            ->limit(1)
+            ->one();
+
+        if ( $identity !== null) {
+            $identity->updateProfile($profileAttributes);
+            return $identity;
+        }
+
+        $identity = new self($identityAttributes);
+        $transaction = self::getDb()->beginTransaction();
+
+        if ( $identity->save() ) {
+
+            $serviceRecord = new Service();
+            $serviceRecord->identity_id = $service->getId();
+            $serviceRecord->service_name = $service->getServiceName();
+            $serviceRecord->user_id = $identity->id;
+
+            $profile = new Profile();
+            $profile->attributes = $profileAttributes;
+
+            if ( $serviceRecord->save() && $profile->save() ) {
+                $transaction->commit();
+            } else {
+                $transaction->rollBack();
+                throw new ErrorException("Identity don't create");
+            }
+
+        } else {
+            throw new ErrorException("Identity don't create");
+        }
+
+//        $id = $service->getServiceName().'-'.$service->getId();
+
+//        Yii::$app->getSession()->set('user-'.$id, $attributes);
+        return $identity;
     }
+
+
+    /**
+     * @param $attributes
+     * @return bool|false|int
+     */
+    public function updateProfile($attributes)
+    {
+        if ( !is_array($attributes) || $this->isNewRecord ) {
+            return false;
+        }
+
+        /**
+         * @var $profile ActiveRecord
+         */
+
+        if ( $this->profile === null ) {
+            $profile = new Profile();
+            $profile->user_id = $this->id;
+        } else {
+            $profile = $this->profile;
+        }
+
+        foreach ( $attributes as $name => $value ) {
+            if ( $profile->hasAttribute($name) && empty( $profile->getAttribute($name) ) ) {
+                $profile->setAttribute($name, $value);
+            }
+        }
+
+        return $profile->save();
+    }
+
 
     /**
      * @inheritdoc
@@ -187,36 +237,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username]);
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setPassword($password)
-    {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-    }
-
-    /**
      * Generates "remember me" authentication key
      */
     public function generateAuthKey()
@@ -233,56 +253,6 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
         return false;
-    }
-
-    /**
-     * Finds user by password reset token
-     *
-     * @param string $token password reset token
-     * @return static|null
-     */
-    public static function findByPasswordResetToken($token)
-    {
-        if (!static::isPasswordResetTokenValid($token)) {
-            return null;
-        }
-        return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
-        ]);
-    }
-
-    /**
-     * Finds out if password reset token is valid
-     *
-     * @param string $token password reset token
-     * @return boolean
-     */
-    public static function isPasswordResetTokenValid($token)
-    {
-        if (empty($token)) {
-            return false;
-        }
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-        $parts = explode('_', $token);
-        $timestamp = (int) end($parts);
-        return $timestamp + $expire >= time();
-    }
-
-    /**
-     * Generates new password reset token
-     */
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-
-    /**
-     * Removes password reset token
-     */
-    public function removePasswordResetToken()
-    {
-        $this->password_reset_token = null;
     }
 
     /**
