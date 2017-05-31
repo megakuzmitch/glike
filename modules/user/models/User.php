@@ -126,8 +126,8 @@ class User extends ActiveRecord implements IdentityInterface
         $identity = self::find()
             ->joinWith('services')
             ->where([
-                'service.service_name' => $service->getServiceName(),
-                'service.identity_id' => $service->getId()
+                '{{%service}}.service_name' => $service->getServiceName(),
+                '{{%service}}.identity_id' => $service->getId()
             ])
             ->limit(1)
             ->one();
