@@ -618,6 +618,9 @@ Task list
 .user-my-tasks .tools {
   margin-bottom: 15px;
 }
+.my-tasks-list .summary {
+  margin-bottom: 15px;
+}
 .my-tasks-list .task {
   padding: 10px;
   border: 1px solid #ddd;

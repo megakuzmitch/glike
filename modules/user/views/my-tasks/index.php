@@ -7,6 +7,7 @@
  *
  * @var \yii\web\View $this
  * @var $content
+ * @var $dataProvider \yii\data\ActiveDataProvider
  */
 use kartik\select2\Select2;
 use yii\helpers\Url;
@@ -16,10 +17,12 @@ use yii\helpers\Url;
 
 <div class="user-my-tasks">
 
+    <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="tools pull-right">
-                <a href="#task-add-form" data-toggle="modal" data-target="#task-add-form" class="btn btn-success">Добавить задание</a>
+                <a href="<?=Url::to(['/user/my-tasks/create'])?>" class="btn btn-success">Добавить задание</a>
 
                 <!-- Modal -->
                 <div class="modal" id="task-add-form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -91,109 +94,14 @@ use yii\helpers\Url;
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="vk-tab">
 
-            <div class="my-tasks-list">
 
-                <div class="task">
-
-                    <div class="row">
-                        <div class="details col-lg-8">
-
-                            <div class="row">
-                                <div class="preview col-lg-2 col-xs-3">
-                                    <img src="/img/pic4.jpg" alt="" class="img-circle">
-                                </div>
-
-                                <div class="info col-lg-10 col-xs-9">
-                                    <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
-                                    <div class="details">
-                                        Добавлено: 25/12/2018
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="info col-lg-4">
-                            <div class="status">
-                                <a href="#">
-                                    <div class="progress-bar" style="width: 30%"></div>
-                                    <div>2 / 6 <i class="fa fa-arrow-circle-down"></i></div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <div class="tools">
-                                <div class="pull-right">
-                                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-pause"></i> Приостановить</a>
-                                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-edit"></i> Редактировать</a>
-                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> Удалить</a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="task done">
-
-                    <div class="row">
-                        <div class="details col-lg-8">
-
-                            <div class="row">
-                                <div class="preview col-lg-2 col-xs-3">
-                                    <img src="/img/pic4.jpg" alt="" class="img-circle">
-                                    <i class="fa fa-check-square-o" style="
-                                    position: absolute;
-                                    font-size: 50px;
-                                    top: 50%;
-                                    margin-top: -24px;
-                                    line-height: 1;
-                                    left: 50%;
-                                    margin-left: -19px;
-                                    color: #97ff99;
-                                    height: 50px;
-                                    width: 50px;
-                                "></i>
-                                </div>
-
-                                <div class="info col-lg-10 col-xs-9">
-                                    <div class="name"><strong>Оставить комментарий</strong> к записи на стене</div>
-                                    <div class="details">
-                                        Добавлено: 25/12/2018
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="info col-lg-4">
-                            <div class="status">
-                                <a href="#">
-                                    <div class="progress-bar" style="width: 30%"></div>
-                                    <div>400 / 400 <i class="fa fa-arrow-circle-down"></i></div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <div class="tools">
-                                <div class="pull-right">
-                                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-pause"></i> Приостановить</a>
-                                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-edit"></i> Редактировать</a>
-                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> Удалить</a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
+            <?= \yii\widgets\ListView::widget([
+                'dataProvider' => $dataProvider,
+                'itemView' => '_list',
+                'options' => [
+                    'class' => 'my-tasks-list'
+                ]
+            ]) ?>
 
 
         </div>

@@ -149,6 +149,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             $profile = new Profile();
             $profile->attributes = $profileAttributes;
+            $profile->user_id = $identity->id;
 
             if ( $serviceRecord->save() && $profile->save() ) {
                 $transaction->commit();

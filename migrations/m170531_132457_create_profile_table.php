@@ -25,7 +25,6 @@ class m170531_132457_create_profile_table extends Migration
             'user_id' => $this->integer()->notNull()
         ], $tableOptions);
 
-        $this->addForeignKey('ifk_profile_user', '{{%profile}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -33,7 +32,6 @@ class m170531_132457_create_profile_table extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('ifk_profile_user', '{{$profile}}');
         $this->dropTable('{{%profile}}');
     }
 }

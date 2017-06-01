@@ -9,6 +9,8 @@
 namespace app\modules\user\controllers;
 
 
+use app\modules\user\models\Task;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -35,6 +37,17 @@ class TasksController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $this->view->title = 'Заработать';
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => Task::find()->orderBy('created_at DESC'),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider
+        ]);
     }
 }

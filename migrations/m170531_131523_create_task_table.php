@@ -25,10 +25,11 @@ class m170531_131523_create_task_table extends Migration
             'points' => $this->integer()->notNull()->defaultValue(0),
             'service_type' => $this->smallInteger()->notNull(),
             'task_type' => $this->smallInteger()->notNull(),
+            'need_count' => $this->integer()->defaultValue(0),
+            'counter' => $this->integer()->defaultValue(0),
             'user_id' => $this->integer()->notNull()
         ], $tableOptions);
 
-        $this->addForeignKey('ifk_task_user', '{{%task}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -36,7 +37,6 @@ class m170531_131523_create_task_table extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('ifk_task_user', '{{%task}}');
         $this->dropTable('{{%task}}');
     }
 }

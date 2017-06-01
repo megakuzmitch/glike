@@ -57,4 +57,14 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
         return true;
     }
 
+
+    public function getPhotosById($ids)
+    {
+        $info = $this->makeRequest('photos.getById', [
+            'query' => [ 'photos' => is_array($ids) ? implode(',', $ids) : $ids ],
+        ]);
+
+        return $info['response'];
+    }
+
 }

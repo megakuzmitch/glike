@@ -1,7 +1,15 @@
+<?php
+/**
+ * @var \yii\web\View $this
+ * @var $content
+ * @var $dataProvider \yii\data\ActiveDataProvider
+ */
 
-<?php $this->title = 'Накрутить'; ?>
+?>
 
 <div class="user-tasks">
+
+    <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
 
 
     <ul class="nav nav-pills" role="tablist">
@@ -27,132 +35,14 @@
                 </ul>
             </div>
 
-            <div class="task-list">
-
-                <div class="row">
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-<!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                        <div class="item">
-                            <a class="btn btn-remove "><span class="glyphicon glyphicon-trash"></span></a>
-                            <div class="info">
-                                <img src="/img/pic3.jpg" alt="" class="img-circle">
-                                <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
-                            </div>
-                            <div class="actions">
-                                <a href="#" type="button" class="btn btn-primary"><i class="fa fa-plus-circle"></i>5 баллов</a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
+            <?= \yii\widgets\ListView::widget([
+                'dataProvider' => $dataProvider,
+                'itemView' => '_list',
+                'options' => [
+                    'class' => 'task-list row',
+                ],
+                'layout' => '{items}'
+            ]) ?>
 
         </div>
         <div role="tabpanel" class="tab-pane" id="youtube-tab">...</div>
