@@ -17,7 +17,6 @@ use app\widgets\Alert;
     </div>
 
     <div class="main">
-
         <?= Alert::widget() ?>
         <?= $content ?>
 

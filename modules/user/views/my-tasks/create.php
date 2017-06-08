@@ -15,9 +15,6 @@ use yii\helpers\Html;
 ?>
 
 <div class="user-task-create">
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>Подсказака для добавления задания</p>
 
     <div class="row">
         <div class="col-lg-12">

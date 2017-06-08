@@ -37,7 +37,7 @@ use yii\bootstrap\Nav;
             <a href="#"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->avatar ?>" alt="Img" class="img-circle"></a>
             <div class="info">
                 <div class="name"><?= $profile->name ?></div>
-                <div class="points">0 баллов</div>
+                <div class="points"><span class="user-points-container"><?= $user->points ?></span> баллов</div>
                 <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
             </div>
         </li>
@@ -65,9 +65,6 @@ use yii\bootstrap\Nav;
 </div>
 
 <div class="canvas">
-
-    <? \nodge\eauth\oauth\SessionTokenStorage::class ?>
-
     <?= $content; ?>
 </div>
 

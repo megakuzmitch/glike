@@ -17,8 +17,6 @@ use yii\helpers\Url;
 
 <div class="user-my-tasks">
 
-    <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
-
     <div class="row">
         <div class="col-lg-12">
             <div class="tools pull-right">

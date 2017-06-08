@@ -31,7 +31,7 @@ class TaskForm extends Model
 
     public static function getServiceTypeShortNames() {
         return [
-            Task::SERVICE_TYPE_VK => 'vk',
+            Task::SERVICE_TYPE_VK => 'vkontakte',
         ];
     }
 
@@ -83,10 +83,25 @@ class TaskForm extends Model
     }
 
 
+    /**
+     * @return Task
+     * @throws Exception
+     */
     public function create()
     {
 
         if ( $this->validate() ) {
+
+            /**
+             * @var $user User
+             */
+            $user = Yii::$app->user->getIdentity();
+            $user_points = $user->points;
+
+            if ( $user_points < $this->need_count * $this->points ) {
+                Yii::$app->session->setFlash('error', 'У вас недостаточно баллов');
+                return false;
+            }
 
             $task = new Task();
             $task->name = $this->name;
@@ -102,9 +117,15 @@ class TaskForm extends Model
                 throw new Exception('Невозможно создать задачу');
             }
 
-            return true;
+            $user->points -= $task->need_count * $task->points;
+
+            if ( !$user->save() ) {
+                throw new Exception('Не удалось обновить информацию о пользователе');
+            }
+
+            return $task;
         }
 
-        return false;
+        return null;
     }
 }

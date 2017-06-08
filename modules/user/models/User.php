@@ -138,6 +138,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         $identity = new self($identityAttributes);
+        $identity->points = 10000;
         $transaction = self::getDb()->beginTransaction();
 
         if ( $identity->save() ) {
@@ -256,6 +257,22 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
+    public function beforeDelete()
+    {
+        if ( parent::beforeDelete() ) {
+            /**
+             * @var $services Service[]
+             */
+            $services = $this->services;
+            foreach ( $services as $service ) {
+                $service->delete();
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param string $email_confirm_token
      * @return static|null
@@ -279,5 +296,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function removeEmailConfirmToken()
     {
         $this->email_confirm_token = null;
+    }
+
+    public function addPoints($points)
+    {
+        $this->updateCounters(['points' => $points]);
     }
 }

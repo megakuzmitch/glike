@@ -20,6 +20,7 @@ use app\widgets\Alert;
 <div class="page">
 
     <div class="container">
+        <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>

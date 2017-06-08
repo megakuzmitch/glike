@@ -9,17 +9,20 @@
 namespace app\extended\eauth;
 
 
+use OAuth\Common\Exception\Exception;
+
 class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Service
 {
 
-    const API_VERSION = '5.64';
+    const API_VERSION = '5.65';
 
     const SCOPE_FRIENDS = 'friends';
     const SCOPE_EMAIL = 'email';
     const SCOPE_STATUS = 'status';
     const SCOPE_OFFLINE = 'status';
+    const SCOPE_VIDEO = 'video';
 
-    protected $scopes = [self::SCOPE_EMAIL];
+    protected $scopes = [self::SCOPE_EMAIL, self::SCOPE_VIDEO];
 
     protected function fetchAttributes()
     {
@@ -31,6 +34,10 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
                 'fields' => 'nickname, timezone, photo, photo_100',
             ],
         ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new Exception($info['error']['error_msg'], $info['error']['error_code']);
+        }
 
         $info = $info['response'][0];
 
@@ -60,9 +67,71 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
     public function getPhotosById($ids)
     {
-        $info = $this->makeRequest('photos.getById', [
-            'query' => [ 'photos' => is_array($ids) ? implode(',', $ids) : $ids ],
+        $info = $this->makeSignedRequest('photos.getById', [
+            'query' => [ 'photos' => is_array($ids) ? implode(',', $ids) : $ids, 'v' => self::API_VERSION ],
         ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new Exception($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    public function getWallById($ids)
+    {
+        $info = $this->makeSignedRequest('wall.getById', [
+            'query' => [ 'posts' => is_array($ids) ? implode(',', $ids) : $ids, 'v' => self::API_VERSION ],
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new Exception($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    public function getVideosById($ids)
+    {
+        $info = $this->makeSignedRequest('video.get', [
+            'query' => [ 'videos' => is_array($ids) ? implode(',', $ids) : $ids, 'v' => self::API_VERSION ],
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new Exception($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    /**
+     * @param $itemType
+     * @param $ownerId
+     * @param $itemId
+     * @return mixed
+     * @throws Exception
+     */
+    public function getIsLiked($itemType, $ownerId, $itemId)
+    {
+        $userAttributes = $this->getAttributes();
+
+        $info = $this->makeSignedRequest('likes.isLiked', [
+            'query' => [
+                'user_id' => $userAttributes['id'],
+                'type' => $itemType,
+                'owner_id' => $ownerId,
+                'item_id' => $itemId,
+                'v' => self::API_VERSION
+
+            ],
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new Exception($info['error']['error_msg'], $info['error']['error_code']);
+        }
 
         return $info['response'];
     }

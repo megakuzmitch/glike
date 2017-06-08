@@ -16,6 +16,7 @@ class UsersController extends Controller
         echo 'yii users/remove' . PHP_EOL;
         echo 'yii users/activate' . PHP_EOL;
         echo 'yii users/change-password' . PHP_EOL;
+        echo 'yii users/set-points' . PHP_EOL;
     }
 
     public function actionCreate()
@@ -58,6 +59,27 @@ class UsersController extends Controller
             'error' => 'More than 6 symbols',
         ]));
         $this->log($model->save());
+    }
+
+    public function actionSetPoints()
+    {
+        $user_id = $this->prompt('User id:', ['required' => true]);
+        $model = $this->findModelById($user_id);
+        $model->points = $this->prompt('points: ', ['required' => true]);
+        $this->log($model->save());
+    }
+
+    /**
+     * @param integer $id
+     * @throws \yii\console\Exception
+     * @return User the loaded model
+     */
+    private function findModelById($id)
+    {
+        if (!$model = User::findOne($id)) {
+            throw new Exception('User not found');
+        }
+        return $model;
     }
 
     /**

@@ -2,6 +2,9 @@
 /**
  * @var $model \app\modules\user\models\Task
  */
+
+use app\helpers\TaskHelper;
+
 ?>
 
 
@@ -12,11 +15,11 @@
 
             <div class="row">
                 <div class="preview col-lg-2 col-xs-3">
-                    <img src="<?= $model->preview ?>" alt="" class="img-circle">
+                    <a href="<?= $model->link ?>" target="_blank"><img src="<?= $model->preview ?>" alt="<?= $model->name ?>" class="img-circle"></a>
                 </div>
 
                 <div class="info col-lg-10 col-xs-9">
-                    <div class="name"><strong>Поставить лайк</strong> к фото</div>
+                    <div class="name"><a href="<?= $model->link ?>" target="_blank"><?= TaskHelper::generateTaskLabel($model) ?></a></div>
                     <div class="details">
                         Добавлено: <?= Yii::$app->formatter->asDatetime($model->created_at, "php:d.m.Y"); ?>
                     </div>
@@ -28,7 +31,8 @@
         <div class="info col-lg-4">
             <div class="status">
                 <a href="#">
-                    <div class="progress-bar" style="width: 30%"></div>
+                    <? $width = $model->isDone() ? 100 : $model->counter / $model->need_count * 100 ?>
+                    <div class="progress-bar" style="width: <?= $width ?>%"></div>
                     <div><?= $model->counter ?> / <?= $model->need_count ?> <i class="fa fa-arrow-circle-down"></i></div>
                 </a>
             </div>

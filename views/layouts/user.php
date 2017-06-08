@@ -19,6 +19,7 @@ use app\widgets\Alert;
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
+                <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
                 <?= Alert::widget() ?>
                 <?= $content ?>
             </div>

@@ -9,9 +9,6 @@
 
 <div class="user-tasks">
 
-    <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
-
-
     <ul class="nav nav-pills" role="tablist">
         <li role="presentation" class="active"><a href="#vk-tab" aria-controls="vk-tab" role="tab" data-toggle="tab">В контакте</a></li>
         <li role="presentation"><a href="#youtube-tab" aria-controls="youtube-tab" role="tab" data-toggle="tab">Youtube</a></li>

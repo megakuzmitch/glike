@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'fonts/lato/lato.css',
         'fonts/raleway/raleway.css',
+        'css/animate.min.css',
         'css/main.css',
     ];
     public $js = [
@@ -35,5 +36,6 @@ class AppAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
         'rmrevin\yii\fontawesome\AssetBundle',
+        'app\assets\BootstrapNotifyAsset',
     ];
 }
