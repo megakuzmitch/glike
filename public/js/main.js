@@ -12,7 +12,7 @@
             _task_timer,
             _check_url = '/user/tasks/check';
 
-        var _checkTask = function(task_id) {
+        var _checkTask = function(task_id, successCallback, errorCallback) {
 
             $.post(_check_url, {
                 id: task_id
@@ -21,8 +21,17 @@
 
                 if ( data.done ) {
                     _$user_points_container.text(data.user_points);
+
+                    if ( successCallback ) {
+                        successCallback.call(null, data);
+                    }
+
                 } else {
                     notifyType = 'danger';
+
+                    if ( errorCallback ) {
+                        errorCallback.call(null, data);
+                    }
                 }
 
                 $.notify({
@@ -33,6 +42,9 @@
 
             }).fail(function(error) {
                 console.error(error);
+                if ( errorCallback ) {
+                    errorCallback.call(null, data);
+                }
             });
         };
 
@@ -41,15 +53,27 @@
                 e.preventDefault();
 
                 var $this = $(this),
+                    $taskItem = $this.closest('.task-item'),
+                    $doButton = $('[type=button].do-task', $taskItem),
+                    $checkButton = $('[type=button].check-task', $taskItem),
+                    taskId = $taskItem.data('id'),
                     popupWidth = 900,
                     popupHeight = 600,
                     centerWidth = (window.screen.width - popupWidth) / 2,
                     centerHeight = (window.screen.height - popupHeight) / 2;
 
+                var checkDone = function(data) {
+
+                };
+
+                var checkFail = function(data) {
+                    $doButton.css({display: 'none'});
+                    $checkButton.css({display: 'inline-block'});
+                };
+
                 if ( _task_popup && !_task_popup.closed ) {
-                    console.log('sssss');
                     clearInterval(_task_timer);
-                    _checkTask($this.data('id'));
+                    _checkTask(taskId, checkDone, checkFail);
                     _task_popup.close();
                 }
 
@@ -59,13 +83,32 @@
                 _task_timer = setInterval(function() {
                     if ( _task_popup.closed ) {
                         clearInterval(_task_timer);
-                        _checkTask($this.data('id'));
+                        _checkTask(taskId, checkDone, checkFail);
                     }
                 }, 250);
 
                 e.stopPropagation();
             });
         };
+
+        _$tasks_container.on('click', 'a.check-task', function(e) {
+            e.preventDefault();
+
+            var $this = $(this),
+                $taskItem = $this.closest('.task-item'),
+                $doButton = $('[type=button].do-task', $taskItem),
+                $checkButton = $('[type=button].check-task', $taskItem),
+                taskId = $taskItem.data('id');
+
+            var checkDone = checkFail = function(data) {
+                $checkButton.css({display: 'none'});
+                $doButton.css({display: 'inline-block'});
+            };
+
+            _checkTask(taskId, checkDone, checkFail);
+
+            e.stopPropagation();
+        });
 
         return this;
     };

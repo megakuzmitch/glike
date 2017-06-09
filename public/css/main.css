@@ -599,6 +599,7 @@ Task list
 }
 .task-list .item img {
   width: 100px;
+  height: 100px;
   padding: 4px;
   border: 1px solid #ddd;
   background-color: inherit;
@@ -606,9 +607,15 @@ Task list
 .task-list .item .name {
   font-size: 16px;
 }
+.task-list .item .actions {
+  display: block;
+  height: 34px;
+}
 .task-list .item .actions .btn {
-  font-size: 10px;
-  padding: 4px;
+  display: inline-block;
+}
+.task-list .item .actions .check-task {
+  display: none;
 }
 .task-list .item .actions .btn i.fa {
   color: #ffffff;

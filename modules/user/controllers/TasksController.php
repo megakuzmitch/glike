@@ -10,6 +10,7 @@ namespace app\modules\user\controllers;
 
 
 use app\extended\eauth\VKontakteOAuth2Service;
+use app\modules\user\models\DoneTask;
 use app\modules\user\models\Service;
 use app\modules\user\models\Task;
 use app\modules\user\models\TaskForm;
@@ -51,8 +52,15 @@ class TasksController extends Controller
     {
         $this->view->title = 'Заработать';
 
+        $user = Yii::$app->user->getIdentity();
+
+        $doneTaskQuery = DoneTask::find()->select('task_id')->where(['user_id' => $user->id]);
+
         $dataProvider = new ActiveDataProvider([
-            'query' => Task::find()->orderBy('created_at DESC'),
+            'query' => Task::find()
+                ->where('need_count > counter')
+                ->andWhere(['NOT IN', 'id', $doneTaskQuery])
+                ->orderBy('created_at DESC'),
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -83,7 +91,7 @@ class TasksController extends Controller
 
         switch ($task->service_type) {
             case Task::SERVICE_TYPE_VK:
-                $this->checkTaskVK($task, $response);
+                $taskDone = $this->checkTaskVK($task, $response);
                 break;
         }
 
@@ -94,6 +102,7 @@ class TasksController extends Controller
     /**
      * @param $task Task
      * @param $response []
+     * @return bool
      */
     public function checkTaskVK($task, &$response)
     {
@@ -106,23 +115,36 @@ class TasksController extends Controller
         if ( $itemType === 'wall' ) $itemType = 'post';
         $data = $service->getIsLiked($itemType, $task->owner_id, $task->item_id);
 
-        if ( $data['liked'] === 1 ) {
+        if ( ! $data['liked']) {
+            $response['message'] = 'Задание не выполнено';
+            return false;
+        }
 
-            /**
-             * @var $user User
-             */
-            $user = Yii::$app->user->getIdentity();
-            $user->addPoints($task->points);
-            $task->addHit();
+        /**
+         * @var $user User
+         */
+        $user = Yii::$app->user->getIdentity();
+        $transaction = Yii::$app->db->beginTransaction();
+        if ( $user->addPoints($task->points) && $task->addHit() ) {
 
-            $response['done'] = true;
-            $response['user_points'] = $user->points;
-            $response['message'] = 'Задание выполнено!';
+            $doneTask = new DoneTask();
+            $doneTask->user_id = $user->id;
+            $doneTask->task_id = $task->id;
+
+            if ( $doneTask->save() ) {
+                $transaction->commit();
+            } else {
+                $transaction->rollback();
+            }
 
         } else {
-
-            $response['message'] = 'Задание не выполнено';
-
+            $transaction->rollBack();
         }
+
+        $response['done'] = true;
+        $response['user_points'] = $user->points;
+        $response['message'] = 'Задание выполнено!';
+
+        return true;
     }
 }
