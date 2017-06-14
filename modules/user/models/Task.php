@@ -112,17 +112,20 @@ class Task extends ActiveRecord
     public function parseLinkFromVK()
     {
         $matches = [];
-        preg_match("/^https:\/\/vk.com\/[\w\d]*\??[zw]?=?(wall|photo|video|audio)(-?\d+)_(\d+)/", $this->link, $matches);
+        preg_match("/^https:\/\/(m?)\.?vk.com\/[\w\d]*\??[zw]?=?(wall|photo|video|audio)(-?\d+)_(\d+)/", $this->link, $matches);
 
         if ( !empty($matches) ) {
-            $itemType = $matches[1];
-            $ownerId = $matches[2];
-            $itemId = $matches[3];
+            $subDomain = $matches[1];
+            $itemType = $matches[2];
+            $ownerId = $matches[3];
+            $itemId = $matches[4];
 
             $this->owner_id = $ownerId;
             $this->item_id = $itemId;
             $this->item_type = $itemType;
-            $this->link = "https://vk.com/" . $itemType . $ownerId . "_" . $itemId;
+            $this->link = empty($subDomain)
+                ? "https://vk.com/" . $itemType . $ownerId . "_" . $itemId
+                : $matches[0];
 
             /**
              * @var $service VKontakteOAuth2Service

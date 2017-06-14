@@ -49,4 +49,10 @@ use app\helpers\TaskHelper;
 
         </div>
     </div>
+
+    <div class="row">
+        <div class="do-history">
+
+        </div>
+    </div>
 </div>
