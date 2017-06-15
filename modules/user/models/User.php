@@ -300,6 +300,9 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function addPoints($points)
     {
-        return $this->updateCounters(['points' => $points]);
+        if ( $points != 0 ) {
+            return $this->updateCounters(['points' => $points]);
+        }
+        return true;
     }
 }

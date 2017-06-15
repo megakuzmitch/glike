@@ -12,7 +12,9 @@ use app\modules\user\models\Task;
 use app\modules\user\models\TaskForm;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 
 class MyTasksController extends Controller
@@ -26,12 +28,19 @@ class MyTasksController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'create'],
+                        'actions' => ['index', 'create', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
-            ]
+            ],
+
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
         ];
     }
 
@@ -65,5 +74,39 @@ class MyTasksController extends Controller
             'model' => $model
         ]);
 
+    }
+
+    public function actionUpdate($id)
+    {
+        $this->view->title = 'Редактирование задания';
+
+        $task = Task::findOne($id);
+        if ( $task === null ) {
+            throw new Exception('Такого задания не существует');
+        }
+
+        $model = new TaskForm();
+        $model->syncWithTask($task);
+
+        if ( $model->load(Yii::$app->request->post()) && $model->update() ) {
+            $this->redirect(['/user/my-tasks/index']);
+        }
+
+        return $this->render('update', [
+            'model' => $model
+        ]);
+
+    }
+
+
+    public function actionDelete($id)
+    {
+        $model = Task::findOne($id);
+
+        if ( $model ) {
+            $model->delete();
+        }
+
+        $this->redirect(['/user/my-tasks/index']);
     }
 }

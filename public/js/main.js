@@ -23,7 +23,7 @@
                     _$user_points_container.text(data.user_points);
 
                     if ( successCallback ) {
-                        successCallback.call(null, data);
+                        successCallback.apply(_self, [data]);
                     }
 
                 } else {
@@ -63,7 +63,7 @@
                     centerHeight = (window.screen.height - popupHeight) / 2;
 
                 var checkDone = function(data) {
-
+                    $taskItem.delay(500).fadeOut(500);
                 };
 
                 var checkFail = function(data) {

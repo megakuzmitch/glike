@@ -42,8 +42,14 @@ use app\helpers\TaskHelper;
             <div class="tools">
                 <div class="pull-right">
                     <a href="#" class="btn btn-sm btn-default"><i class="fa fa-pause"></i> Приостановить</a>
-                    <a href="#" class="btn btn-sm btn-default"><i class="fa fa-edit"></i> Редактировать</a>
-                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> Удалить</a>
+                    <a href="<?= \yii\helpers\Url::to(['/user/my-tasks/update', 'id' => $model->id]) ?>" class="btn btn-sm btn-default"><i class="fa fa-edit"></i> Редактировать</a>
+                    <?= \yii\bootstrap\Html::a('<i class="fa fa-remove"></i> Удалить', ['/user/my-tasks/delete', 'id' => $model->id], [
+                        'title' => '<i class="fa fa-remove"></i> Удалить',
+                        'aria-label'=> 'Удалить',
+                        'data-confirm'=> 'Вы уверены, что хотите удалить этот элемент?',
+                        'data-method'=> 'post',
+                        'class' => 'btn btn-sm btn-danger'
+                    ]) ?>
                 </div>
             </div>
 

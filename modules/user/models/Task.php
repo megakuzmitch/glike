@@ -3,6 +3,7 @@
 namespace app\modules\user\models;
 
 use app\extended\eauth\VKontakteOAuth2Service;
+use nodge\eauth\ErrorException;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -27,12 +28,12 @@ use yii\db\ActiveRecord;
  */
 class Task extends ActiveRecord
 {
-    const SERVICE_TYPE_VK = 1;
+    const SERVICE_TYPE_VK       = 1;
 
-    const TASK_TYPE_LIKES = 1;
-    const TASK_TYPE_FRIENDS = 2;
-    const TASK_TYPE_SUBSCRIBERS = 3;
-    const TASK_TYPE_POSTS = 4;
+    const TASK_TYPE_LIKE        = 1;
+    const TASK_TYPE_SUBSCRIBE   = 2;
+    const TASK_TYPE_REPOST      = 3;
+    const TASK_TYPE_COMMENT     = 4;
 
 
     public static function getServiceTypeNames() {
@@ -97,76 +98,116 @@ class Task extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-
-            switch ( $this->service_type ) {
-                case self::SERVICE_TYPE_VK:
-                    $this->parseLinkFromVK();
-                    break;
+            if ( $insert ) {
+                $this->loadPreview();
             }
-
             return true;
         }
         return false;
     }
 
-    public function parseLinkFromVK()
+
+    public function afterDelete()
     {
-        $matches = [];
-        preg_match("/^https:\/\/(m?)\.?vk.com\/[\w\d]*\??[zw]?=?(wall|photo|video|audio)(-?\d+)_(\d+)/", $this->link, $matches);
+        /**
+         * @var $user User
+         */
+        $user = Yii::$app->user->getIdentity();
+        $unusedPonts = ($this->need_count - $this->counter) * $this->points;
+        $user->addPoints($unusedPonts);
 
-        if ( !empty($matches) ) {
-            $subDomain = $matches[1];
-            $itemType = $matches[2];
-            $ownerId = $matches[3];
-            $itemId = $matches[4];
+        DoneTask::deleteAll(['task_id' => $this->id]);
 
-            $this->owner_id = $ownerId;
-            $this->item_id = $itemId;
-            $this->item_type = $itemType;
-            $this->link = empty($subDomain)
-                ? "https://vk.com/" . $itemType . $ownerId . "_" . $itemId
-                : $matches[0];
+        parent::afterDelete();
+    }
 
-            /**
-             * @var $service VKontakteOAuth2Service
-             */
-            $service = Yii::$app->get('eauth')->getIdentity('vkontakte');
 
-            switch ( $itemType ) {
-                case 'photo':
-                    $data = $service->getPhotosById($ownerId . '_' . $itemId);
-                    $this->preview = $data[0]['src'];
-                    break;
-
-                case 'wall':
-                    $data = $service->getWallById($ownerId . '_' . $itemId);
-                    if ( empty($data[0]) ) {
-                        return false;
-                    }
-                    $attachments = $data[0]['attachments'];
-                    foreach ( $attachments as $attachment ) {
-                        if ( $attachment['type'] !== 'photo' ) {
-                            continue;
-                        }
-                        $this->preview = $attachment['photo']['photo_130'];
-                    }
-                    break;
-
-                case 'video':
-                    $data = $service->getVideosById($ownerId . '_' . $itemId);
-                    if ( empty($data['items']) ) {
-                        return false;
-                    }
-                    $this->preview = $data['items'][0]['photo_130'];
-                    break;
-            }
-
-            return true;
-
-        } else {
-            return false;
+    public function loadPreview()
+    {
+        switch ( $this->service_type ) {
+            case TASK::SERVICE_TYPE_VK:
+                $this->loadPreviewVK();
+                break;
         }
     }
+
+
+
+    public function loadPreviewVK()
+    {
+        /**
+         * @var $service VKontakteOAuth2Service
+         */
+        $service = Yii::$app->get('eauth')->getIdentity('vkontakte');
+
+        switch ( $this->task_type ) {
+            case self::TASK_TYPE_LIKE:
+            case self::TASK_TYPE_REPOST:
+            case self::TASK_TYPE_COMMENT:
+                switch ( $this->item_type ) {
+                    case 'photo':
+                        $data = $service->getPhotosById($this->owner_id . '_' . $this->item_id);
+
+                        $this->preview = $data[0]['photo_130'];
+                        break;
+
+                    case 'wall':
+                        $data = $service->getWallById($this->owner_id . '_' . $this->item_id);
+                        if ( empty($data[0]) ) {
+                            break;
+                        }
+                        $attachments = $data[0]['attachments'];
+                        foreach ( $attachments as $attachment ) {
+                            if ( $attachment['type'] !== 'photo' ) {
+                                continue;
+                            }
+                            $this->preview = $attachment['photo']['photo_130'];
+                        }
+                        break;
+
+                    case 'video':
+                        $data = $service->getVideosById($this->owner_id . '_' . $this->item_id);
+                        if ( empty($data['items']) ) {
+                            break;
+                        }
+                        $this->preview = $data['items'][0]['photo_130'];
+                        break;
+
+                    case 'product':
+                        $data = $service->getProductById($this->owner_id . '_' . $this->item_id);
+
+                        if ( $data['count'] > 0 ) {
+                            $this->preview = $data['items'][0]['thumb_photo'];
+                        }
+                        break;
+                }
+                break;
+
+            case self::TASK_TYPE_SUBSCRIBE:
+                // Определяем тип объекта для подписки (пользователь, группа или паблик)
+                $data = $service->getUsers($this->item_type . $this->item_id);
+                if ( $data ) {
+                    $this->item_type = 'user';
+                    $this->item_id = $data[0]['id'];
+                    $this->preview = $data[0]['photo_200'];
+                    return;
+                }
+                $groupId = ($this->item_type == 'club' || $this->item_type == 'public')
+                    ? $this->item_id
+                    : $this->item_type . $this->item_id;
+
+                $data = $service->getGroups($groupId);
+                if ( $data ) {
+                    $this->item_type = $data[0]['type'];
+                    $this->item_id = $data[0]['id'];
+                    $this->preview = $data[0]['photo_200'];
+                    return;
+                }
+                break;
+        }
+    }
+
+
 
     public function addHit()
     {

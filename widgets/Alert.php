@@ -49,6 +49,11 @@ class Alert extends Widget
 
         $appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
         foreach ($flashes as $type => $data) {
+
+            if ( $type = 'error' ) {
+                $type = 'danger';
+            }
+
             if (isset($this->alertTypes[$type])) {
                 $data = (array) $data;
                 foreach ($data as $i => $message) {

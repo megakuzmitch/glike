@@ -59,7 +59,7 @@ class TasksController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Task::find()
                 ->where('need_count > counter')
-                ->andWhere(['NOT IN', 'id', $doneTaskQuery])
+//                ->andWhere(['NOT IN', 'id', $doneTaskQuery])
                 ->orderBy('created_at DESC'),
             'pagination' => [
                 'pageSize' => 20,
@@ -88,37 +88,18 @@ class TasksController extends Controller
         }
 
         $response = [ 'done' => false, 'message' => 'Задание не выполнено' ];
+        $taskIsDone = false;
 
         switch ($task->service_type) {
             case Task::SERVICE_TYPE_VK:
-                $taskDone = $this->checkTaskVK($task, $response);
+                $taskIsDone = $this->checkTaskVK($task, $response);
                 break;
         }
 
-        return $response;
-    }
-
-
-    /**
-     * @param $task Task
-     * @param $response []
-     * @return bool
-     */
-    public function checkTaskVK($task, &$response)
-    {
-        /**
-         * @var $service VKontakteOAuth2Service
-         */
-        $service = Yii::$app->eauth->getIdentity('vkontakte');
-
-        $itemType = $task->item_type;
-        if ( $itemType === 'wall' ) $itemType = 'post';
-        $data = $service->getIsLiked($itemType, $task->owner_id, $task->item_id);
-
-        if ( ! $data['liked']) {
-            $response['message'] = 'Задание не выполнено';
-            return false;
+        if ( ! $taskIsDone ) {
+            return $response;
         }
+
 
         /**
          * @var $user User
@@ -145,6 +126,58 @@ class TasksController extends Controller
         $response['user_points'] = $user->points;
         $response['message'] = 'Задание выполнено!';
 
-        return true;
+        return $response;
+    }
+
+
+    /**
+     * @param $task Task
+     * @param $response []
+     * @return bool
+     */
+    public function checkTaskVK($task, &$response)
+    {
+        /**
+         * @var $service VKontakteOAuth2Service
+         */
+        $service = Yii::$app->eauth->getIdentity('vkontakte');
+
+        switch ( $task->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+                $itemType = $task->item_type === 'wall' ? 'post' : $task->item_type;
+                $liked = $service->getIsLiked($itemType, $task->owner_id, $task->item_id);
+                if ( ! $liked ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+                return true;
+
+            case Task::TASK_TYPE_SUBSCRIBE:
+                $isMember = $service->getIsMember($task->item_type, $task->item_id);
+                if ( ! $isMember ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+                return true;
+
+            case Task::TASK_TYPE_REPOST:
+                $itemType = $task->item_type === 'wall' ? 'post' : $task->item_type;
+                $isReposted = $service->getIsReposted($itemType, $task->owner_id, $task->item_id);
+                if ( ! $isReposted ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+                return true;
+
+            case Task::TASK_TYPE_COMMENT:
+                $comment = $service->getLastComment($task->item_type, $task->owner_id, $task->item_id);
+                if ( ! $comment ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+                return true;
+        }
+
+        return false;
     }
 }
