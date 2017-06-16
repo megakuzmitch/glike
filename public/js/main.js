@@ -63,7 +63,7 @@
                     centerHeight = (window.screen.height - popupHeight) / 2;
 
                 var checkDone = function(data) {
-                    $taskItem.delay(500).fadeOut(500);
+                    $taskItem.closest('[data-key]').delay(500).fadeOut(500);
                 };
 
                 var checkFail = function(data) {

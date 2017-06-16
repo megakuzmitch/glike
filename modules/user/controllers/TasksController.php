@@ -145,7 +145,7 @@ class TasksController extends Controller
         switch ( $task->task_type ) {
             case Task::TASK_TYPE_LIKE:
                 $itemType = $task->item_type === 'wall' ? 'post' : $task->item_type;
-                $liked = $service->getIsLiked($itemType, $task->owner_id, $task->item_id);
+                $liked = $service->getIsLiked($itemType, $task->item_id, $task->owner_id);
                 if ( ! $liked ) {
                     $response['message'] = 'Задание не выполнено';
                     return false;
@@ -161,8 +161,14 @@ class TasksController extends Controller
                 return true;
 
             case Task::TASK_TYPE_REPOST:
-                $itemType = $task->item_type === 'wall' ? 'post' : $task->item_type;
-                $isReposted = $service->getIsReposted($itemType, $task->owner_id, $task->item_id);
+                if ( $task->item_type === 'wall' ) {
+                    $itemType = 'post';
+                } elseif ($task->item_type === 'product') {
+                    $itemType = 'market';
+                } else {
+                    $itemType = $task->item_type;
+                }
+                $isReposted = $service->getIsReposted($itemType, $task->item_id, $task->owner_id);
                 if ( ! $isReposted ) {
                     $response['message'] = 'Задание не выполнено';
                     return false;
@@ -170,11 +176,12 @@ class TasksController extends Controller
                 return true;
 
             case Task::TASK_TYPE_COMMENT:
-                $comment = $service->getLastComment($task->item_type, $task->owner_id, $task->item_id);
+                $comment = $service->getLastCommentFrom($task->item_type, $task->item_id, $task->owner_id);
                 if ( ! $comment ) {
                     $response['message'] = 'Задание не выполнено';
                     return false;
                 }
+
                 return true;
         }
 

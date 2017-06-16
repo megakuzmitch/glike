@@ -24,6 +24,19 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
     const SCOPE_GROUPS = 'groups';
     const SCOPE_MARKET = 'market';
 
+
+    const ITEM_TYPE_POST = 'post';
+    const ITEM_TYPE_COMMENT = 'comment';
+    const ITEM_TYPE_PHOTO = 'photo';
+    const ITEM_TYPE_AUDIO = 'audio';
+    const ITEM_TYPE_VIDEO = 'video';
+    const ITEM_TYPE_NOTE = 'note';
+    const ITEM_TYPE_MARKET = 'market';
+    const ITEM_TYPE_USER = 'user';
+    const ITEM_TYPE_GROUP = 'group';
+    const ITEM_TYPE_PAGE = 'page';
+
+
     protected $scopes = [self::SCOPE_EMAIL, self::SCOPE_PHOTOS, self::SCOPE_VIDEO, self::SCOPE_GROUPS, self::SCOPE_MARKET];
 
 
@@ -132,12 +145,12 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
     /**
      * @param $itemType
-     * @param $ownerId
      * @param $itemId
+     * @param $ownerId
      * @return mixed
      * @throws ErrorException
      */
-    public function getIsLiked($itemType, $ownerId, $itemId)
+    public function getIsLiked($itemType, $itemId, $ownerId)
     {
         switch ($itemType) {
             case 'product':
@@ -179,29 +192,30 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
     /**
      * @param $itemType
-     * @param $ownerId
      * @param $itemId
+     * @param $ownerId
      * @return mixed
      * @throws ErrorException
      */
-    public function getIsReposted($itemType, $ownerId, $itemId)
+    public function getIsReposted($itemType, $itemId, $ownerId)
     {
         switch ($itemType) {
-            case 'product':
+            case 'market':
 
+                $copiesList = $this->getLikesList($itemType, $itemId, $ownerId, 'copies');
+
+                if ( $copiesList['count'] == 0 ) {
+                    return false;
+                }
+
+                $items = $copiesList['items'];
+                $userId = $this->getAttribute('id');
+                foreach ( $items as $item ) {
+                    if ( $userId == $item ) {
+                        return true;
+                    }
+                }
                 return false;
-
-//                $info = $this->getProductById($ownerId . '_' . $itemId, true);
-//
-//                if ( key_exists('error', $info) ) {
-//                    throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
-//                }
-//
-//                if ( $info['count'] == 0 ) {
-//                    return false;
-//                }
-//
-//                return $info['items'][0]['likes']['user_likes'] == 1;
 
             default:
                 $userAttributes = $this->getAttributes();
@@ -223,6 +237,38 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
                 return $info['response']['copied'] > 0;
         }
+    }
+
+
+    /**
+     * @param $itemType
+     * @param $itemId
+     * @param null $ownerId
+     * @param string|null $filter values ("likes" | "copies")
+     * @return
+     * @throws ErrorException
+     */
+    public function getLikesList($itemType, $itemId, $ownerId = null, $filter = null)
+    {
+        $query = [
+            'type' => $itemType,
+            'item_id' => $itemId,
+            'v' => self::API_VERSION
+        ];
+
+        if ( $ownerId ) $query['owner_id'] = $ownerId;
+        if ( $filter ) $query['filter'] = $filter;
+
+        $info = $this->makeSignedRequest('likes.getList', [
+            'query' => $query,
+        ]);
+
+        if ( key_exists('error', $info) ) {
+
+            throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
     }
 
 
@@ -323,17 +369,115 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
     }
 
 
-    public function getLastComment($itemType, $ownerId, $itemId)
+    public function getLastCommentFrom($itemType, $itemId, $ownerId, $fromId = null)
     {
+        if ( $fromId === null ) {
+            $fromId = $this->getAttribute('id');
+        }
+        $comments = [];
         switch ( $itemType ) {
             case 'photo':
-
-
-
+                $comments = $this->getPhotosComments($itemId, $ownerId);
                 break;
+            case 'product':
+                $comments = $this->getMarketComments($itemId, $ownerId);
+                break;
+            case 'wall':
+                $comments = $this->getWallComments($itemId, $ownerId);
+                break;
+            case 'video':
+                $comments = $this->getVideoComments($itemId, $ownerId);
+                break;
+        }
+
+        if ( $comments['count'] > 0 ) {
+            foreach ( $comments['items'] as $comment ) {
+                if ( $comment['from_id'] == $fromId ) {
+                    return $comment;
+                }
+            }
         }
 
         return null;
     }
 
+
+    public function getPhotosComments($photoId, $ownerId = null)
+    {
+        $query = [
+            'photo_id' => $photoId,
+            'v' => self::API_VERSION
+        ];
+        if ( $ownerId ) $query['owner_id'] = $ownerId;
+
+        $info = $this->makeSignedRequest('photos.getComments', [
+            'query' => $query,
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    public function getMarketComments($productId, $ownerId = null)
+    {
+        $query = [
+            'item_id' => $productId,
+            'v' => self::API_VERSION
+        ];
+        if ( $ownerId ) $query['owner_id'] = $ownerId;
+
+        $info = $this->makeSignedRequest('market.getComments', [
+            'query' => $query,
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    public function getWallComments($postId, $ownerId = null)
+    {
+        $query = [
+            'post_id' => $postId,
+            'v' => self::API_VERSION
+        ];
+        if ( $ownerId ) $query['owner_id'] = $ownerId;
+
+        $info = $this->makeSignedRequest('wall.getComments', [
+            'query' => $query,
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
+
+
+    public function getVideoComments($videoId, $ownerId = null)
+    {
+        $query = [
+            'video_id' => $videoId,
+            'v' => self::API_VERSION
+        ];
+        if ( $ownerId ) $query['owner_id'] = $ownerId;
+
+        $info = $this->makeSignedRequest('video.getComments', [
+            'query' => $query,
+        ]);
+
+        if ( key_exists('error', $info) ) {
+            throw new ErrorException($info['error']['error_msg'], $info['error']['error_code']);
+        }
+
+        return $info['response'];
+    }
 }

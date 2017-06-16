@@ -208,6 +208,13 @@ class TaskForm extends Model
         $matches = [];
         $params['message'] = 'Неверный формат ссылки';
 
+        $urlParts = parse_url($this->link);
+        $queryParts = [];
+
+        if ( key_exists('query', $urlParts) ) {
+            parse_str($urlParts['query'], $queryParts);
+        }
+
         switch ( $this->service_type ) {
             case Task::SERVICE_TYPE_VK:
 
@@ -215,13 +222,28 @@ class TaskForm extends Model
                     case Task::TASK_TYPE_LIKE:
                     case Task::TASK_TYPE_REPOST:
                     case Task::TASK_TYPE_COMMENT:
-                        $pattern = "/^https:\/\/m?\.?vk.com\/[\w\d]*\??[zw]?=?(wall|photo|video|audio|product)(-?\d+)_(\d+)/";
-                        preg_match($pattern, $this->link, $matches);
+                        $pattern = "/^https:\/\/m?\.?vk.com\/[\w\d]*\??[\w\d=&]*[zw]?=?(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
 
-                        if ( empty($matches) ) {
+                        if ( ! preg_match($pattern, $this->link, $matches) ) {
                             $this->addError($attribute, $params['message']);
                             return;
                         }
+
+                        $pattern = "/(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
+
+                        if ( ! empty($queryParts) ) {
+                            if ( key_exists('z', $queryParts) ) {
+                                $subject = $queryParts['z'];
+                            } else if ( key_exists('w', $queryParts) ) {
+                                $subject = $queryParts['w'];
+                            } else {
+                                $subject = $urlParts['path'];
+                            }
+                        } else {
+                            $subject = $urlParts['path'];
+                        }
+
+                        preg_match($pattern, $subject, $matches);
 
                         $this->_item_type = $matches[1];
                         $this->_owner_id = $matches[2];

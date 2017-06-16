@@ -156,7 +156,7 @@ class Task extends ActiveRecord
                         if ( empty($data[0]) ) {
                             break;
                         }
-                        $attachments = $data[0]['attachments'];
+                        $attachments = $data[0]['copy_history'][0]['attachments'];
                         foreach ( $attachments as $attachment ) {
                             if ( $attachment['type'] !== 'photo' ) {
                                 continue;
