@@ -67,8 +67,10 @@
                 };
 
                 var checkFail = function(data) {
-                    $doButton.css({display: 'none'});
-                    $checkButton.css({display: 'inline-block'});
+                    if ( device.mobile() ) {
+                        $doButton.css({display: 'none'});
+                        $checkButton.css({display: 'inline-block'});
+                    }
                 };
 
                 if ( _task_popup && !_task_popup.closed ) {
@@ -101,8 +103,10 @@
                 taskId = $taskItem.data('id');
 
             var checkDone = checkFail = function(data) {
-                $checkButton.css({display: 'none'});
-                $doButton.css({display: 'inline-block'});
+                if ( device.mobile() ) {
+                    $checkButton.css({display: 'none'});
+                    $doButton.css({display: 'inline-block'});
+                }
             };
 
             _checkTask(taskId, checkDone, checkFail);

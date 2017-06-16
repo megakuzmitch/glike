@@ -24,6 +24,7 @@ class AppAsset extends AssetBundle
         'css/main.css',
     ];
     public $js = [
+        'js/device.min.js',
         'js/hammer.min.js',
         'js/hammer-time.min.js',
         'js/jquery.hammer.js',
