@@ -17,9 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row centered">
 
         <div class="col-lg-4 col-lg-offset-4">
-            <?php echo \nodge\eauth\Widget::widget([
-                'action' => Yii::$app->user->loginUrl
-            ]); ?>
+<!--            --><?php //echo \nodge\eauth\Widget::widget([
+//                'action' => Yii::$app->user->loginUrl
+//            ]); ?>
 
             <? $form = ActiveForm::begin(['id' => 'form-login']); ?>
 

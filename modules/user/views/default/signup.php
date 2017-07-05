@@ -14,7 +14,7 @@ $this->title = 'Регистрация';
 <div class="site-signup">
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-4 col-lg-offset-4">
             <?php $form = ActiveForm::begin([
                 'id' => 'form-signup',
                 'enableAjaxValidation' => true,
