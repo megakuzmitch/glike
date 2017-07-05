@@ -18,29 +18,37 @@ use yii\base\Model;
  */
 class SignupForm extends Model
 {
-    public $username;
+//    public $username;
     public $email;
     public $password;
-    public $verifyCode;
+//    public $verifyCode;
 
     public function rules()
     {
         return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'targetClass' => User::className(), 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+//            ['username', 'filter', 'filter' => 'trim'],
+//            ['username', 'required'],
+//            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
+//            ['username', 'unique', 'targetClass' => User::className(), 'message' => 'This username has already been taken.'],
+//            ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => User::className(), 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => User::className(), 'message' => 'Пользователь с таким email уже зарегестрирован'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
-            ['verifyCode', 'captcha', 'captchaAction' => '/user/default/captcha'],
+//            ['verifyCode', 'captcha', 'captchaAction' => '/user/default/captcha'],
+        ];
+    }
+
+    public function getAttributeLabels()
+    {
+        return [
+            'email' => 'E-mail',
+            'password' => 'Пароль'
         ];
     }
 
@@ -51,13 +59,17 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if ($this->validate()) {
+        if ( $this->validate() ) {
             $user = new User();
-            $user->username = $this->username;
+            $user->username = $this->email;
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->generateEmailConfirmToken();
+
+            if ( YII_DEBUG ) {
+                $user->points = 1000;
+            }
 
             if ($user->save()) {
                 Yii::$app->mailer->compose('@app/modules/user/mails/emailConfirm', ['user' => $user])

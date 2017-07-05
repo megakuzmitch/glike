@@ -15,14 +15,17 @@ return [
         // uncomment this to use streams in safe_mode
         //'useStreamsFallback' => true,
     ],
+//    'tokenStorage' => [
+//        'class' => 'app\extended\eauth\DbTokenStorage'
+//    ],
     'services' => [ // You can change the providers and their classes.
-//        'google' => [
-//            // register your app here: https://code.google.com/apis/console/
-//            'class' => 'nodge\eauth\services\GoogleOAuth2Service',
-//            'clientId' => '...',
-//            'clientSecret' => '...',
-//            'title' => 'Google',
-//        ],
+        'google' => [
+            // register your app here: https://code.google.com/apis/console/
+            'class' => 'app\extended\eauth\GoogleOAuth2Service',
+            'clientId' => '...',
+            'clientSecret' => '...',
+            'title' => 'Google',
+        ],
 //        'twitter' => [
 //            // register your app here: https://dev.twitter.com/apps/new
 //            'class' => 'nodge\eauth\services\TwitterOAuth1Service',
@@ -87,7 +90,8 @@ return [
             // register your app here: https://vk.com/editapp?act=create&site=1
             'class' => 'app\extended\eauth\VKontakteOAuth2Service',
             'clientId' => '...',
-            'clientSecret' => '...'
+            'clientSecret' => '...',
+            'serviceKey' => '...',
         ],
         /* 'mailru' => [
             // register your app here: http://api.mail.ru/sites/my/add

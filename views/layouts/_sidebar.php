@@ -34,7 +34,7 @@ use yii\bootstrap\Nav;
 
     <ul class="nav navmenu-nav">
         <li class="account">
-            <a href="#"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->avatar ?>" alt="Img" class="img-circle"></a>
+            <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->getAvatarPhoto() ?>" alt="avatar" class="img-circle"></a>
             <div class="info">
                 <div class="name"><?= $profile->name ?></div>
                 <div class="points"><span class="user-points-container"><?= $user->points ?></span> баллов</div>

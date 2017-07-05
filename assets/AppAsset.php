@@ -29,14 +29,16 @@ class AppAsset extends AssetBundle
         'js/hammer-time.min.js',
         'js/jquery.hammer.js',
         'js/mobilesidebar.js',
+        'js/ajax-modal-popup.js',
+        'js/bootbox.min.js',
         'js/main.js'
     ];
     public $depends = [
         'app\assets\IESupportAsset',
+        'rmrevin\yii\fontawesome\AssetBundle',
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
-        'rmrevin\yii\fontawesome\AssetBundle',
         'app\assets\BootstrapNotifyAsset',
     ];
 }

@@ -12,7 +12,6 @@ use nodge\eauth\ErrorException;
 
 class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Service
 {
-
     const API_VERSION = '5.65';
 
     const SCOPE_FRIENDS = 'friends';
@@ -38,6 +37,16 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
 
     protected $scopes = [self::SCOPE_EMAIL, self::SCOPE_PHOTOS, self::SCOPE_VIDEO, self::SCOPE_GROUPS, self::SCOPE_MARKET];
+
+    protected $baseApiUrl = 'https://api.vk.com/method/';
+
+    public $serviceKey;
+
+    public function makeRequest($url, $options = [], $parseResponse = true)
+    {
+        $options['query']['access_token'] = $this->serviceKey;
+        return parent::makeRequest($url, $options, $parseResponse);
+    }
 
 
     protected function fetchAttributes()
@@ -65,11 +74,11 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
 
         $this->attributes['email'] = empty($tokenData['params']['email']) ? "" : $tokenData['params']['email'];
 
-//        if (!empty($info['nickname'])) {
-//            $this->attributes['username'] = $info['nickname'];
-//        } else {
-//            $this->attributes['username'] = 'id' . $info['uid'];
-//        }
+        if (!empty($info['nickname'])) {
+            $this->attributes['username'] = $info['nickname'];
+        } else {
+            $this->attributes['username'] = 'id' . $info['id'];
+        }
 
         if (!empty($info['timezone'])) {
             $this->attributes['timezone'] = timezone_name_from_abbr('', $info['timezone'] * 3600, date('I'));
@@ -89,7 +98,7 @@ class VKontakteOAuth2Service extends \nodge\eauth\services\VKontakteOAuth2Servic
      */
     public function getPhotosById($ids)
     {
-        $info = $this->makeSignedRequest('photos.getById', [
+        $info = $this->makeRequest('photos.getById', [
             'query' => [ 'photos' => is_array($ids) ? implode(',', $ids) : $ids, 'v' => self::API_VERSION ],
         ]);
 

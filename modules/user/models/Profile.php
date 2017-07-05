@@ -49,4 +49,10 @@ class Profile extends ActiveRecord
     public function getName() {
         return $this->first_name . ' ' . $this->last_name;
     }
+
+
+    public function getAvatarPhoto()
+    {
+        return $this->avatar === null ? '/img/default_avatar.png' : $this->avatar;
+    }
 }

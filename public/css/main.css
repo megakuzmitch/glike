@@ -715,3 +715,56 @@ Task list
   top: 50%;
   margin-top: -16px;
 }
+form .custom-radio {
+  margin-right: 5px;
+}
+form .custom-radio:last-child {
+  margin-right: 0;
+}
+form .custom-radio input[type=radio] {
+  position: absolute;
+  left: -10000px;
+}
+form .custom-radio input[type=radio]:checked ~ label {
+  background-color: #eee;
+  color: #555;
+  -webkit-box-shadow: inset 0 3px 0 0 #ccc;
+  -moz-box-shadow: inset 0 3px 0 0 #ccc;
+  box-shadow: inset 0 3px 0 0 #ccc;
+}
+form .custom-radio input[type=radio][disabled] ~ label {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+form .custom-radio label {
+  background-color: #fff;
+  -webkit-box-shadow: inset 0 -3px 0 0 #ccc;
+  -moz-box-shadow: inset 0 -3px 0 0 #ccc;
+  box-shadow: inset 0 -3px 0 0 #ccc;
+  color: #555;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 10px 14px;
+}
+form .custom-radio.inline {
+  display: inline-block;
+}
+form .custom-radio-list-sm label {
+  padding: 8px 10px;
+  font-size: 0.8em;
+}
+form label.radio-inline {
+  margin-bottom: 5px;
+}
+form .radio-inline + .radio-inline {
+  margin-left: 0;
+}
+form .form-group .help-block {
+  line-height: 1.4;
+}
+.task-filter-form .form-group {
+  margin-bottom: 4px;
+}
+.task-filter-form .help-block {
+  display: none;
+}

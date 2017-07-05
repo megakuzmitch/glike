@@ -13,6 +13,7 @@ use app\extended\eauth\VKontakteOAuth2Service;
 use app\modules\user\models\DoneTask;
 use app\modules\user\models\Service;
 use app\modules\user\models\Task;
+use app\modules\user\models\TaskFilter;
 use app\modules\user\models\TaskForm;
 use app\modules\user\models\User;
 use Yii;
@@ -53,22 +54,31 @@ class TasksController extends Controller
         $this->view->title = 'Заработать';
 
         $user = Yii::$app->user->getIdentity();
-
         $doneTaskQuery = DoneTask::find()->select('task_id')->where(['user_id' => $user->id]);
 
+        $taskFilter = new TaskFilter();
+        $query = $taskFilter->search();
+        $query->andWhere('need_count > counter');
+//        $query->andWhere(['NOT IN', 'id', $doneTaskQuery]);
+        $query->orderBy('created_at DESC');
+
         $dataProvider = new ActiveDataProvider([
-            'query' => Task::find()
-                ->where('need_count > counter')
-//                ->andWhere(['NOT IN', 'id', $doneTaskQuery])
-                ->orderBy('created_at DESC'),
+            'query' => $query,
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => 50,
             ],
         ]);
 
-        return $this->render('index', [
+        $params = [
+            'taskFilter' => $taskFilter,
             'dataProvider' => $dataProvider
-        ]);
+        ];
+
+        if ( Yii::$app->request->isAjax ) {
+            return $this->renderPartial('_list', $params);
+        }
+
+        return $this->render('index', $params);
     }
 
 
@@ -100,31 +110,16 @@ class TasksController extends Controller
             return $response;
         }
 
-
         /**
          * @var $user User
          */
         $user = Yii::$app->user->getIdentity();
-        $transaction = Yii::$app->db->beginTransaction();
-        if ( $user->addPoints($task->points) && $task->addHit() ) {
 
-            $doneTask = new DoneTask();
-            $doneTask->user_id = $user->id;
-            $doneTask->task_id = $task->id;
-
-            if ( $doneTask->save() ) {
-                $transaction->commit();
-            } else {
-                $transaction->rollback();
-            }
-
-        } else {
-            $transaction->rollBack();
+        if ( $task->hit($user) ) {
+            $response['done'] = true;
+            $response['user_points'] = $user->points;
+            $response['message'] = 'Задание выполнено!';
         }
-
-        $response['done'] = true;
-        $response['user_points'] = $user->points;
-        $response['message'] = 'Задание выполнено!';
 
         return $response;
     }

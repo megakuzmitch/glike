@@ -32,7 +32,7 @@ class ContactFormTest extends \Codeception\Test\Unit
 
         expect_that($this->model->contact('admin@example.com'));
 
-        // using Yii2 module actions to check email was sent
+        // using Yii2 module web to check email was sent
         $this->tester->seeEmailIsSent();
 
         $emailMessage = $this->tester->grabLastSentEmail();

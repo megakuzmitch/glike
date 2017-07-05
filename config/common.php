@@ -44,7 +44,8 @@ return [
 
                 'page/<pageName:about|help>' => 'main/page/view',
 
-                'login/<service:vkontakte|google>' => 'user/default/login',
+                '<_a:(auth)>/<service:vkontakte|google>' => 'user/social/<_a>',
+                '<_a:(login)>/<service:vkontakte|google>' => 'user/default/<_a>',
                 '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',
 
                 '<_a:error>' => 'main/default/<_a>',

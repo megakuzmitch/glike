@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use app\assets\AppAsset;
 
@@ -22,6 +23,20 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <?= $content ?>
+
+<?
+    Modal::begin([
+        'header' => '<h4 class="modal-title"></h4>',
+        'headerOptions' => ['id' => 'modal-header'],
+        'id' => 'modal',
+        'size' => 'modal-md',
+        //keeps from closing modal with esc key or by clicking out of the modal.
+        // user must click cancel or X to close
+        'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
+    ]);
+        echo "<div id='modal-content'></div>";
+    Modal::end();
+?>
 
 <?php $this->endBody() ?>
 </body>

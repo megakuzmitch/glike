@@ -21,18 +21,18 @@ class m170508_180323_create_user_table extends Migration
             'id' => $this->primaryKey(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
-//            'username' => $this->string()->notNull(),
+            'username' => $this->string()->notNull(),
             'auth_key' => $this->string(32),
             'email_confirm_token' => $this->string(),
-//            'password_hash' => $this->string()->notNull(),
-//            'password_reset_token' => $this->string(),
+            'password_hash' => $this->string()->notNull(),
+            'password_reset_token' => $this->string(),
             'email' => $this->string()->notNull(),
-//            'status' => $this->smallInteger()->notNull()->defaultValue(0)
+            'status' => $this->smallInteger()->notNull()->defaultValue(0)
         ], $tableOptions);
 
-//        $this->createIndex('idx-user-username', '{{%user}}', 'username');
+        $this->createIndex('idx-user-username', '{{%user}}', 'username');
         $this->createIndex('idx_user_email', '{{%user}}', 'email');
-//        $this->createIndex('idx-user-status', '{{%user}}', 'status');
+        $this->createIndex('idx-user-status', '{{%user}}', 'status');
     }
 
     /**

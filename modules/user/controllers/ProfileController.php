@@ -14,29 +14,34 @@ use app\modules\user\models\ProfileUpdateForm;
 use app\modules\user\models\User;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class ProfileController extends Controller
 {
+    public $layout = '@app/views/layouts/user';
+
     public function behaviors()
     {
         return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-//                    [
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//                    ],
-//                ],
-//            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
         ];
     }
 
     public function actionIndex()
     {
+        $user = Yii::$app->user->getIdentity();
+        Url::remember();
         return $this->render('index', [
-//            'model' => $this->findModel(),
+            'model' => $user,
         ]);
     }
 

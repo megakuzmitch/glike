@@ -27,7 +27,8 @@
         "rmrevin/yii2-fontawesome": "~2",
         "kartik-v/yii2-widget-select2": "~2.0",
         "nodge/yii2-eauth": "~2",
-        "mouse0270/bootstrap-notify": "*"
+        "mouse0270/bootstrap-notify": "*",
+        "makeusabrew/bootbox": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0",

@@ -2,6 +2,7 @@
 
 namespace app\modules\user\models;
 
+use app\extended\eauth\GoogleOAuth2Service;
 use app\extended\eauth\VKontakteOAuth2Service;
 use nodge\eauth\ErrorException;
 use Yii;
@@ -29,23 +30,83 @@ use yii\db\ActiveRecord;
 class Task extends ActiveRecord
 {
     const SERVICE_TYPE_VK       = 1;
+    const SERVICE_TYPE_YOUTUBE  = 2;
 
     const TASK_TYPE_LIKE        = 1;
     const TASK_TYPE_SUBSCRIBE   = 2;
     const TASK_TYPE_REPOST      = 3;
     const TASK_TYPE_COMMENT     = 4;
+    const TASK_TYPE_VIEWS       = 5;
 
 
-    public static function getServiceTypeNames() {
+    public static function getServiceTypes() {
         return [
             Task::SERVICE_TYPE_VK => 'vkontakte',
+            Task::SERVICE_TYPE_YOUTUBE => 'google',
         ];
     }
 
 
-    public function getServiceTypeName() {
+    public static function getServiceType($type) {
+        $names = self::getServiceTypes();
+        return key_exists($type, $names) ? $names[$type] : null;
+    }
+
+
+    public static function getServiceTypeNames() {
+        return [
+            Task::SERVICE_TYPE_VK => 'Вконтакте',
+            Task::SERVICE_TYPE_YOUTUBE => 'Youtube',
+        ];
+    }
+
+
+    public static function getServiceTypeName($type) {
         $names = self::getServiceTypeNames();
-        return key_exists($this->service_type, $names) ? $names[$this->service_type] : null;
+        return key_exists($type, $names) ? $names[$type] : null;
+    }
+
+
+    public static function getServiceTypeAssociations()
+    {
+        return [
+            self::SERVICE_TYPE_VK => [
+                Task::TASK_TYPE_LIKE => 'Накрутить лайки',
+                Task::TASK_TYPE_SUBSCRIBE => 'Накрутить подписчиков',
+                Task::TASK_TYPE_REPOST => 'Накрутить репосты',
+                Task::TASK_TYPE_COMMENT => 'Накрутить комментарии',
+            ],
+            self::SERVICE_TYPE_YOUTUBE => [
+                Task::TASK_TYPE_LIKE => 'Накрутить лайки',
+                Task::TASK_TYPE_SUBSCRIBE => 'Накрутить подписчиков',
+                Task::TASK_TYPE_COMMENT => 'Накрутить комментарии',
+                Task::TASK_TYPE_VIEWS => 'Накрутить просмотры',
+            ]
+        ];
+    }
+
+
+    public static function getTaskTypes($service_type = false)
+    {
+        if ( $service_type ) {
+            $serviceTypeAssocciations = self::getServiceTypeAssociations();
+            return array_key_exists($service_type, $serviceTypeAssocciations)
+                ? $serviceTypeAssocciations[$service_type] : null;
+        }
+
+        return [
+            Task::TASK_TYPE_LIKE => 'Накрутить лайки',
+            Task::TASK_TYPE_SUBSCRIBE => 'Накрутить подписчиков',
+            Task::TASK_TYPE_REPOST => 'Накрутить репосты',
+            Task::TASK_TYPE_COMMENT => 'Накрутить комментарии',
+            Task::TASK_TYPE_VIEWS => 'Накрутить просмотры',
+        ];
+    }
+
+
+    public static function getTaskType($type, $service_type = false) {
+        $types = self::getTaskTypes($service_type);
+        return key_exists($type, $types) ? $types[$type] : null;
     }
 
 
@@ -128,6 +189,10 @@ class Task extends ActiveRecord
             case TASK::SERVICE_TYPE_VK:
                 $this->loadPreviewVK();
                 break;
+
+            case TASK::SERVICE_TYPE_YOUTUBE:
+                $this->loadPreviewYoutube();
+                break;
         }
     }
 
@@ -208,11 +273,44 @@ class Task extends ActiveRecord
     }
 
 
-
-    public function addHit()
+    public function loadPreviewYoutube()
     {
-        return $this->updateCounters(['counter' => 1]);
+        /**
+         * @var $service GoogleOAuth2Service
+         */
+        $service = Yii::$app->get('eauth')->getIdentity('google');
+
+        $data = $service->getVideos($this->item_id);
+
+        if ( $data['pageInfo']['totalResults'] > 0 ) {
+            $this->preview = $data['items'][0]['snippet']['thumbnails']['medium']['url'];
+        }
     }
+
+
+    public function hit(User $user)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        if ( $user->addPoints($this->points) && $this->updateCounters(['counter' => 1]) ) {
+
+            $doneTask = new DoneTask();
+            $doneTask->user_id = $user->id;
+            $doneTask->task_id = $this->id;
+
+            if ( $doneTask->save() ) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollback();
+                return false;
+            }
+
+        }
+
+        $transaction->rollBack();
+        return false;
+    }
+
 
     public function isDone()
     {

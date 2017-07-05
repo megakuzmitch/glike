@@ -10,7 +10,7 @@ use yii\web\Controller;
  */
 class DefaultController extends Controller
 {
-    public $layout = '@app/views/layouts/user';
+//    public $layout = '@app/views/layouts/user';
 
     /**
      * @inheritdoc
@@ -25,6 +25,23 @@ class DefaultController extends Controller
     }
 
 
+    public function beforeAction($action)
+    {
+        if ( parent::beforeAction($action) ) {
+
+            if ( Yii::$app->getErrorHandler()->exception !== null ) {
+                $this->layout = Yii::$app->user->isGuest
+                    ? '@app/views/layouts/simple'
+                    : '@app/views/layouts/user';
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * Renders the index view for the module
      * @return string
@@ -34,8 +51,6 @@ class DefaultController extends Controller
         if ( ! Yii::$app->user->isGuest ) {
             $this->redirect(['/user/tasks/index']);
         }
-
-        $this->layout = "@app/views/layouts/main";
         return $this->render('index');
     }
 }

@@ -4,13 +4,20 @@ namespace app\modules\user\controllers;
 
 use app\modules\user\models\LoginForm;
 use app\modules\user\models\Service;
+use app\modules\user\models\SignupForm;
 use app\modules\user\models\User;
+use nodge\eauth\EAuth;
 use nodge\eauth\openid\ControllerBehavior;
+use nodge\eauth\ServiceBase;
 use Yii;
+use yii\base\ErrorException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * Default controller for the `user` module
@@ -42,7 +49,7 @@ class DefaultController extends Controller
             'eauth' =>[
                 // required to disable csrf validation on OpenID requests
                 'class' => ControllerBehavior::className(),
-                'only' => ['login'],
+                'only' => ['login', 'auth'],
             ],
         ];
     }
@@ -67,7 +74,16 @@ class DefaultController extends Controller
             return $this->goHome();
         }
 
+        $model = new LoginForm();
+
+        if ( $model->load(Yii::$app->request->post()) && $model->login() ) {
+            return $this->goHome();
+        }
+
+        return $this->render('login', ['model' => $model]);
+
         $serviceName = Yii::$app->getRequest()->getQueryParam('service');
+
         if ( isset($serviceName) ) {
             /** @var $eauth \nodge\eauth\ServiceBase */
             $eauth = Yii::$app->get('eauth')->getIdentity($serviceName);
@@ -78,7 +94,6 @@ class DefaultController extends Controller
             try {
 
                 if ($eauth->authenticate()) {
-//                  var_dump($eauth->getIsAuthenticated(), $eauth->getAttributes()); exit;
 
                     $identity = User::findByEAuth($eauth);
 
@@ -92,10 +107,10 @@ class DefaultController extends Controller
                     $eauth->cancel();
                 }
             }
-            catch (\nodge\eauth\ErrorException $e) {
+            catch (ErrorException $e) {
 
                 // save error to show it later
-                Yii::$app->getSession()->setFlash('error', 'EAuthException: '.$e->getMessage());
+                Yii::$app->getSession()->setFlash('error', 'AuthException: '.$e->getMessage());
 
                 // close popup window and redirect to cancelUrl
 //              $eauth->cancel();
@@ -103,14 +118,86 @@ class DefaultController extends Controller
                 $eauth->redirect($eauth->getCancelUrl());
             }
         }
-
-        return $this->render('login');
     }
+
+
+    /**
+     * @param $service
+     * @var $eauthService EAuth
+     */
+    public function actionAuth($service)
+    {
+        /**
+         * @param $service
+         * @var $eauthService \nodge\eauth\oauth2\Service
+         */
+        $eauthService = Yii::$app->get('eauth')->getIdentity($service);
+        $eauthService->setRedirectUrl( Url::previous() );
+        $eauthService->setCancelUrl( Url::previous() );
+
+//        try {
+
+            if ($eauthService->authenticate()) {
+
+                /**
+                 * @var $user User
+                 */
+                $user = Yii::$app->user->getIdentity();
+                $socialId = $user->getSocialId($service);
+
+                if ( $socialId === null ) {
+                    $user->linkService($eauthService);
+                    $user->updateProfile($eauthService->getAttributes());
+                }
+
+                // special redirect with closing popup window
+                $eauthService->redirect();
+            }
+            else {
+                // close popup window and redirect to cancelUrl
+                $eauthService->cancel();
+            }
+//        }
+//        catch (ErrorException $e) {
+//            // save error to show it later
+//            Yii::$app->session->setFlash('error', 'AuthException: '.$e->getMessage());
+//
+//            // close popup window and redirect to cancelUrl
+////            $eauthService->cancel();
+//            $eauthService->redirect();
+//        }
+    }
+
 
     public function actionLogout()
     {
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+
+    public function actionSignup()
+    {
+        if ( ! Yii::$app->user->isGuest ) {
+            return $this->goHome();
+        }
+
+        $model = new SignupForm();
+
+        if ( $model->load(Yii::$app->request->post()) ) {
+
+            if ( Yii::$app->request->isAjax ) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            }
+
+            if ( $user = $model->signup() ) {
+                Yii::$app->user->login($user, Yii::$app->params['user.sessionDuration']);
+                return $this->goHome();
+            }
+        }
+
+        return $this->render('signup', ['model' => $model]);
     }
 }

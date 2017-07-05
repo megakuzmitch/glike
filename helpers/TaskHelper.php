@@ -20,6 +20,29 @@ class TaskHelper
     {
         $label = "";
 
+        switch ( $task->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+                $action = 'Поствить лайк';
+                break;
+            case Task::TASK_TYPE_REPOST:
+                $action = 'Рассказать друзьям';
+                break;
+            case Task::TASK_TYPE_COMMENT:
+                $action = 'Оставить комментарий';
+                break;
+            case Task::TASK_TYPE_SUBSCRIBE:
+                if ( $task->item_type == 'group' ) {
+                    $action = 'Вступить';
+                } else {
+                    $action = 'Подписаться';
+                }
+                break;
+            case Task::TASK_TYPE_VIEWS:
+                $action = 'Просмотреть';
+                break;
+        }
+
+
         switch ($task->service_type) {
             case Task::SERVICE_TYPE_VK:
 
@@ -35,6 +58,9 @@ class TaskHelper
                                 break;
                             case 'product':
                                 $label .= 'к товару';
+                                break;
+                            case 'video':
+                                $label .= 'к видео';
                                 break;
                         }
                         break;
@@ -84,6 +110,56 @@ class TaskHelper
                         }
 
                         break;
+                }
+                break;
+
+            case Task::SERVICE_TYPE_YOUTUBE:
+                switch ($task->task_type) {
+                    case Task::TASK_TYPE_LIKE:
+                        $label .= "<strong>Поставить лайк</strong> ";
+                        switch ($task->item_type) {
+                            case 'video':
+                            default:
+                                $label .= 'к видео';
+                                break;
+                        }
+                        break;
+
+                    case Task::TASK_TYPE_REPOST:
+                        $label .= "<strong>Рассказать друзьям</strong> ";
+                        switch ($task->item_type) {
+                            case 'video':
+                            default:
+                                $label .= 'о видео';
+                                break;
+                        }
+                        break;
+
+                    case Task::TASK_TYPE_COMMENT:
+                        $label .= "<strong>Оставить комментарий</strong> ";
+                        switch ($task->item_type) {
+                            case 'video':
+                            default:
+                                $label .= 'к видео';
+                                break;
+                        }
+                        break;
+
+//                    case Task::TASK_TYPE_SUBSCRIBE:
+//
+//                        switch ( $task->item_type ) {
+//                            case 'user':
+//                                $label .= "<strong>Подписаться</strong> на пользователя";
+//                                break;
+//                            case 'group':
+//                                $label .= "<strong>Вступить</strong> в группу";
+//                                break;
+//                            case 'page':
+//                                $label .= "<strong>Подписаться</strong> на страницу";
+//                                break;
+//                        }
+//
+//                        break;
                 }
                 break;
         }

@@ -13,6 +13,7 @@ use app\extended\eauth\VKontakteOAuth2Service;
 use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class TaskForm
@@ -21,6 +22,9 @@ use yii\db\Exception;
  */
 class TaskForm extends Model
 {
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
     private $_task;
     private $_normalizedLink;
 
@@ -35,38 +39,20 @@ class TaskForm extends Model
     public $points;
     public $need_count;
 
-    public static function getServiceTypes() {
-        return [
-            Task::SERVICE_TYPE_VK => 'В контакте',
-        ];
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_CREATE] = ['link', 'service_type', 'task_type', 'points', 'need_count'];
+        $scenarios[self::SCENARIO_UPDATE] = ['points', 'need_count'];
+        return $scenarios;
     }
-
-    public static function getServiceTypeShortNames() {
-        return [
-            Task::SERVICE_TYPE_VK => 'vkontakte',
-        ];
-    }
-
-    public static function getServiceTypeShortName($type) {
-        $names = self::getServiceTypeShortNames();
-        return key_exists($type, $names) ? $names[$type] : null;
-    }
-
-    public static function getTaskTypes() {
-        return [
-            Task::TASK_TYPE_LIKE => 'Накрутить лайки',
-            Task::TASK_TYPE_SUBSCRIBE => 'Накрутить подписчиков',
-            Task::TASK_TYPE_REPOST => 'Накрутить репосты',
-            Task::TASK_TYPE_COMMENT => 'Накрутить комментарии',
-        ];
-    }
-
 
     public function rules() {
         return [
             ['link', 'validateLink'],
             [['link', 'service_type', 'task_type', 'points', 'need_count'], 'required'],
             [['points', 'service_type', 'task_type'], 'integer'],
+            ['points', 'checkPoints'],
             [['link'], 'string', 'max' => 255],
         ];
     }
@@ -110,12 +96,23 @@ class TaskForm extends Model
     }
 
 
+    protected function getTask()
+    {
+        return $this->_task;
+    }
+
+
+    public function getId()
+    {
+        return ( $task = $this->getTask() ) ? $task->id : null;
+    }
+
+
     /**
      * @return bool
      */
     public function create()
     {
-
         if ( ! $this->validate() ) {
             return false;
         }
@@ -124,11 +121,6 @@ class TaskForm extends Model
          * @var $user User
          */
         $user = Yii::$app->user->getIdentity();
-
-        if ( $user->points < $this->need_count * $this->points ) {
-            Yii::$app->session->setFlash('error', 'У вас недостаточно баллов');
-            return false;
-        }
 
         $task = new Task();
         $task->service_type = $this->service_type;
@@ -172,11 +164,6 @@ class TaskForm extends Model
         $oldTaskPoints = $this->_task->points;
         $diffPoints = $this->need_count * $this->points - $oldTaskNeedCount * $oldTaskPoints;
 
-        if ( $user->points - $diffPoints < 0 ) {
-            Yii::$app->session->setFlash('error', 'У вас недостаточно баллов');
-            return false;
-        }
-
         $this->_task->service_type = $this->service_type;
         $this->_task->task_type = $this->task_type;
         $this->_task->need_count = $this->need_count;
@@ -198,80 +185,140 @@ class TaskForm extends Model
     }
 
 
+    public function checkPoints($attribute, $params)
+    {
+        /**
+         * @var $user User
+         */
+        $user = Yii::$app->user->getIdentity();
+        $task = $this->getTask();
+
+        if ( $task ) {
+            $oldTaskNeedCount = $task->need_count;
+            $oldTaskPoints = $task->points;
+            $diffPoints = $this->need_count * $this->points - $oldTaskNeedCount * $oldTaskPoints;
+        } else {
+            $diffPoints = $this->need_count * $this->points;
+        }
+
+        if ( $user->points - $diffPoints < 0 ) {
+            $this->addError('points', 'У вас не хватает ' . ($diffPoints - $user->points) . ' баллов');
+            $this->addError('need_count', '');
+            return false;
+        }
+
+        return true;
+    }
+
+
     public function validateLink($attribute, $params)
     {
         if ( ! $this->getIsNew() ) {
             return;
         }
 
-        $pattern = "";
-        $matches = [];
         $params['message'] = 'Неверный формат ссылки';
-
-        $urlParts = parse_url($this->link);
-        $queryParts = [];
-
-        if ( key_exists('query', $urlParts) ) {
-            parse_str($urlParts['query'], $queryParts);
-        }
 
         switch ( $this->service_type ) {
             case Task::SERVICE_TYPE_VK:
-
-                switch ( $this->task_type ) {
-                    case Task::TASK_TYPE_LIKE:
-                    case Task::TASK_TYPE_REPOST:
-                    case Task::TASK_TYPE_COMMENT:
-                        $pattern = "/^https:\/\/m?\.?vk.com\/[\w\d]*\??[\w\d=&]*[zw]?=?(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
-
-                        if ( ! preg_match($pattern, $this->link, $matches) ) {
-                            $this->addError($attribute, $params['message']);
-                            return;
-                        }
-
-                        $pattern = "/(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
-
-                        if ( ! empty($queryParts) ) {
-                            if ( key_exists('z', $queryParts) ) {
-                                $subject = $queryParts['z'];
-                            } else if ( key_exists('w', $queryParts) ) {
-                                $subject = $queryParts['w'];
-                            } else {
-                                $subject = $urlParts['path'];
-                            }
-                        } else {
-                            $subject = $urlParts['path'];
-                        }
-
-                        preg_match($pattern, $subject, $matches);
-
-                        $this->_item_type = $matches[1];
-                        $this->_owner_id = $matches[2];
-                        $this->_item_id = $matches[3];
-
-                        break;
-
-                    case Task::TASK_TYPE_SUBSCRIBE:
-                        $pattern = "/^https:\/\/m?\.?vk.com\/([\D|\W]*)(\d*)$/";
-                        preg_match($pattern, $this->link, $matches);
-
-                        if ( empty($matches) ) {
-                            $this->addError($attribute, $params['message']);
-                            return;
-                        }
-
-                        $this->_item_type = $matches[1];
-                        $this->_item_id = $matches[2];
-
-                        break;
-                }
-
-            break;
+                $this->validateLinkVK($attribute, $params);
+                break;
+            case Task::SERVICE_TYPE_YOUTUBE:
+                $this->validateLinkYoutube($attribute, $params);
+                break;
         }
 
         $task = Task::find()->where(['link' => $this->getNormalizedLink(), 'task_type' => $this->task_type])->one();
         if ( $task !== null ) {
             $this->addError($attribute, 'Такое задание уже существует в базе данных');
+        }
+    }
+
+
+    public function validateLinkVK($attribute, $params)
+    {
+        $urlParts = parse_url($this->link);
+        $queryParts = [];
+        if ( key_exists('query', $urlParts) ) {
+            parse_str($urlParts['query'], $queryParts);
+        }
+
+        switch ( $this->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+            case Task::TASK_TYPE_REPOST:
+            case Task::TASK_TYPE_COMMENT:
+                $pattern = "/^https:\/\/m?\.?vk.com\/[\w\d]*\??[\w\d=&]*[zw]?=?(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
+                if ( ! preg_match($pattern, $this->link, $matches) ) {
+                    $this->addError($attribute, $params['message']);
+                    return;
+                }
+
+                $pattern = "/(wall|photo|video|audio|product|note)(-?\d+)_(\d+)/";
+
+                if ( ! empty($queryParts) ) {
+                    if ( key_exists('z', $queryParts) ) {
+                        $subject = $queryParts['z'];
+                    } else if ( key_exists('w', $queryParts) ) {
+                        $subject = $queryParts['w'];
+                    } else {
+                        $subject = $urlParts['path'];
+                    }
+                } else {
+                    $subject = $urlParts['path'];
+                }
+
+                preg_match($pattern, $subject, $matches);
+
+                $this->_item_type = $matches[1];
+                $this->_owner_id = $matches[2];
+                $this->_item_id = $matches[3];
+
+                break;
+
+            case Task::TASK_TYPE_SUBSCRIBE:
+                $pattern = "/^https:\/\/m?\.?vk.com\/([\D|\W]*)(\d*)$/";
+                preg_match($pattern, $this->link, $matches);
+
+                if ( empty($matches) ) {
+                    $this->addError($attribute, $params['message']);
+                    return;
+                }
+
+                $this->_item_type = $matches[1];
+                $this->_item_id = $matches[2];
+
+                break;
+        }
+    }
+
+
+    public function validateLinkYoutube($attribute, $params)
+    {
+        $urlParts = parse_url($this->link);
+        $queryParts = [];
+        $matches = [];
+        if ( key_exists('query', $urlParts) ) {
+            parse_str($urlParts['query'], $queryParts);
+        }
+
+        switch ( $this->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+            case Task::TASK_TYPE_REPOST:
+            case Task::TASK_TYPE_COMMENT:
+                $pattern = "/^https:\/\/(www)?\.?youtube.com\/watch\?v=([a-zA-Z1-9_\-]+)/";
+                if ( ! preg_match($pattern, $this->link, $matches) ) {
+                    $this->addError($attribute, $params['message']);
+                    return;
+                }
+
+                $this->_item_id = $matches[2];
+                $this->_item_type = 'video';
+                break;
+
+            case Task::TASK_TYPE_SUBSCRIBE:
+                $pattern = "/^https:\/\/m?\.?vk.com\/([\D|\W]*)(\d*)$/";
+                $this->addError($attribute, $params['message']);
+                break;
         }
     }
 
@@ -283,10 +330,11 @@ class TaskForm extends Model
         }
 
         switch ( $this->service_type ) {
-
             case Task::SERVICE_TYPE_VK:
-
                 $this->_normalizedLink = $this->getNormalizedLinkVK();
+                break;
+            case Task::SERVICE_TYPE_YOUTUBE:
+                $this->_normalizedLink = $this->getNormalizedLinkYoutube();
                 break;
 
             default:
@@ -329,7 +377,21 @@ class TaskForm extends Model
 
                 return $res;
         }
+    }
 
 
+    public function getNormalizedLinkYoutube()
+    {
+        switch ( $this->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+            case Task::TASK_TYPE_COMMENT:
+            case Task::TASK_TYPE_VIEWS:
+                return 'https://youtube.com/watch?v=' . $this->_item_id;
+                break;
+            case Task::TASK_TYPE_SUBSCRIBE:
+                return $this->link;
+                break;
+        }
+        return false;
     }
 }
