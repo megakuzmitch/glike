@@ -5,9 +5,11 @@ namespace app\modules\user\models;
 use app\extended\eauth\GoogleOAuth2Service;
 use app\extended\eauth\VKontakteOAuth2Service;
 use nodge\eauth\ErrorException;
+use rmrevin\yii\fontawesome\FontAwesome;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%task}}".
@@ -57,6 +59,14 @@ class Task extends ActiveRecord
         return [
             Task::SERVICE_TYPE_VK => 'Вконтакте',
             Task::SERVICE_TYPE_YOUTUBE => 'Youtube',
+        ];
+    }
+
+
+    public static function getServiceTypeLabels() {
+        return [
+            Task::SERVICE_TYPE_VK => FontAwesome::icon('vk') . 'Вконтакте',
+            Task::SERVICE_TYPE_YOUTUBE => FontAwesome::icon('youtube') . 'Youtube',
         ];
     }
 
@@ -124,7 +134,6 @@ class Task extends ActiveRecord
     public function rules()
     {
         return [
-            [['link'], 'unique'],
             [['link', 'service_type', 'task_type', 'user_id'], 'required'],
             [['points', 'service_type', 'task_type', 'user_id', 'need_count'], 'integer'],
             [['name', 'description', 'link'], 'string', 'max' => 255],

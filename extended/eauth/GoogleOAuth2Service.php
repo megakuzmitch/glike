@@ -61,4 +61,45 @@ class GoogleOAuth2Service extends \nodge\eauth\services\GoogleOAuth2Service
         return $info;
     }
 
+
+    public function getRating($ids)
+    {
+        if ( is_array($ids) ) {
+            $ids = implode(',', $ids);
+        }
+
+        $query = [
+            'id' => $ids
+        ];
+        $info = $this->makeSignedRequest('https://www.googleapis.com/youtube/v3/videos/getRating', [
+            'query' => $query
+        ]);
+
+        return $info;
+    }
+
+
+    public function getComments($id)
+    {
+        $query = [
+            'videoId' => $id
+        ];
+        $info = $this->makeSignedRequest('https://www.googleapis.com/youtube/v3/commentThreads', [
+            'query' => $query
+        ]);
+
+        return $info;
+    }
+
+
+    public function getIsLiked($id)
+    {
+        $data = $this->getRating($id);
+        if ( isset($data['items']) ) {
+            return $data['items'][0]['rating'] == 'like';
+        }
+
+        return false;
+    }
+
 }

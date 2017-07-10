@@ -5,89 +5,13 @@
 
     var LikesManager = function() {
 
-        var _self = this,
-            _$user_points_container = $('.user-points-container'),
-            _$tasks_container = $('.task-list'),
-            _task_popup,
-            _task_timer,
-            _check_url = '/user/tasks/check';
 
-        var _checkTask = function(task_id, successCallback, errorCallback) {
-
-            $.post(_check_url, {
-                id: task_id
-            }).done(function(data) {
-                var notifyType = 'success';
-
-                if ( data.done ) {
-                    _$user_points_container.text(data.user_points);
-
-                    if ( successCallback ) {
-                        successCallback.apply(_self, [data]);
-                    }
-
-                } else {
-                    notifyType = 'danger';
-
-                    if ( errorCallback ) {
-                        errorCallback.call(null, data);
-                    }
-                }
-
-                $.notify({
-                    message: data.message
-                },{
-                    type: notifyType
-                });
-
-            }).fail(function(error) {
-                console.error(error);
-                if ( errorCallback ) {
-                    errorCallback.call(null, data);
-                }
-            });
-        };
 
         this.init = function() {
             $(document).on('click', 'a.do-task', function(e) {
                 e.preventDefault();
 
-                var $this = $(this),
-                    $taskItem = $this.closest('.task-item'),
-                    $doButton = $('[type=button].do-task', $taskItem),
-                    $checkButton = $('[type=button].check-task', $taskItem),
-                    taskId = $taskItem.data('id'),
-                    popupWidth = 900,
-                    popupHeight = 600,
-                    centerWidth = (window.screen.width - popupWidth) / 2,
-                    centerHeight = (window.screen.height - popupHeight) / 2;
 
-                var checkDone = function(data) {
-                    $taskItem.closest('[data-key]').delay(500).fadeOut(500);
-                };
-
-                var checkFail = function(data) {
-                    if ( device.mobile() ) {
-                        $doButton.css({display: 'none'});
-                        $checkButton.css({display: 'inline-block'});
-                    }
-                };
-
-                if ( _task_popup && !_task_popup.closed ) {
-                    clearInterval(_task_timer);
-                    _checkTask(taskId, checkDone, checkFail);
-                    _task_popup.close();
-                }
-
-                _task_popup = window.open($this.attr('href'), "task_popup", "width=" + popupWidth + ",height=" + popupHeight + ",left=" + centerWidth + ",top=" + centerHeight + ",resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes");
-                _task_popup.focus();
-
-                _task_timer = setInterval(function() {
-                    if ( _task_popup.closed ) {
-                        clearInterval(_task_timer);
-                        _checkTask(taskId, checkDone, checkFail);
-                    }
-                }, 250);
 
                 e.stopPropagation();
             });
@@ -95,21 +19,23 @@
 
         $(document).on('click', 'a.check-task', function(e) {
             e.preventDefault();
-
             var $this = $(this),
                 $taskItem = $this.closest('.task-item'),
                 $doButton = $('[type=button].do-task', $taskItem),
                 $checkButton = $('[type=button].check-task', $taskItem),
-                taskId = $taskItem.data('id');
+                taskId = $taskItem.data('id'),
+                serviceType = $taskItem.data('service_type');
 
-            var checkDone = checkFail = function(data) {
-                if ( device.mobile() ) {
-                    $checkButton.css({display: 'none'});
-                    $doButton.css({display: 'inline-block'});
-                }
-            };
+            prepareSignedAction(serviceType).done(function() {
+                var checkDone = checkFail = function(data) {
+                    if ( device.mobile() ) {
+                        $checkButton.css({display: 'none'});
+                        $doButton.css({display: 'inline-block'});
+                    }
+                };
 
-            _checkTask(taskId, checkDone, checkFail);
+                _checkTask(taskId, checkDone, checkFail);
+            });
 
             e.stopPropagation();
         });
@@ -120,12 +46,84 @@
 
 
 
-    var Task = function(id) {
+    var Task = function(id, service_type, source_url) {
 
-        this.id = id === undefined ? null : id;
-        var _self = this;
+        var _self = this,
+            _check_url = '/user/tasks/check',
+            _popupOptions = {
+                width: 900,
+                height: 600
+            },
+            _popupManager = PopupManager();
 
-        return _self;
+        this.id = id;
+        this.serviceType = service_type;
+        this.url = source_url;
+        this.taskContainer = $('.task-item[data-id=' + this.id +']');
+        this.doButton = $('[type=button].do-task', this.taskContainer);
+        this.checkButton = $('[type=button].check-task', this.taskContainer);
+
+        this.check = function() {
+
+            prepareSignedAction(this.serviceType).done(function() {
+                var checkDone = function() {
+                    _self.taskContainer.closest('[data-key]').delay(500).fadeOut(500);
+                };
+
+                var checkFail = function() {
+                    if ( device.mobile() ) {
+                        _self.doButton.css({display: 'none'});
+                        _self.checkButton.css({display: 'inline-block'});
+                    }
+                };
+
+                if ( ! _popupManager.isClosed() ) {
+                    _popupManager.close();
+                }
+
+
+                _popupManager.open(_self.url, {}, _popupOptions);
+                _popupManager.on('closed', _self, function(e) {
+                    console.log(this);
+                });
+
+
+                // _checkTask(taskId, checkDone, checkFail);
+                // $.post(_check_url, {
+                //     id: _self.id
+                // }).done(function(data) {
+                //     var notifyType = 'success';
+                //     if ( data.done ) {
+                //         updateUserCounters({points: data.user_points});
+                //     } else {
+                //         notifyType = 'danger';
+                //         if ( errorCallback ) {
+                //             errorCallback.call(null, data);
+                //         }
+                //     }
+                //     $.notify({
+                //         message: data.message
+                //     },{
+                //         type: notifyType
+                //     });
+                // }).fail(function(error) {
+                //     console.error(error);
+                // });
+                //
+                // _task_popup = window.open($this.attr('href'), "task_popup", "width=" + popupWidth + ",height=" + popupHeight + ",left=" + centerWidth + ",top=" + centerHeight + ",resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes");
+                // _task_popup.focus();
+                //
+                // _task_timer = setInterval(function() {
+                //     if ( _task_popup.closed ) {
+                //         clearInterval(_task_timer);
+                //         _checkTask(taskId, checkDone, checkFail);
+                //     }
+                // }, 250);
+            });
+        };
+
+
+        return this;
     };
 
 
@@ -152,7 +150,7 @@
                     if ( popup && !popup.closed ) {
                         popup.close();
                         clearInterval(timer);
-                        $(document).trigger($.Event('closed.PopupManager'));
+                        $(popup).trigger($.Event('closed.PopupManager'));
                     }
 
                     popup = window.open(url, "Popup Manager",
@@ -166,17 +164,23 @@
                     timer = setInterval(function() {
                         if ( popup.closed ) {
                             clearInterval(timer);
-                            $(document).trigger($.Event('closed.PopupManager'));
+                            $(popup).trigger($.Event('closed.PopupManager'));
                         }
                     }, 250);
 
-                    $(document).trigger($.Event('opened.PopupManager'));
+                    $(popup).trigger($.Event('opened.PopupManager'));
                 };
 
 
                 this.close = function() {
                     popup.close();
                 };
+
+
+                this.isClosed = function() {
+                    return popup.closed;
+                };
+
 
                 instance = this;
             } else {
@@ -266,97 +270,120 @@
     }());
 
 
+    var updateListView = function(id, filter) {
+
+        var container = $('#' + id),
+            filterForm = $('[data-list=' + id + ']'),
+            modelClass = filterForm.data('model-class'),
+            queryParams = {},
+            location = window.location;
+
+        // if (filter !== undefined) {
+        //     for (var key in filter) {
+        //         var value = filter[key];
+        //         var input = $('input[name*=' + key + ']', filterForm);
+        //         if ( input.is(':radio') ) {
+        //             input.filter('[value="' + value + '"]').prop('selected', true);
+        //         } else {
+        //             input.val(value);
+        //         }
+        //         queryParams[modelClass + '[' + key + ']'] = value;
+        //     }
+        // } else {
+        //     queryParams = filterForm.serialize();
+        // }
+
+        queryParams = filterForm.serialize();
+
+        $.get(location, queryParams, function(res) {
+            container.replaceWith(res);
+        });
+    };
+
+
+    var updateUserCounters = function(counters) {
+        if ( counters.points !== undefined ) {
+            $('.user-points-container').text(counters.points);
+        }
+    };
+
+
+    var saveTask = function(form) {
+        var deferred = $.Deferred();
+        $.post(form.attr('action'), form.serialize(), function(response) {
+            if ( response.success ) {
+                updateUserCounters(response.userCounters);
+                updateListView('TaskList');
+                deferred.resolve(response);
+                form.trigger('reset');
+            } else {
+                deferred.reject(response);
+            }
+        });
+        return deferred.promise();
+    };
+
+
+    var checkAuth = function(serviceType) {
+        return $.get('/user/social/is-auth', {
+            serviceType: serviceType
+        });
+    };
+
+
+    var goAuth = function(serviceType, serviceName, options) {
+        var deferred = $.Deferred(),
+            popupManager = PopupManager();
+
+        popupManager.open('/auth/' + serviceName, {}, {
+            width: options.popup.width,
+            height: options.popup.height
+        });
+
+        $(document).on('closed.PopupManager', function() {
+            checkAuth(serviceType).done(function() {
+                deferred.resolve();
+            }).fail(function() {
+                deferred.reject();
+            });
+        });
+        return deferred.promise();
+    };
+
+
+    var prepareSignedAction = function(serviceType) {
+
+        var deferred = $.Deferred();
+
+        checkAuth(serviceType).done(function(response) {
+            if ( response.authenticated ) {
+                deferred.resolve();
+            } else {
+                bootbox.confirm('Войти через соцсеть?', function(result) {
+                    if ( !result ) {
+                        deferred.reject();
+                        return false;
+                    }
+                    goAuth(serviceType, response.serviceName, response.jsArguments).done(function() {
+                        deferred.resolve();
+                    }).fail(function() {
+                        deferred.reject();
+                    });
+                });
+            }
+        }).fail(function(error) {
+            console.error(error);
+            deferred.reject();
+        });
+
+        return deferred.promise();
+
+    };
+
 
     $(document).ready(function() {
 
-        var popupManager = PopupManager(),
-            modalManager = BoostrapModalManager();
-
         $('.user-sidebar').mobilesidebar();
-
-        var updateListView = function(id, filter) {
-
-            var container = $('#' + id),
-                filterForm = $('[data-list=' + id + ']'),
-                modelClass = filterForm.data('model-class'),
-                queryParams = {},
-                location = window.location;
-
-            // if (filter !== undefined) {
-            //     for (var key in filter) {
-            //         var value = filter[key];
-            //         var input = $('input[name*=' + key + ']', filterForm);
-            //         if ( input.is(':radio') ) {
-            //             input.filter('[value="' + value + '"]').prop('selected', true);
-            //         } else {
-            //             input.val(value);
-            //         }
-            //         queryParams[modelClass + '[' + key + ']'] = value;
-            //     }
-            // } else {
-            //     queryParams = filterForm.serialize();
-            // }
-
-            queryParams = filterForm.serialize();
-
-            $.get(location, queryParams, function(res) {
-                container.replaceWith(res);
-            });
-        };
-
-
-        var updateUserCounters = function(counters) {
-            if ( counters.points !== undefined ) {
-                $('.user-points-container').text(counters.points);
-            }
-        };
-
-
-        var saveTask = function(form) {
-            var deferred = $.Deferred();
-            $.post(form.attr('action'), form.serialize(), function(response) {
-                if ( response.success ) {
-                    updateUserCounters(response.userCounters);
-                    updateListView('TaskList');
-                    modalManager.close();
-                    deferred.resolve(response);
-                } else {
-                    deferred.reject(response);
-                }
-            });
-            return deferred.promise();
-        };
-
-
-        var checkAuth = function(serviceType) {
-            return $.get('/user/social/is-auth', {
-                serviceType: serviceType
-            });
-        };
-
-
-        var goAuth = function(serviceType, serviceName, options) {
-            var deferred = $.Deferred();
-            popupManager.open('/auth/' + serviceName, {}, {
-                width: options.popup.width,
-                height: options.popup.height
-            });
-
-            $(document).on('closed.PopupManager', function() {
-                checkAuth(serviceType).done(function() {
-                    deferred.resolve();
-                }).fail(function() {
-                    deferred.reject();
-                });
-            });
-            return deferred.promise();
-        };
-
-
-        var checkTaskTypeInputs = function() {
-
-        };
-
 
         $(document).on('change', '.filter input', function(e) {
             var form = $(this).closest('form');
@@ -379,6 +406,18 @@
         });
 
 
+        $('#user-task-form').on('beforeSubmit', function(e) {
+            var taskForm = $(this),
+                serviceType = taskForm.find('input[name*=service_type]:checked').val();
+
+            prepareSignedAction(serviceType).done(function() {
+                saveTask(taskForm);
+            });
+
+            return false;
+        });
+
+
         $(document).on('click', '.show-modal-btn', function(e) {
             e.preventDefault();
             var thisBtn = $(this),
@@ -386,33 +425,33 @@
                 title = thisBtn.attr('title') ? thisBtn.attr('title') : thisBtn.text(),
                 modal = modalManager.open(src, title);
 
-            modal.on('loaded.bs.modal', function(e) {
-                var taskForm = $(e.target).find('form#user-task-form');
-                if ( !taskForm.size() ) {
-                    return;
-                }
-
-                taskForm.on('beforeSubmit', function(e) {
-                    var serviceType = taskForm.find('input[name*=service_type]:checked').val();
-                    checkAuth(serviceType).done(function(response) {
-                        if ( response.authenticated ) {
-                            saveTask(taskForm);
-                        } else {
-                            bootbox.confirm('Войти через соцсеть?', function(result) {
-                                if ( !result ) return false;
-                                goAuth(serviceType, response.serviceName, response.jsArguments).done(function() {
-                                    saveTask(taskForm);
-                                }).fail(function() {
-                                    alert('WTF!!!');
-                                });
-                            });
-                        }
-                    }).fail(function(error) {
-                        console.error(error);
-                    });
-                    return false;
-                });
-            });
+            // modal.on('loaded.bs.modal', function(e) {
+            //     var taskForm = $(e.target).find('form#user-task-form');
+            //     if ( !taskForm.size() ) {
+            //         return;
+            //     }
+            //
+            //     taskForm.on('beforeSubmit', function(e) {
+            //         var serviceType = taskForm.find('input[name*=service_type]:checked').val();
+            //         checkAuth(serviceType).done(function(response) {
+            //             if ( response.authenticated ) {
+            //                 saveTask(taskForm);
+            //             } else {
+            //                 bootbox.confirm('Войти через соцсеть?', function(result) {
+            //                     if ( !result ) return false;
+            //                     goAuth(serviceType, response.serviceName, response.jsArguments).done(function() {
+            //                         saveTask(taskForm);
+            //                     }).fail(function() {
+            //                         alert('WTF!!!');
+            //                     });
+            //                 });
+            //             }
+            //         }).fail(function(error) {
+            //             console.error(error);
+            //         });
+            //         return false;
+            //     });
+            // });
 
             e.stopPropagation();
         });
@@ -420,6 +459,18 @@
 
         var likesManager = new LikesManager();
         likesManager.init();
+
+
+        $(document).on('click', '.do-task', function(e) {
+            e.preventDefault();
+            var cont = $(this).closest('.task-item');
+            var task = new Task(
+                cont.data('task-id'),
+                cont.data('service_type'),
+                cont.attr('href'));
+            task.check();
+            e.stopPropagation();
+        });
     });
 
 

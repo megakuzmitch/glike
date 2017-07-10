@@ -51,7 +51,7 @@ class MyTasksController extends Controller
 
     public function actionIndex()
     {
-        $this->view->title = 'Мои задания';
+//        $this->view->title = 'Мои задания';
 
         $taskFilter = new TaskFilter();
         $query = $taskFilter->search();
@@ -70,10 +70,12 @@ class MyTasksController extends Controller
             'dataProvider' => $dataProvider
         ];
 
+
         if ( Yii::$app->request->isAjax ) {
             return $this->renderPartial('_list', $params);
         }
 
+        $params['taskFormModel'] = new TaskForm();
         return $this->render('index', $params);
     }
 
@@ -111,6 +113,13 @@ class MyTasksController extends Controller
                     ];
                 } else {
                     $this->redirect(['/user/my-tasks/index']);
+                }
+            } else {
+                if ( $request->isAjax ) {
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return [
+                        'success' => false,
+                    ];
                 }
             }
         } else if ( $request->isAjax ) {
@@ -156,17 +165,6 @@ class MyTasksController extends Controller
             'model' => $model
         ]);
 
-    }
-
-
-    public function actionTaskTypeField($id = null)
-    {
-        $model = new TaskForm();
-        if ( $id ) {
-            $model->syncWithTask(Task::findOne($id));
-        }
-
-        $model->load(Yii::$app->request->post());
     }
 
 

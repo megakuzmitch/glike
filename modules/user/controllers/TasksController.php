@@ -9,6 +9,7 @@
 namespace app\modules\user\controllers;
 
 
+use app\extended\eauth\GoogleOAuth2Service;
 use app\extended\eauth\VKontakteOAuth2Service;
 use app\modules\user\models\DoneTask;
 use app\modules\user\models\Service;
@@ -104,6 +105,10 @@ class TasksController extends Controller
             case Task::SERVICE_TYPE_VK:
                 $taskIsDone = $this->checkTaskVK($task, $response);
                 break;
+
+            case Task::SERVICE_TYPE_YOUTUBE:
+                $taskIsDone = $this->checkTaskYoutube($task, $response);
+                break;
         }
 
         if ( ! $taskIsDone ) {
@@ -172,6 +177,42 @@ class TasksController extends Controller
 
             case Task::TASK_TYPE_COMMENT:
                 $comment = $service->getLastCommentFrom($task->item_type, $task->item_id, $task->owner_id);
+                if ( ! $comment ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+
+                return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param $task Task
+     * @param $response []
+     * @return bool
+     */
+    public function checkTaskYoutube($task, &$response)
+    {
+        /**
+         * @var $service GoogleOAuth2Service
+         */
+        $service = Yii::$app->eauth->getIdentity('google');
+
+        switch ( $task->task_type ) {
+            case Task::TASK_TYPE_LIKE:
+                if ( ! $service->getIsLiked($task->item_id) ) {
+                    $response['message'] = 'Задание не выполнено';
+                    return false;
+                }
+                return true;
+            case Task::TASK_TYPE_COMMENT:
+                $data = $service->getComments($task->item_id);
+
+                var_dump($data); die();
+
                 if ( ! $comment ) {
                     $response['message'] = 'Задание не выполнено';
                     return false;

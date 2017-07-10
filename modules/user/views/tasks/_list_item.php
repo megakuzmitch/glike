@@ -6,7 +6,7 @@
 
 
 <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-    <div class="item task-item" data-id="<?= $model->id ?>">
+    <div class="item task-item" data-id="<?= $model->id ?>" data-service_type="<?=$model->service_type?>">
         <a class="btn btn-remove"><span class="glyphicon glyphicon-trash"></span></a>
         <div class="info">
             <a class="do-task" href="<?= $model->link ?>" target="_blank"><img src="<?= $model->preview ?>" alt="" class="img-circle"></a>

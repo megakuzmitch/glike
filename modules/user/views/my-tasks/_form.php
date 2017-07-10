@@ -7,6 +7,7 @@
  *
  *
  * @var $model TaskForm
+ * @var $formAction
  */
 
 use app\modules\user\models\Task;
@@ -15,28 +16,32 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\Json;
 
-?>
-
-<?php $form = ActiveForm::begin([
+$formParams = [
     'id' => 'user-task-form',
     'fieldClass' => 'app\widgets\ActiveField',
     'enableAjaxValidation' => true,
     'enableClientValidation' => false,
     'validationUrl' => ['/user/my-tasks/validate', 'id' => $model->getId()],
-]); ?>
+];
+
+if ( isset($formAction) ) {
+    $formParams['action'] = $formAction;
+}
+
+?>
+
+<?php $form = ActiveForm::begin($formParams); ?>
 
 <?= $form->field($model, 'service_type')
     ->label(false)
-    ->radioList(Task::getServiceTypeNames(), [
+    ->radioList(Task::getServiceTypeLabels(), [
         'class' => 'centered',
         'disabled' => !$model->isNew,
         'data-service-type-associations' => Json::encode(Task::getServiceTypeAssociations())
     ]) ?>
-<hr>
 
 <?
     $taskTypeOptions = [
-        'class' => 'centered custom-radio-list-sm',
         'disabled' => !$model->isNew
     ];
 ?>
@@ -44,6 +49,7 @@ use yii\helpers\Json;
     ->label(false)
     ->inline()
     ->radioList(Task::getTaskTypes(), [
+        'class' => 'custom-radio-list-sm',
         'item' => function($index, $label, $name, $checked, $value) use ($taskTypeOptions, $model) {
 
             $availableTaskTypes = array_keys(Task::getTaskTypes($model->service_type));
