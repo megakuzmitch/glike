@@ -41,6 +41,6 @@ use yii\helpers\Json;
         <? $filterForm->end() ?>
     </div>
 
-    <?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
+    <?= $this->render('_list', ['dataProvider' => $dataProvider, 'taskFilter' => $taskFilter]) ?>
 
 </div>

@@ -26,16 +26,14 @@
                 taskId = $taskItem.data('id'),
                 serviceType = $taskItem.data('service_type');
 
-            prepareSignedAction(serviceType).done(function() {
-                var checkDone = checkFail = function(data) {
-                    if ( device.mobile() ) {
-                        $checkButton.css({display: 'none'});
-                        $doButton.css({display: 'inline-block'});
-                    }
-                };
+            var checkDone = checkFail = function(data) {
+                if ( device.mobile() ) {
+                    $checkButton.css({display: 'none'});
+                    $doButton.css({display: 'inline-block'});
+                }
+            };
 
-                _checkTask(taskId, checkDone, checkFail);
-            });
+            _checkTask(taskId, checkDone, checkFail);
 
             e.stopPropagation();
         });
@@ -65,61 +63,62 @@
 
         this.check = function() {
 
-            prepareSignedAction(this.serviceType).done(function() {
-                var checkDone = function() {
-                    _self.taskContainer.closest('[data-key]').delay(500).fadeOut(500);
-                };
+            var checkDone = function() {
+                _self.taskContainer.closest('[data-key]').delay(500).fadeOut(500);
+            };
 
-                var checkFail = function() {
-                    if ( device.mobile() ) {
-                        _self.doButton.css({display: 'none'});
-                        _self.checkButton.css({display: 'inline-block'});
-                    }
-                };
-
-                if ( ! _popupManager.isClosed() ) {
-                    _popupManager.close();
+            var checkFail = function() {
+                if ( device.mobile() ) {
+                    _self.doButton.css({display: 'none'});
+                    _self.checkButton.css({display: 'inline-block'});
                 }
+            };
+
+            if ( ! _popupManager.isClosed() ) {
+                _popupManager.close();
+            }
 
 
-                _popupManager.open(_self.url, {}, _popupOptions);
-                _popupManager.on('closed', _self, function(e) {
-                    console.log(this);
+            _popupManager.open(_self.url, {}, _popupOptions);
+            _popupManager.on('closed.PopupManager', function(e) {
+                console.log(e);
+                prepareSignedAction(_self.serviceType).done(function() {
+                    console.log('sdsdsd');
                 });
-
-
-                // _checkTask(taskId, checkDone, checkFail);
-                // $.post(_check_url, {
-                //     id: _self.id
-                // }).done(function(data) {
-                //     var notifyType = 'success';
-                //     if ( data.done ) {
-                //         updateUserCounters({points: data.user_points});
-                //     } else {
-                //         notifyType = 'danger';
-                //         if ( errorCallback ) {
-                //             errorCallback.call(null, data);
-                //         }
-                //     }
-                //     $.notify({
-                //         message: data.message
-                //     },{
-                //         type: notifyType
-                //     });
-                // }).fail(function(error) {
-                //     console.error(error);
-                // });
-                //
-                // _task_popup = window.open($this.attr('href'), "task_popup", "width=" + popupWidth + ",height=" + popupHeight + ",left=" + centerWidth + ",top=" + centerHeight + ",resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes");
-                // _task_popup.focus();
-                //
-                // _task_timer = setInterval(function() {
-                //     if ( _task_popup.closed ) {
-                //         clearInterval(_task_timer);
-                //         _checkTask(taskId, checkDone, checkFail);
-                //     }
-                // }, 250);
             });
+
+
+            // _checkTask(taskId, checkDone, checkFail);
+            // $.post(_check_url, {
+            //     id: _self.id
+            // }).done(function(data) {
+            //     var notifyType = 'success';
+            //     if ( data.done ) {
+            //         updateUserCounters({points: data.user_points});
+            //     } else {
+            //         notifyType = 'danger';
+            //         if ( errorCallback ) {
+            //             errorCallback.call(null, data);
+            //         }
+            //     }
+            //     $.notify({
+            //         message: data.message
+            //     },{
+            //         type: notifyType
+            //     });
+            // }).fail(function(error) {
+            //     console.error(error);
+            // });
+            //
+            // _task_popup = window.open($this.attr('href'), "task_popup", "width=" + popupWidth + ",height=" + popupHeight + ",left=" + centerWidth + ",top=" + centerHeight + ",resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes");
+            // _task_popup.focus();
+            //
+            // _task_timer = setInterval(function() {
+            //     if ( _task_popup.closed ) {
+            //         clearInterval(_task_timer);
+            //         _checkTask(taskId, checkDone, checkFail);
+            //     }
+            // }, 250);
         };
 
 
@@ -150,25 +149,25 @@
                     if ( popup && !popup.closed ) {
                         popup.close();
                         clearInterval(timer);
-                        $(popup).trigger($.Event('closed.PopupManager'));
+                        $(document).trigger($.Event('closed.PopupManager'), [popup]);
                     }
 
                     popup = window.open(url, "Popup Manager",
                         "width=" + currentOptions.width +
-                        ",height=" + currentOptions.width +
+                        ",height=" + currentOptions.height +
                         ",left=" + centerWidth +
                         ",top=" + centerHeight +
                         ",resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes");
-                    popup.focus();
 
                     timer = setInterval(function() {
                         if ( popup.closed ) {
                             clearInterval(timer);
-                            $(popup).trigger($.Event('closed.PopupManager'));
+                            $(document).trigger($.Event('closed.PopupManager'), [popup]);
                         }
                     }, 250);
 
-                    $(popup).trigger($.Event('opened.PopupManager'));
+                    $(document).trigger($.Event('opened.PopupManager'), [popup]);
+                    popup.focus();
                 };
 
 
@@ -178,9 +177,14 @@
 
 
                 this.isClosed = function() {
-                    return popup.closed;
+                    if ( popup ) return popup.closed;
+                    return true;
                 };
 
+
+                this.on = function(event, callback) {
+                    $(document).on(event, callback);
+                };
 
                 instance = this;
             } else {
@@ -272,7 +276,7 @@
 
     var updateListView = function(id, filter) {
 
-        var container = $('#' + id),
+        var container = $('.list-view-container').first(),
             filterForm = $('[data-list=' + id + ']'),
             modelClass = filterForm.data('model-class'),
             queryParams = {},
@@ -296,7 +300,7 @@
         queryParams = filterForm.serialize();
 
         $.get(location, queryParams, function(res) {
-            container.replaceWith(res);
+            container.html(res);
         });
     };
 
@@ -325,9 +329,18 @@
 
 
     var checkAuth = function(serviceType) {
-        return $.get('/user/social/is-auth', {
+
+        console.log(this);
+
+        var deferred = $.Deferred();
+        $.get('/user/social/is-auth', {
             serviceType: serviceType
+        }).done(function(response) {
+            deferred.resolve(response);
+        }).fail(function(e) {
+            deferred.reject(e);
         });
+        return deferred.promise();
     };
 
 
@@ -457,17 +470,18 @@
         });
 
 
-        var likesManager = new LikesManager();
-        likesManager.init();
+        // var likesManager = new LikesManager();
+        // likesManager.init();
 
 
         $(document).on('click', '.do-task', function(e) {
             e.preventDefault();
             var cont = $(this).closest('.task-item');
+
             var task = new Task(
-                cont.data('task-id'),
+                cont.data('id'),
                 cont.data('service_type'),
-                cont.attr('href'));
+                $(this).attr('href'));
             task.check();
             e.stopPropagation();
         });

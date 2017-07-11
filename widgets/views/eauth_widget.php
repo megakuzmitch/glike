@@ -1,5 +1,6 @@
 <?php
 
+
 use yii\bootstrap\Html;
 use yii\web\View;
 
@@ -21,7 +22,6 @@ if ($popup) {
     }
     $this->registerJs('$("#' . $id . '").eauth(' . json_encode($options) . ');');
 }
-
 ?>
 <div class="eauth eauth-widget" id="<?php echo $id; ?>">
     <ul class="eauth-list">
@@ -30,26 +30,31 @@ if ($popup) {
 
             echo '<li class="eauth-service eauth-service-id-' . $service->id . '">';
 
-            /**
-             * @var $eauthService \nodge\eauth\oauth2\Service
-             */
-            $eauthService = Yii::$app->eauth->getIdentity($name);
-            if ( $user->getIsLinked($eauthService) ) {
-//                $attributes = $eauthService->getAttributes();
+            echo Html::a('Авторизоваться с помощью: ' . $service->title, [$action, 'service' => $name], [
+                'class' => 'eauth-service-link btn btn-warning',
+                'data-eauth-service' => $service->id,
+            ]);
 
+//            /**
+//             * @var $eauthService \nodge\eauth\oauth2\Service
+//             */
+//            $eauthService = Yii::$app->eauth->getIdentity($name);
+//            if ( $user->getIsLinked($eauthService) ) {
+//                $attributes = $eauthService->getAttributes();
+//
 //                echo Html::img($eauthService->getAttribute('avatar'));
 //                echo Html::tag('span', $eauthService->getAttribute('name'));
 //                echo Html::a('Отвязать аккаунт', ['/user/default/unlink', 'service' => $name], [
 //                    'class' => 'eauth-service-unlink',
 //                    'data-eauth-service' => $service->id,
 //                ]);
-
-            } else {
-                echo Html::a($service->title, [$action, 'service' => $name], [
-                    'class' => 'eauth-service-link',
-                    'data-eauth-service' => $service->id,
-                ]);
-            }
+//
+//            } else {
+//                echo Html::a($service->title, [$action, 'service' => $name], [
+//                    'class' => 'eauth-service-link',
+//                    'data-eauth-service' => $service->id,
+//                ]);
+//            }
 
             echo '</li>';
         }

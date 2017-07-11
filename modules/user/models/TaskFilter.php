@@ -24,6 +24,13 @@ class TaskFilter extends Model
     public $task_type;
 
 
+    public function __construct(array $config = [])
+    {
+        $this->service_type = Task::SERVICE_TYPE_VK;
+        parent::__construct($config);
+    }
+
+
     public function rules()
     {
         return [

@@ -40,7 +40,13 @@ class SocialController extends Controller
         /** @var $eauth EAuth */
         $eauth = Yii::$app->get('eauth');
         $identity = $eauth->getIdentity($service);
-        $identity->authenticate();
+        $identity->setCancelUrl( Yii::$app->user->getReturnUrl() );
+        $identity->setRedirectUrl( Yii::$app->user->getReturnUrl() );
+        if ( $identity->authenticate() ) {
+            $identity->redirect();
+        } else {
+            $identity->cancel();
+        }
         return $eauth->redirect('/', false);
     }
 }
