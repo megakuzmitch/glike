@@ -64,117 +64,71 @@ class DefaultController extends Controller
         ];
     }
 
+
     public function actionIndex() {
         return $this->redirect(['profile/index'], 301);
     }
 
-    public function actionLogin()
+
+    public function actionLogin($service = false)
     {
         if ( ! Yii::$app->user->isGuest ) {
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-
-        if ( $model->load(Yii::$app->request->post()) && $model->login() ) {
-            return $this->goHome();
-        }
-
-        return $this->render('login', ['model' => $model]);
-
-        $serviceName = Yii::$app->getRequest()->getQueryParam('service');
-
-        if ( isset($serviceName) ) {
-            /** @var $eauth \nodge\eauth\ServiceBase */
-            $eauth = Yii::$app->get('eauth')->getIdentity($serviceName);
-
-            $eauth->setRedirectUrl(Yii::$app->getUser()->getReturnUrl());
-            $eauth->setCancelUrl(Yii::$app->getUrlManager()->createAbsoluteUrl(Yii::$app->user->loginUrl));
+        if ( $service ) {
+            /** @var $eauthService \nodge\eauth\oauth2\Service */
+            $eauthService = Yii::$app->get('eauth')->getIdentity($service);
+            $eauthService->setRedirectUrl( Url::previous() );
+            $eauthService->setCancelUrl( Url::previous() );
 
             try {
+                if ( $eauthService->authenticate() ) {
+                    /** @var $user User */
 
-                if ($eauth->authenticate()) {
-
-                    $identity = User::findByEAuth($eauth);
-
-                    Yii::$app->getUser()->login($identity);
-
-                    // special redirect with closing popup window
-                    $eauth->redirect();
+                    $attributes = $eauthService->getAttributes();
+                    $user = User::getUserByEAuth($eauthService);
+                    Yii::$app->user->login($user);
+                    Yii::$app->session->set('currentProfile', $eauthService->id);
+                    $eauthService->redirect();
                 }
                 else {
                     // close popup window and redirect to cancelUrl
-                    $eauth->cancel();
+                    $eauthService->cancel();
                 }
-            }
-            catch (ErrorException $e) {
-
+            } catch (ErrorException $e) {
                 // save error to show it later
-                Yii::$app->getSession()->setFlash('error', 'AuthException: '.$e->getMessage());
+                Yii::$app->session->setFlash('error', 'AuthException: '.$e->getMessage());
 
                 // close popup window and redirect to cancelUrl
-//              $eauth->cancel();
-
-                $eauth->redirect($eauth->getCancelUrl());
-            }
-        }
-    }
-
-
-    /**
-     * @param $service
-     * @var $eauthService EAuth
-     */
-    public function actionAuth($service)
-    {
-        /**
-         * @param $service
-         * @var $eauthService \nodge\eauth\oauth2\Service
-         */
-        $eauthService = Yii::$app->get('eauth')->getIdentity($service);
-        $eauthService->setRedirectUrl( Url::previous() );
-        $eauthService->setCancelUrl( Url::previous() );
-
-//        try {
-
-            if ($eauthService->authenticate()) {
-
-                /**
-                 * @var $user User
-                 */
-                $user = Yii::$app->user->getIdentity();
-                $socialId = $user->getSocialId($service);
-
-                if ( $socialId === null ) {
-                    $user->linkService($eauthService);
-                    $user->updateProfile($eauthService->getAttributes());
-                }
-
-                // special redirect with closing popup window
+//            $eauthService->cancel();
                 $eauthService->redirect();
             }
-            else {
-                // close popup window and redirect to cancelUrl
-                $eauthService->cancel();
-            }
-//        }
-//        catch (ErrorException $e) {
-//            // save error to show it later
-//            Yii::$app->session->setFlash('error', 'AuthException: '.$e->getMessage());
-//
-//            // close popup window and redirect to cancelUrl
-////            $eauthService->cancel();
-//            $eauthService->redirect();
-//        }
+        }
+
+
+        $loginModel = new LoginForm();
+        $signupModel = new SignupForm();
+
+        if ( $loginModel->load(Yii::$app->request->post()) && $loginModel->login() ) {
+            return $this->goHome();
+        }
+
+        if ( $signupModel->load(Yii::$app->request->post()) && $user = $signupModel->signup() ) {
+            Yii::$app->user->login($user, Yii::$app->params['user.sessionDuration']);
+            return $this->goHome();
+        }
+
+        return $this->render('login', ['loginModel' => $loginModel, 'signupModel' => $signupModel]);
     }
 
 
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
+
 
 
     public function actionSignup()

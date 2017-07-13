@@ -46,8 +46,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Service::className(), ['user_id' => 'id']);
     }
 
-    public function getProfile() {
-        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
+    public function getProfile($type = null) {
+        return $this->hasOne(Profile::className(), ['user_id' => 'id'])
+            ->where(['type' => $type]);
     }
 
     /**
@@ -172,98 +173,125 @@ class User extends ActiveRecord implements IdentityInterface
      * @throws \nodge\eauth\ErrorException
      */
     public static function findByEAuth($service) {
-        if (!$service->getIsAuthenticated()) {
+//        if (!$service->getIsAuthenticated()) {
+//            throw new ErrorException('EAuth user should be authenticated before creating identity.');
+//        }
+//
+//        $identityAttributes = [
+//            'email' => $service->getAttribute('email'),
+//        ];
+//        $profileAttributes = [
+//            'first_name' => $service->getAttribute('first_name'),
+//            'last_name' => $service->getAttribute('last_name'),
+//            'avatar' => $service->getAttribute('avatar'),
+//        ];
+//
+//
+//        /**
+//         * @var $identity User
+//         */
+//        $identity = self::find()
+//            ->joinWith('services')
+//            ->where([
+//                '{{%service}}.service_name' => $service->getServiceName(),
+//                '{{%service}}.identity_id' => $service->getId()
+//            ])
+//            ->limit(1)
+//            ->one();
+//
+//        if ( $identity !== null) {
+//            $identity->updateProfile(, $profileAttributes);
+//            return $identity;
+//        }
+//
+//
+//        $identity = new self($identityAttributes);
+//        $identity->points = 10000;
+//        $transaction = self::getDb()->beginTransaction();
+//
+//        if ( $identity->save() ) {
+//
+//            $serviceRecord = new Service();
+//            $serviceRecord->identity_id = $service->getId();
+//            $serviceRecord->service_name = $service->getServiceName();
+//            $serviceRecord->user_id = $identity->id;
+//
+//            $profile = new Profile();
+//            $profile->attributes = $profileAttributes;
+//            $profile->user_id = $identity->id;
+//
+//            if ( $serviceRecord->save() && $profile->save() ) {
+//                $transaction->commit();
+//            } else {
+//                $transaction->rollBack();
+//                throw new ErrorException("Identity don't create");
+//            }
+//
+//        } else {
+//            throw new ErrorException("Identity don't create");
+//        }
+//
+////        $id = $service->getServiceName().'-'.$service->getId();
+//
+////        Yii::$app->getSession()->set('user-'.$id, $attributes);
+//        return $identity;
+    }
+
+
+
+    public static function getUserByEAuth(\nodge\eauth\ServiceBase $service)
+    {
+        if ( !$service->getIsAuthenticated() ) {
             throw new ErrorException('EAuth user should be authenticated before creating identity.');
         }
 
-        $identityAttributes = [
-            'email' => $service->getAttribute('email'),
-        ];
+        $email = $service->getAttribute('email');
         $profileAttributes = [
             'first_name' => $service->getAttribute('first_name'),
             'last_name' => $service->getAttribute('last_name'),
             'avatar' => $service->getAttribute('avatar'),
         ];
 
+        $user = self::findByEmail($email);
 
-        /**
-         * @var $identity User
-         */
-        $identity = self::find()
-            ->joinWith('services')
-            ->where([
-                '{{%service}}.service_name' => $service->getServiceName(),
-                '{{%service}}.identity_id' => $service->getId()
-            ])
-            ->limit(1)
-            ->one();
-
-        if ( $identity !== null) {
-            $identity->updateProfile($profileAttributes);
-            return $identity;
-        }
-
-
-        $identity = new self($identityAttributes);
-        $identity->points = 10000;
-        $transaction = self::getDb()->beginTransaction();
-
-        if ( $identity->save() ) {
-
-            $serviceRecord = new Service();
-            $serviceRecord->identity_id = $service->getId();
-            $serviceRecord->service_name = $service->getServiceName();
-            $serviceRecord->user_id = $identity->id;
-
-            $profile = new Profile();
-            $profile->attributes = $profileAttributes;
-            $profile->user_id = $identity->id;
-
-            if ( $serviceRecord->save() && $profile->save() ) {
-                $transaction->commit();
+        if ( !$user ) {
+            $signupForm = new SignupForm();
+            $signupForm->email = $email;
+            $signupForm->password = Yii::$app->security->generateRandomString(8);
+            $signupForm->confirm_password = $signupForm->password;
+            $user = $signupForm->signup();
+            if ( $user ) {
+                $user->updateProfile($service->id, $profileAttributes);
             } else {
-                $transaction->rollBack();
-                throw new ErrorException("Identity don't create");
+                throw new \yii\db\Exception('Ошибка при создании пользователя');
             }
-
         } else {
-            throw new ErrorException("Identity don't create");
+            $user->updateProfile($service->id, $profileAttributes);
         }
 
-//        $id = $service->getServiceName().'-'.$service->getId();
-
-//        Yii::$app->getSession()->set('user-'.$id, $attributes);
-        return $identity;
+        return $user;
     }
 
 
     /**
+     * @param null $type
      * @param $attributes
      * @return bool|false|int
      */
-    public function updateProfile($attributes)
+    public function updateProfile($type = null, $attributes)
     {
         if ( !is_array($attributes) || $this->isNewRecord ) {
             return false;
         }
 
-        /**
-         * @var $profile ActiveRecord
-         */
+        /** @var $profile ActiveRecord */
+        $profile = $this->getProfile($type)->one();
 
-        if ( $this->profile === null ) {
-            $profile = new Profile();
+        if ( $profile === null ) {
+            $profile = new Profile($type);
             $profile->user_id = $this->id;
-        } else {
-            $profile = $this->profile;
         }
-
-        foreach ( $attributes as $name => $value ) {
-            if ( $profile->hasAttribute($name) && empty( $profile->getAttribute($name) ) ) {
-                $profile->setAttribute($name, $value);
-            }
-        }
-
+        $profile->attributes = $attributes;
         return $profile->save();
     }
 

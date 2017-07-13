@@ -12,7 +12,7 @@
         "irc": "irc://irc.freenode.net/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "repositories": [
         {
             "url": "https://github.com/mouse0270/bootstrap-notify.git",
@@ -25,7 +25,8 @@
         "yiisoft/yii2-bootstrap": "~2.0",
         "yiisoft/yii2-swiftmailer": "~2.0",
         "rmrevin/yii2-fontawesome": "~2",
-        "kartik-v/yii2-widget-select2": "~2.0",
+        "kartik-v/yii2-widget-select2": "*",
+        "kartik-v/yii2-tabs-x": "*",
         "nodge/yii2-eauth": "~2",
         "mouse0270/bootstrap-notify": "*",
         "makeusabrew/bootbox": "*"

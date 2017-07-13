@@ -36,6 +36,10 @@ form {
       padding: 10px 14px;
       border: 1px solid #ccc;
 
+      &:hover {
+        background-color: #f6f6f6;
+      }
+
       i.fa {
         color: #555;
         margin-right: 4px;
@@ -76,6 +80,37 @@ form {
       line-height: 1.4;
     }
   }
+
+
+  .has-error .form-control {
+    border-color: #c62e2b;
+  }
+
+  .form-control {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+  }
+
+  .error-summary {
+    text-align: left;
+    background-color: #FDFAFA;
+    color: #c62e2b;
+    padding: 15px;
+    border: 1px solid #eeb2b0;
+    border-radius: 3px;
+    margin-bottom: 20px;
+
+    p {
+      display: none;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
 }
 
 .task-filter-form {
@@ -84,5 +119,20 @@ form {
   }
   .help-block {
     display: none;
+  }
+}
+
+
+.form-without-spacing {
+  .form-group {
+    margin-bottom: 15px;
+
+    & + .form-group {
+      margin-top: -16px;
+    }
+
+    .help-block {
+      display: none;
+    }
   }
 }

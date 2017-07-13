@@ -9,12 +9,19 @@ use yii\db\ActiveRecord;
  * This is the model class for table "{{%profile}}".
  *
  * @property integer $id
+ * @property integer $type
  * @property string $first_name
  * @property string $last_name
  * @property string $avatar
  */
 class Profile extends ActiveRecord
 {
+    public function __construct($type = null, array $config = [])
+    {
+        $this->type = $type;
+        parent::__construct($config);
+    }
+
     /**
      * @inheritdoc
      */

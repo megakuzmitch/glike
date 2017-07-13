@@ -275,7 +275,6 @@
 
 
     var updateListView = function(id, filter) {
-
         var container = $('.list-view-container').first(),
             filterForm = $('[data-list=' + id + ']'),
             modelClass = filterForm.data('model-class'),
@@ -420,13 +419,8 @@
 
 
         $('#user-task-form').on('beforeSubmit', function(e) {
-            var taskForm = $(this),
-                serviceType = taskForm.find('input[name*=service_type]:checked').val();
-
-            prepareSignedAction(serviceType).done(function() {
-                saveTask(taskForm);
-            });
-
+            var taskForm = $(this);
+            saveTask(taskForm);
             return false;
         });
 

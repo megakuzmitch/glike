@@ -1,42 +1,61 @@
 <?php
 /**
  * @var $this yii\web\View
- * @var $model \app\modules\user\models\LoginForm
+ * @var $loginModel \app\modules\user\models\LoginForm
+ * @var $signupModel \app\modules\user\models\LoginForm
  */
 
 
-use yii\bootstrap\ActiveForm;
-use yii\helpers\Html;
+use app\widgets\EAuthWidget;
+use yii\bootstrap\Tabs;
 
 $this->title = 'Вход на сайт';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="user-default-login">
+
 
     <div class="row centered">
 
         <div class="col-lg-4 col-lg-offset-4">
-<!--            --><?php //echo \nodge\eauth\Widget::widget([
-//                'action' => Yii::$app->user->loginUrl
-//            ]); ?>
+            <div class="panel panel-default panel-shadow">
 
-            <? $form = ActiveForm::begin(['id' => 'form-login']); ?>
-
-                <?= $form->field($model, 'email')->textInput() ?>
-                <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Войти', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
-                    <div> или <?= Html::a('зарегестрироваться', ['/user/default/signup']) ?></div>
+                <div class="panel-body">
+                    <?php echo EAuthWidget::widget([
+                        'action' => '/user/default/login'
+                    ]); ?>
                 </div>
 
-            <? ActiveForm::end(); ?>
+                <?
 
+                $loginTabActive = true;
+                $signupTabActive = false;
+                if ( $signupModel->getIsLoad() ) {
+                    $loginTabActive = false;
+                    $signupTabActive = true;
+                }
+
+                ?>
+
+                <?= Tabs::widget([
+                    'options' => [
+                        'class' => 'nav-center'
+                    ],
+                    'linkOptions' => ['style' => 'width:140px;'],
+                    'itemOptions' => ['class' => 'panel-body'],
+                    'items' => [
+                        [
+                            'label' => 'Вход',
+                            'content' => $this->render('_login', ['model' => $loginModel]),
+                            'active' => $loginTabActive,
+                        ],
+                        [
+                            'label' => 'Регистрация',
+                            'content' => $this->render('_signup', ['model' => $signupModel]),
+                            'active' => $signupTabActive,
+                        ]
+                    ]
+                ]);?>
+            </div>
         </div>
-
     </div>
-
-
-
-</div>

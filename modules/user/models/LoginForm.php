@@ -17,6 +17,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
+    private $_loaded = false;
     private $_user = false;
 
 
@@ -62,7 +63,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), 3600*24*30);
+            return Yii::$app->user->login($this->getUser(), Yii::$app->params['user.sessionDuration']);
         }
         return false;
     }
@@ -79,5 +80,27 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+
+    public function attributeLabels()
+    {
+        return [
+            'email' => 'E-mail',
+            'password' => 'Пароль'
+        ];
+    }
+
+
+    public function load($data, $formName = null)
+    {
+        $this->_loaded = parent::load($data, $formName);
+        return $this->_loaded;
+    }
+
+
+    public function getIsLoad()
+    {
+        return $this->_loaded;
     }
 }

@@ -21,7 +21,10 @@ class SignupForm extends Model
 //    public $username;
     public $email;
     public $password;
+    public $confirm_password;
 //    public $verifyCode;
+
+    private $_loaded = false;
 
     public function rules()
     {
@@ -40,17 +43,30 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
+            ['confirm_password', 'required'],
+            ['confirm_password', 'confirmPassword'],
+
 //            ['verifyCode', 'captcha', 'captchaAction' => '/user/default/captcha'],
         ];
     }
 
-    public function getAttributeLabels()
+    public function attributeLabels()
     {
         return [
             'email' => 'E-mail',
-            'password' => 'Пароль'
+            'password' => 'Пароль',
+            'confirm_password' => 'Подтверждение пароля',
         ];
     }
+
+
+    public function confirmPassword($attribute, $params)
+    {
+        if ( $this->{$attribute} !== $this->password ) {
+            $this->addError($attribute, 'Пароли не совпадают');
+        }
+    }
+
 
     /**
      * Signs user up.
@@ -71,7 +87,13 @@ class SignupForm extends Model
                 $user->points = 1000;
             }
 
-            if ($user->save()) {
+            if ( $user->save() ) {
+                Yii::$app->mailer->compose('@app/modules/user/mails/thanks', ['model' => $this])
+                    ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
+                    ->setTo($this->email)
+                    ->setSubject('Регистрация в сервисе ' . Yii::$app->name)
+                    ->send();
+
                 Yii::$app->mailer->compose('@app/modules/user/mails/emailConfirm', ['user' => $user])
                     ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
                     ->setTo($this->email)
@@ -82,5 +104,18 @@ class SignupForm extends Model
         }
 
         return null;
+    }
+
+
+    public function load($data, $formName = null)
+    {
+        $this->_loaded = parent::load($data, $formName);
+        return $this->_loaded;
+    }
+
+
+    public function getIsLoad()
+    {
+        return $this->_loaded;
     }
 }

@@ -29,7 +29,7 @@ use yii\bootstrap\Nav;
      * @var $profile \app\modules\user\models\Profile
      */
     $user = Yii::$app->user->getIdentity();
-    $profile = $user->profile;
+    $profile = $user->getProfile(Yii::$app->session->get('currentProfile'))->one();
     ?>
 
     <ul class="nav navmenu-nav">
