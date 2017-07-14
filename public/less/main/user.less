@@ -306,7 +306,7 @@ Task list
   -moz-border-radius: 4px;
   border-radius: 4px;
   margin-bottom: 30px;
-  padding: 20px 10px 15px;
+  padding: 15px;
   -webkit-box-shadow: 1px 1px 3px 0 #797979;
   -moz-box-shadow: 1px 1px 3px 0 #797979;
   box-shadow: 1px 1px 3px 0 #797979;
@@ -314,10 +314,17 @@ Task list
   background-color: #fff;
 }
 
+.task-list .item .header {
+  text-align: center;
+  height: 3em;
+  line-height: 1.15;
+  margin-right: 20px;
+}
+
 .task-list .item .btn-remove {
   position: absolute;
-  right: 5px;
-  top: 5px;
+  right: 15px;
+  top: 15px;
   margin: 0;
   padding: 0;
 }
@@ -326,12 +333,21 @@ Task list
   margin-bottom: 10px;
 }
 
+.task-list .item .img-wrapper {
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  max-height: 150px;
+}
+
 .task-list .item img {
-  width: 100px;
-  height: 100px;
-  padding: 4px;
-  border: 1px solid #ddd;
+  width: 100%;
+  height: auto;
   background-color: inherit;
+  position: relative;
 }
 
 .task-list .item .name {

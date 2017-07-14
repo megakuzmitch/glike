@@ -21,9 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel panel-default panel-shadow">
 
                 <div class="panel-body">
+                    <h3 class="centered">Войти с помощью:</h3>
                     <?php echo EAuthWidget::widget([
                         'action' => '/user/default/login'
                     ]); ?>
+                    <div class="ceneterd">или</div>
                 </div>
 
                 <?

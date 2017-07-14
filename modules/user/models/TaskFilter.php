@@ -51,7 +51,21 @@ class TaskFilter extends Model
     {
         $query = Task::find();
 
-        $this->load(Yii::$app->request->get());
+        if ( $this->load(Yii::$app->request->get()) ) {
+            if ( $this->service_type ) {
+                Yii::$app->session->set('currentService', $this->service_type);
+                $service = Yii::$app->get('eauth')->getIdentity(Task::getServiceType($this->service_type));
+                $user = Yii::$app->user->identity;
+                if ( $user ) {
+                    $serviceId = $user->getServices($service->getServiceName())->select('identity_id')->scalar();
+                    if ( $serviceId ) {
+                        $user->setCurrentProfile($serviceId);
+                    }
+                }
+            }
+        } else {
+            $this->service_type = Yii::$app->session->get('currentService');
+        }
 
         if ( $this->service_type ) {
             $query->andWhere(['service_type' => $this->service_type]);

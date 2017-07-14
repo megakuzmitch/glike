@@ -17,14 +17,11 @@ if ( $taskFilter->service_type ) {
 
 ?>
 
-<div class="user-tasks list-view-container">
-
     <? if ( $service && !$service->getIsAuthenticated() ): ?>
         <div class="row centered">' .
             <div class="col-lg-4">
             <?= EAuthWidget::widget([
                 'action' => '/user/social/auth',
-                'predefinedServices' => [$service->getServiceName()]
             ]); ?>
             </div>
         </div>
@@ -40,5 +37,3 @@ if ( $taskFilter->service_type ) {
             'layout' => '{items}',
         ]) ?>
     <? endif ?>
-
-</div>

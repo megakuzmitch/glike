@@ -298,8 +298,17 @@
 
         queryParams = filterForm.serialize();
 
-        $.get(location, queryParams, function(res) {
+        return $.get(location, queryParams, function(res) {
             container.html(res);
+        });
+    };
+
+
+    var updateProfileData = function() {
+        $.get('/user/profile/current', function(res) {
+            var account = $('.user-sidebar .account');
+            $('.avatar', account).attr('src', res.avatar);
+            $('.name', account).text(res.name);
         });
     };
 
@@ -399,7 +408,9 @@
 
         $(document).on('change', '.filter input', function(e) {
             var form = $(this).closest('form');
-            updateListView(form.data('list'));
+            updateListView(form.data('list')).done(function() {
+                updateProfileData();
+            });
         });
 
 
@@ -419,8 +430,18 @@
 
 
         $('#user-task-form').on('beforeSubmit', function(e) {
-            var taskForm = $(this);
-            saveTask(taskForm);
+            var taskForm = $(this),
+                serviceType = taskForm.find('input[name*=service_type]:checked').val();
+
+            checkAuth(serviceType).done(function(response) {
+                if ( response.authenticated ) {
+                    saveTask(taskForm);
+                } else {
+                    $('#modal-auth').modal();
+                }
+            }).fail(function(error) {
+                console.error(error);
+            });
             return false;
         });
 

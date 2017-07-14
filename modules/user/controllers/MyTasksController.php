@@ -16,6 +16,8 @@ use yii\data\ActiveDataProvider;
 use yii\db\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
@@ -75,7 +77,9 @@ class MyTasksController extends Controller
             return $this->renderPartial('_list', $params);
         }
 
-        $params['taskFormModel'] = new TaskForm();
+        $taskFormModel = new TaskForm();
+        $taskFormModel->load(Yii::$app->request->get());
+        $params['taskFormModel'] = $taskFormModel;
         return $this->render('index', $params);
     }
 
@@ -87,8 +91,20 @@ class MyTasksController extends Controller
             $model->syncWithTask(Task::findOne($id));
         }
         if ( $model->load(Yii::$app->request->post()) ) {
+
+            $response = ActiveForm::validate($model);
+
+            if ( empty( $response ) ) {
+                $bodyParams = Yii::$app->request->getBodyParams();
+                unset($bodyParams['_csrf']);
+                $queryParams = Yii::$app->request->getQueryParams();
+                $url = ArrayHelper::merge($queryParams, $bodyParams);
+                array_unshift($url, '/user/my-tasks/index');
+                Url::remember($url);
+            }
+
             Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($model);
+            return $response;
         }
         return false;
     }

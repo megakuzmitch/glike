@@ -1,6 +1,8 @@
 <?php
 
 
+use rmrevin\yii\fontawesome\FA;
+use rmrevin\yii\fontawesome\FontAwesome;
 use yii\bootstrap\Html;
 use yii\web\View;
 
@@ -25,39 +27,30 @@ if ($popup) {
 ?>
 <div class="eauth eauth-widget" id="<?php echo $id; ?>">
     <ul class="eauth-list">
-        <?php
-        foreach ($services as $name => $service) {
-
+        <? foreach ($services as $name => $service) {
             echo '<li class="eauth-service eauth-service-id-' . $service->id . '">';
 
-            echo Html::a('Авторизоваться с помощью: ' . $service->title, [$action, 'service' => $name], [
-                'class' => 'eauth-service-link btn btn-warning',
-                'data-eauth-service' => $service->id,
-            ]);
-
-//            /**
-//             * @var $eauthService \nodge\eauth\oauth2\Service
-//             */
-//            $eauthService = Yii::$app->eauth->getIdentity($name);
-//            if ( $user->getIsLinked($eauthService) ) {
-//                $attributes = $eauthService->getAttributes();
-//
-//                echo Html::img($eauthService->getAttribute('avatar'));
-//                echo Html::tag('span', $eauthService->getAttribute('name'));
-//                echo Html::a('Отвязать аккаунт', ['/user/default/unlink', 'service' => $name], [
-//                    'class' => 'eauth-service-unlink',
-//                    'data-eauth-service' => $service->id,
-//                ]);
-//
-//            } else {
-//                echo Html::a($service->title, [$action, 'service' => $name], [
-//                    'class' => 'eauth-service-link',
-//                    'data-eauth-service' => $service->id,
-//                ]);
-//            }
+            if ( $servicesIdentities[$name]->getIsAuthenticated() ) {
+                $attributes = $servicesIdentities[$name]->getAttributes();
+                echo '<div class="eauth-service-linked">';
+                    echo '<b>' . $service->title . '</b>';
+                    echo Html::img($attributes['avatar'], ['class' => 'img-circle']);
+                    echo '<div class="eauth-service-info">';
+                        echo Html::tag('div', $attributes['name'], ['class' => 'name']);
+                        echo Html::a('Отвязать аккаунт', ['/user/social/remove', 'service' => $name], [
+                            'class' => 'eauth-service-logout btn btn-default btn-xs',
+                            'data-eauth-service' => $service->id,
+                        ]);
+                    echo '</div>';
+                echo '<div>';
+            } else {
+                echo Html::a('<span class="icon"></span>' . $service->title, [$action, 'service' => $name], [
+                    'class' => 'eauth-service-link btn btn-block btn-lg',
+                    'data-eauth-service' => $service->id,
+                ]);
+            }
 
             echo '</li>';
-        }
-        ?>
+        } ?>
     </ul>
 </div>

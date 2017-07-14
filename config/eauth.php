@@ -24,7 +24,7 @@ return [
             'class' => 'app\extended\eauth\GoogleOAuth2Service',
             'clientId' => '...',
             'clientSecret' => '...',
-            'title' => 'Google',
+            'title' => 'Youtube',
         ],
 //        'twitter' => [
 //            // register your app here: https://dev.twitter.com/apps/new

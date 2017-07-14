@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\widgets\EAuthWidget;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use app\assets\AppAsset;
@@ -24,19 +25,20 @@ AppAsset::register($this);
 
 <?= $content ?>
 
-<?
-    Modal::begin([
-        'header' => '<h4 class="modal-title"></h4>',
+    <? Modal::begin([
+        'header' => '<h4 class="modal-title">Привязка к социальным сетям</h4>',
         'headerOptions' => ['id' => 'modal-header'],
-        'id' => 'modal',
-        'size' => 'modal-md',
+        'id' => 'modal-auth',
         //keeps from closing modal with esc key or by clicking out of the modal.
         // user must click cancel or X to close
-        'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
-    ]);
-        echo "<div id='modal-content'></div>";
-    Modal::end();
-?>
+        'clientOptions' => ['backdrop' => 'static', 'keyboard' => false]
+    ]) ?>
+        <div id='modal-content'>
+            <?= EAuthWidget::widget([
+                'action' => '/user/social/auth'
+            ]); ?>
+        </div>
+    <? Modal::end() ?>
 
 <?php $this->endBody() ?>
 </body>

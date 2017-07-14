@@ -14,7 +14,7 @@ use Yii;
 
 class EAuthWidget extends Widget
 {
-    public $services;
+    public $serviceIdentities;
 
 
     public function init()
@@ -41,6 +41,12 @@ class EAuthWidget extends Widget
             $this->services = $_services;
         }
 
+        $this->serviceIdentities = [];
+        $eauth = Yii::$app->get('eauth');
+        foreach ( $this->services as $name => $service ) {
+            $this->serviceIdentities[$name] = $eauth->getIdentity($name);
+        }
+
         if (!isset($this->popup)) {
             $this->popup = $component->popup;
         }
@@ -60,6 +66,7 @@ class EAuthWidget extends Widget
         echo $this->render('eauth_widget', [
             'id' => $this->getId(),
             'services' => $this->services,
+            'servicesIdentities' => $this->serviceIdentities,
             'action' => $this->action,
             'popup' => $this->popup,
             'assetBundle' => $this->assetBundle,

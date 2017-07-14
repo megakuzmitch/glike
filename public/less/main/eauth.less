@@ -2,24 +2,100 @@
 .eauth {
   .eauth-list {
     margin: 0;
+    padding: 0;
     li.eauth-service {
       display: block;
       text-align: center;
-      margin: 0 0 15px;
+      margin: 0 0 5px;
 
       .eauth-service-link {
         width: 100%;
         padding: 6px 10px;
         border: 1px solid #ddd;
+        font-size: 16px;
+        position: relative;
 
-        &:before,
-        &:after {
+        &:hover {
+          opacity: 0.9;
+        }
+
+        &:before {
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          content: "";
+          background: none;
+          padding: 0;
+          margin: -9px 0 0;
+          position: absolute;
           left: 10px;
-          margin-left: 0;
           top: 50%;
-          margin-top: -16px;
+          float: left;
+          -webkit-transition: none;
+          -moz-transition: none;
+          -ms-transition: none;
+          -o-transition: none;
+          transition: none;
+        }
+        &:after {
+          display: none;
         }
       }
+
+
+      .eauth-service-linked {
+        text-align: left;
+        border-top: 1px solid #ddd;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        b {
+          display: block;
+        }
+        img {
+          width: 60px;
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 15px;
+        }
+
+        .eauth-service-info {
+          display: inline-block;
+          vertical-align: middle;
+
+          .name {
+            font-weight: bold;
+            font-size: 20px;
+          }
+
+          .eauth-service-logout {
+            padding: 3px 6px;
+          }
+        }
+      }
+
+
+      &.eauth-service-id-vkontakte {
+        .eauth-service-link {
+          color: #fff;
+          background-color: #45668e;
+          border-color: #45668e;
+          &:before {
+            content: "\f189";
+          }
+        }
+      }
+
+
+      &.eauth-service-id-google_oauth {
+        .eauth-service-link {
+          color: #fff;
+          background-color: #dd4b39;
+          border-color: #dd4b39;
+          &:before {
+            content: "\f16a";
+          }
+        }
+      }
+
     }
   }
 }

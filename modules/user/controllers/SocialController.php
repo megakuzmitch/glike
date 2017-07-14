@@ -9,10 +9,13 @@
 namespace app\modules\user\controllers;
 
 
+use app\extended\eauth\VKontakteOAuth2Service;
 use app\modules\user\models\Task;
 use app\modules\user\models\User;
 use nodge\eauth\EAuth;
 use nodge\eauth\ErrorException;
+use nodge\eauth\oauth\SessionTokenStorage;
+use nodge\eauth\ServiceBase;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -40,13 +43,38 @@ class SocialController extends Controller
         /** @var $eauth EAuth */
         $eauth = Yii::$app->get('eauth');
         $identity = $eauth->getIdentity($service);
-        $identity->setCancelUrl( Yii::$app->user->getReturnUrl() );
-        $identity->setRedirectUrl( Yii::$app->user->getReturnUrl() );
+        $identity->setCancelUrl( Url::previous() );
+        $identity->setRedirectUrl( Url::previous() );
         if ( $identity->authenticate() ) {
+            /** @var $user User */
+            if ( Yii::$app->user->isGuest ) {
+                $user = User::getUserByEAuth($identity);
+                Yii::$app->user->login($user);
+            } else {
+                $user = Yii::$app->user->getIdentity();
+                $user->linkService($identity);
+                $user->updateProfile($identity->id, $identity->getAttributes());
+            }
+            $user->setCurrentProfile($identity->id);
             $identity->redirect();
         } else {
             $identity->cancel();
         }
         return $eauth->redirect('/', false);
+    }
+
+
+    public function actionRemove($service)
+    {
+        /** @var $eauth EAuth */
+        $eauth = Yii::$app->get('eauth');
+        /** @var VKontakteOAuth2Service $identity */
+        $identity = $eauth->getIdentity($service);
+
+        $tokenStorageConfig = $eauth->getTokenStorage();
+        /** @var SessionTokenStorage $tokenStorage */
+        $tokenStorage = Yii::createObject($tokenStorageConfig['class']);
+        $tokenStorage->clearToken($identity->getServiceName());
+        $identity->redirect();
     }
 }

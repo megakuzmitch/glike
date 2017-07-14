@@ -14,6 +14,14 @@ class GoogleOAuth2Service extends \nodge\eauth\services\GoogleOAuth2Service
 {
     protected $scopes = [self::SCOPE_EMAIL, self::SCOPE_USERINFO_EMAIL, self::SCOPE_USERINFO_PROFILE, self::SCOPE_YOUTUBE];
 
+
+    public function remove()
+    {
+        $tokenStorage = $this->getTokenStorage();
+        var_dump($tokenStorage); die();
+    }
+
+
     protected function fetchAttributes()
     {
         $info = $this->makeSignedRequest('https://www.googleapis.com/oauth2/v2/userinfo', [

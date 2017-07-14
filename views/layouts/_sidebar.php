@@ -29,15 +29,18 @@ use yii\bootstrap\Nav;
      * @var $profile \app\modules\user\models\Profile
      */
     $user = Yii::$app->user->getIdentity();
-    $profile = $user->getProfile(Yii::$app->session->get('currentProfile'))->one();
+    $profile = $user->getCurrentProfile();
     ?>
 
     <ul class="nav navmenu-nav">
         <li class="account">
-            <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->getAvatarPhoto() ?>" alt="avatar" class="img-circle"></a>
+            <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->getAvatarPhoto() ?>" alt="avatar" class="avatar img-circle"></a>
             <div class="info">
                 <div class="name"><?= $profile->name ?></div>
-                <div class="points"><span class="user-points-container"><?= $user->points ?></span> баллов</div>
+                <div class="points"><span class="user-points-container"><?= $user->points ?></span> <?=
+                    Yii::t('app', '{n, plural, one{балл} few{балла} many{баллов} other{баллов}}', array(
+                        'n' => $user->points,
+                    ))?></div>
                 <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
             </div>
         </li>

@@ -41,15 +41,34 @@ class User extends ActiveRecord implements IdentityInterface
         return '{{%user}}';
     }
 
-    public function getServices()
+    public function getServices($serviceName = false, $identityId = false)
     {
-        return $this->hasMany(Service::className(), ['user_id' => 'id']);
+        $query = $this->hasMany(Service::className(), ['user_id' => 'id']);
+        if ( $serviceName ) {
+            $query->where(['service_name' => $serviceName]);
+        }
+        if ( $identityId ) {
+            $query->andWhere(['identity_id' => $identityId]);
+        }
+        return $query;
     }
 
     public function getProfile($type = null) {
         return $this->hasOne(Profile::className(), ['user_id' => 'id'])
             ->where(['type' => $type]);
     }
+
+
+    public function getCurrentProfile()
+    {
+        return $this->getProfile(Yii::$app->session->get('currentProfile'))->one();
+    }
+
+    public function setCurrentProfile($type)
+    {
+        Yii::$app->session->set('currentProfile', $type);
+    }
+
 
     /**
      * @inheritdoc
@@ -119,10 +138,26 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param $socialService \nodge\eauth\oauth2\Service
+     * @param bool $force
      * @return Service
+     * @throws Exception
      */
-    public function linkService($socialService)
+    public function linkService($socialService, $force = true)
     {
+        if ( $serviceRecord = $this->getServices($socialService->getServiceName(), $socialService->getId())->one() ) {
+            return $serviceRecord;
+        }
+
+        if ( $serviceRecord = $this->getServices($socialService->getServiceName())->one() ) {
+            if ( $force ) {
+                $serviceRecord->identity_id = $socialService->getId();
+                $serviceRecord->save();
+                return $serviceRecord;
+            } else {
+                throw new Exception('Вы уже авторизовывались ранее в этой социальной сети под другим именем');
+            }
+        }
+
         $serviceRecord = new Service();
         $serviceRecord->service_name = $socialService->getServiceName();
         $serviceRecord->identity_id = $socialService->getId();
@@ -155,86 +190,15 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getSocialId($serviceName)
     {
-        $services = $this->services;
-
-        foreach ( $services as $service ) {
-            if ( $serviceName == $service->service_name ) {
-                return $service->identity_id;
-            }
-        }
+//        if ( !$this->getServices())
+//
+//        foreach ( $services as $service ) {
+//            if ( $serviceName == $service->service_name ) {
+//                return $service->identity_id;
+//            }
+//        }
 
         return null;
-    }
-
-
-    /**
-     * @param \nodge\eauth\ServiceBase $service
-     * @return User
-     * @throws \nodge\eauth\ErrorException
-     */
-    public static function findByEAuth($service) {
-//        if (!$service->getIsAuthenticated()) {
-//            throw new ErrorException('EAuth user should be authenticated before creating identity.');
-//        }
-//
-//        $identityAttributes = [
-//            'email' => $service->getAttribute('email'),
-//        ];
-//        $profileAttributes = [
-//            'first_name' => $service->getAttribute('first_name'),
-//            'last_name' => $service->getAttribute('last_name'),
-//            'avatar' => $service->getAttribute('avatar'),
-//        ];
-//
-//
-//        /**
-//         * @var $identity User
-//         */
-//        $identity = self::find()
-//            ->joinWith('services')
-//            ->where([
-//                '{{%service}}.service_name' => $service->getServiceName(),
-//                '{{%service}}.identity_id' => $service->getId()
-//            ])
-//            ->limit(1)
-//            ->one();
-//
-//        if ( $identity !== null) {
-//            $identity->updateProfile(, $profileAttributes);
-//            return $identity;
-//        }
-//
-//
-//        $identity = new self($identityAttributes);
-//        $identity->points = 10000;
-//        $transaction = self::getDb()->beginTransaction();
-//
-//        if ( $identity->save() ) {
-//
-//            $serviceRecord = new Service();
-//            $serviceRecord->identity_id = $service->getId();
-//            $serviceRecord->service_name = $service->getServiceName();
-//            $serviceRecord->user_id = $identity->id;
-//
-//            $profile = new Profile();
-//            $profile->attributes = $profileAttributes;
-//            $profile->user_id = $identity->id;
-//
-//            if ( $serviceRecord->save() && $profile->save() ) {
-//                $transaction->commit();
-//            } else {
-//                $transaction->rollBack();
-//                throw new ErrorException("Identity don't create");
-//            }
-//
-//        } else {
-//            throw new ErrorException("Identity don't create");
-//        }
-//
-////        $id = $service->getServiceName().'-'.$service->getId();
-//
-////        Yii::$app->getSession()->set('user-'.$id, $attributes);
-//        return $identity;
     }
 
 
@@ -260,13 +224,13 @@ class User extends ActiveRecord implements IdentityInterface
             $signupForm->password = Yii::$app->security->generateRandomString(8);
             $signupForm->confirm_password = $signupForm->password;
             $user = $signupForm->signup();
-            if ( $user ) {
-                $user->updateProfile($service->id, $profileAttributes);
-            } else {
-                throw new \yii\db\Exception('Ошибка при создании пользователя');
-            }
-        } else {
+        }
+
+        if ( $user ) {
+            $user->linkService($service);
             $user->updateProfile($service->id, $profileAttributes);
+        } else {
+            throw new \yii\db\Exception('Ошибка при создании пользователя');
         }
 
         return $user;

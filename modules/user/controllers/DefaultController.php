@@ -85,8 +85,6 @@ class DefaultController extends Controller
             try {
                 if ( $eauthService->authenticate() ) {
                     /** @var $user User */
-
-                    $attributes = $eauthService->getAttributes();
                     $user = User::getUserByEAuth($eauthService);
                     Yii::$app->user->login($user);
                     Yii::$app->session->set('currentProfile', $eauthService->id);

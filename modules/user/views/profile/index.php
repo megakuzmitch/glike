@@ -22,10 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-6">
 
-            <?php echo EAuthWidget::widget([
-                'popup' => true,
-                'action' => Url::to(['/user/default/auth'])
-            ]); ?>
+
 
         </div>
     </div>

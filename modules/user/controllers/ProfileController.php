@@ -16,6 +16,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\Response;
 
 class ProfileController extends Controller
 {
@@ -40,8 +41,14 @@ class ProfileController extends Controller
     {
         $user = Yii::$app->user->getIdentity();
         Url::remember();
+        $eauthConfig = Yii::$app->get('eauth')->services;
+        $services = [];
+        foreach ( $eauthConfig as $key => $service ) {
+            $services[$key] = Yii::$app->get('eauth')->getIdentity($key);
+        }
         return $this->render('index', [
             'model' => $user,
+            'services' => $services
         ]);
     }
 
@@ -72,6 +79,19 @@ class ProfileController extends Controller
             ]);
         }
     }
+
+
+    public function actionCurrent()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $user = Yii::$app->user->identity;
+        $profile = $user->getCurrentProfile();
+        return [
+            'name' => $profile->name,
+            'avatar' => $profile->avatar
+        ];
+    }
+
 
     /**
      * @return User the loaded model
