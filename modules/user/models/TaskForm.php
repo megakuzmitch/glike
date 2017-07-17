@@ -305,10 +305,13 @@ class TaskForm extends Model
             case Task::TASK_TYPE_LIKE:
             case Task::TASK_TYPE_REPOST:
             case Task::TASK_TYPE_COMMENT:
-                $pattern = "/^https:\/\/(www)?\.?youtube.com\/watch\?v=([a-zA-Z1-9_\-]+)/";
+                $pattern = "/^https:\/\/(www)?\.?youtube.com\/watch\?v=([a-zA-Z0-9_\-]+)/";
                 if ( ! preg_match($pattern, $this->link, $matches) ) {
-                    $this->addError($attribute, $params['message']);
-                    return;
+                    $pattern = "/^https:\/\/(www)?\.?youtu.be\/([a-zA-Z0-9_\-]+)/";
+                    if ( ! preg_match($pattern, $this->link, $matches) ) {
+                        $this->addError($attribute, $params['message']);
+                        return;
+                    }
                 }
 
                 $this->_item_id = $matches[2];
@@ -316,7 +319,7 @@ class TaskForm extends Model
                 break;
 
             case Task::TASK_TYPE_SUBSCRIBE:
-                $pattern = "/^https:\/\/m?\.?vk.com\/([\D|\W]*)(\d*)$/";
+                $pattern = "/";
                 $this->addError($attribute, $params['message']);
                 break;
         }

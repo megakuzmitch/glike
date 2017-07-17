@@ -82,9 +82,16 @@ if ( isset($formAction) ) {
 
 <div class="form-group centered">
     <? if ( Yii::$app->request->isAjax ) {
-        echo Html::a('Отмена', '', ['class' => 'btn btn-default', 'data-dismiss' => 'modal', 'aria-hidden' => true]);
+        echo Html::a('Отмена', '', [
+            'class' => 'btn btn-default',
+            'data-dismiss' => 'modal',
+            'aria-hidden' => true
+        ]);
     }?>
-    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
+    <?= Html::submitButton('Сохранить', [
+        'class' => 'btn btn-primary',
+        'data-loading-text' => "<i class='fa fa-circle-o-notch fa-spin'></i> Сохранить"
+    ]) ?>
 </div>
 
 <?php ActiveForm::end(); ?>

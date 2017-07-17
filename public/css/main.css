@@ -224,7 +224,7 @@ hr {
    Font Awesome style
    ========================================================================== */
 i.fa {
-  color: #ff7878;
+  color: inherit;
 }
 .navbar {
   font-weight: 800;
@@ -777,8 +777,8 @@ Task list
 .eauth .eauth-list li.eauth-service .eauth-service-linked {
   text-align: left;
   border-top: 1px solid #ddd;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 .eauth .eauth-list li.eauth-service .eauth-service-linked b {
   display: block;

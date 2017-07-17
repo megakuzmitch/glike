@@ -22,7 +22,7 @@ use app\helpers\TaskHelper;
             <!--                                <div class="name"><strong>Оставить комментарий</strong><br>к записи на стене</div>-->
         </div>
         <div class="actions">
-            <a href="<?= $model->link ?>" target="_blank" type="button" class="do-task btn btn-primary"><i class="fa fa-plus-circle"></i><?= $model->points ?> баллов</a>
+            <a href="<?= $model->link ?>" target="_blank" type="button" class="do-task btn btn-primary"><i class="fa fa-plus-circle"></i><?= $model->getPointsLabel() ?></a>
             <a href="#" type="button" class="check-task btn btn-warning"><i class="fa fa-check-circle"></i>Проверить</a>
         </div>
     </div>

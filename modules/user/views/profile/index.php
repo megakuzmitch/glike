@@ -19,14 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Сменить пароль', ['password-change'], ['class' => 'btn btn-primary']) ?>
     </p>
 
-    <div class="row">
-        <div class="col-lg-6">
-
-
-
-        </div>
-    </div>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -34,5 +26,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'email',
         ],
     ]) ?>
+
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>Привязка к соцсетям:</h3>
+            <?= EAuthWidget::widget(['action' => '/user/social/auth']) ?>
+
+        </div>
+    </div>
 
 </div>

@@ -17,6 +17,7 @@ use app\modules\user\models\Task;
 use app\modules\user\models\TaskFilter;
 use app\modules\user\models\TaskForm;
 use app\modules\user\models\User;
+use nodge\eauth\oauth\ServiceBase;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Exception;
@@ -67,7 +68,7 @@ class TasksController extends Controller
         $taskFilter = new TaskFilter();
         $query = $taskFilter->search();
         $query->andWhere('need_count > counter');
-        $query->andWhere(['NOT IN', 'id', $doneTaskQuery]);
+//        $query->andWhere(['NOT IN', 'id', $doneTaskQuery]);
         $query->orderBy('created_at DESC');
 
         $dataProvider = new ActiveDataProvider([
@@ -107,6 +108,14 @@ class TasksController extends Controller
 
         $response = [ 'done' => false, 'message' => 'Задание не выполнено' ];
         $taskIsDone = false;
+
+        $eauth = Yii::$app->get('eauth');
+        /** @var ServiceBase $identity */
+        $identity = $eauth->getIdentity(Task::getServiceType($task->service_type));
+        if ( !$identity->getIsAuthenticated() ) {
+            $response['message'] = 'Вы не привязаны к социальной сети';
+            return $response;
+        }
 
         switch ($task->service_type) {
             case Task::SERVICE_TYPE_VK:

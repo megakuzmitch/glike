@@ -81,9 +81,10 @@
 
             _popupManager.open(_self.url, {}, _popupOptions);
             _popupManager.on('closed.PopupManager', function(e) {
-                console.log(e);
-                prepareSignedAction(_self.serviceType).done(function() {
-                    console.log('sdsdsd');
+                _popupManager.off('closed.PopupManager');
+
+                $.post(_check_url, {id: _self.id}).done(function(data) {
+                    console.log(data);
                 });
             });
 
@@ -182,8 +183,12 @@
                 };
 
 
-                this.on = function(event, callback) {
-                    $(document).on(event, callback);
+                this.on = function(event, handler) {
+                    $(document).on(event, handler);
+                };
+
+                this.off = function(event) {
+                    $(document).off(event);
                 };
 
                 instance = this;
@@ -321,15 +326,20 @@
 
 
     var saveTask = function(form) {
-        var deferred = $.Deferred();
+        var deferred = $.Deferred(),
+            submitButton = $('[type=submit]', form);
+
+        submitButton.button('loading');
         $.post(form.attr('action'), form.serialize(), function(response) {
             if ( response.success ) {
                 updateUserCounters(response.userCounters);
                 updateListView('TaskList');
                 deferred.resolve(response);
                 form.trigger('reset');
+                submitButton.button('reset');
             } else {
                 deferred.reject(response);
+                submitButton.button('reset');
             }
         });
         return deferred.promise();
@@ -446,43 +456,43 @@
         });
 
 
-        $(document).on('click', '.show-modal-btn', function(e) {
-            e.preventDefault();
-            var thisBtn = $(this),
-                src = thisBtn.attr('value') ? thisBtn.attr('value') : thisBtn.attr('href'),
-                title = thisBtn.attr('title') ? thisBtn.attr('title') : thisBtn.text(),
-                modal = modalManager.open(src, title);
-
-            // modal.on('loaded.bs.modal', function(e) {
-            //     var taskForm = $(e.target).find('form#user-task-form');
-            //     if ( !taskForm.size() ) {
-            //         return;
-            //     }
-            //
-            //     taskForm.on('beforeSubmit', function(e) {
-            //         var serviceType = taskForm.find('input[name*=service_type]:checked').val();
-            //         checkAuth(serviceType).done(function(response) {
-            //             if ( response.authenticated ) {
-            //                 saveTask(taskForm);
-            //             } else {
-            //                 bootbox.confirm('Войти через соцсеть?', function(result) {
-            //                     if ( !result ) return false;
-            //                     goAuth(serviceType, response.serviceName, response.jsArguments).done(function() {
-            //                         saveTask(taskForm);
-            //                     }).fail(function() {
-            //                         alert('WTF!!!');
-            //                     });
-            //                 });
-            //             }
-            //         }).fail(function(error) {
-            //             console.error(error);
-            //         });
-            //         return false;
-            //     });
-            // });
-
-            e.stopPropagation();
-        });
+        // $(document).on('click', '.show-modal-btn', function(e) {
+        //     e.preventDefault();
+        //     var thisBtn = $(this),
+        //         src = thisBtn.attr('value') ? thisBtn.attr('value') : thisBtn.attr('href'),
+        //         title = thisBtn.attr('title') ? thisBtn.attr('title') : thisBtn.text(),
+        //         modal = modalManager.open(src, title);
+        //
+        //     // modal.on('loaded.bs.modal', function(e) {
+        //     //     var taskForm = $(e.target).find('form#user-task-form');
+        //     //     if ( !taskForm.size() ) {
+        //     //         return;
+        //     //     }
+        //     //
+        //     //     taskForm.on('beforeSubmit', function(e) {
+        //     //         var serviceType = taskForm.find('input[name*=service_type]:checked').val();
+        //     //         checkAuth(serviceType).done(function(response) {
+        //     //             if ( response.authenticated ) {
+        //     //                 saveTask(taskForm);
+        //     //             } else {
+        //     //                 bootbox.confirm('Войти через соцсеть?', function(result) {
+        //     //                     if ( !result ) return false;
+        //     //                     goAuth(serviceType, response.serviceName, response.jsArguments).done(function() {
+        //     //                         saveTask(taskForm);
+        //     //                     }).fail(function() {
+        //     //                         alert('WTF!!!');
+        //     //                     });
+        //     //                 });
+        //     //             }
+        //     //         }).fail(function(error) {
+        //     //             console.error(error);
+        //     //         });
+        //     //         return false;
+        //     //     });
+        //     // });
+        //
+        //     e.stopPropagation();
+        // });
 
 
         // var likesManager = new LikesManager();

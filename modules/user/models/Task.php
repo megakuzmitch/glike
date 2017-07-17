@@ -4,6 +4,7 @@ namespace app\modules\user\models;
 
 use app\extended\eauth\GoogleOAuth2Service;
 use app\extended\eauth\VKontakteOAuth2Service;
+use app\helpers\SiteHelper;
 use nodge\eauth\ErrorException;
 use rmrevin\yii\fontawesome\FontAwesome;
 use Yii;
@@ -77,6 +78,9 @@ class Task extends ActiveRecord
     }
 
 
+    /**
+     * @return array
+     */
     public static function getServiceTypeAssociations()
     {
         return [
@@ -117,6 +121,12 @@ class Task extends ActiveRecord
     public static function getTaskType($type, $service_type = false) {
         $types = self::getTaskTypes($service_type);
         return key_exists($type, $types) ? $types[$type] : null;
+    }
+
+
+    public function getPointsLabel()
+    {
+        return $this->points . ' ' . SiteHelper::plural($this->points, ['балл', 'балла', 'баллов']);
     }
 
 

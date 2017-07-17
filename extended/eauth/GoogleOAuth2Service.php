@@ -12,7 +12,15 @@ use yii\base\ErrorException;
 
 class GoogleOAuth2Service extends \nodge\eauth\services\GoogleOAuth2Service
 {
-    protected $scopes = [self::SCOPE_EMAIL, self::SCOPE_USERINFO_EMAIL, self::SCOPE_USERINFO_PROFILE, self::SCOPE_YOUTUBE];
+    const SCOPE_YOUTUBE_FORCE_SSL = 'https://www.googleapis.com/auth/youtube.force-ssl';
+
+    protected $scopes = [
+        self::SCOPE_EMAIL,
+        self::SCOPE_USERINFO_EMAIL,
+        self::SCOPE_USERINFO_PROFILE,
+        self::SCOPE_YOUTUBE,
+        self::SCOPE_YOUTUBE_FORCE_SSL,
+    ];
 
 
     public function remove()
@@ -90,9 +98,10 @@ class GoogleOAuth2Service extends \nodge\eauth\services\GoogleOAuth2Service
     public function getComments($id)
     {
         $query = [
-            'videoId' => $id
+            'videoId' => $id,
+            'part' => 'snippet'
         ];
-        $info = $this->makeSignedRequest('https://www.googleapis.com/youtube/v3/commentThreads', [
+        $info = $this->makeSignedRequest('https://www.googleapis.com/youtube/v3/commentThreads/list', [
             'query' => $query
         ]);
 

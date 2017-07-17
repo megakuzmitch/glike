@@ -9,6 +9,7 @@
  * @var $content
  */
 
+use app\helpers\SiteHelper;
 use yii\bootstrap\Nav;
 
 ?>
@@ -37,10 +38,8 @@ use yii\bootstrap\Nav;
             <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->getAvatarPhoto() ?>" alt="avatar" class="avatar img-circle"></a>
             <div class="info">
                 <div class="name"><?= $profile->name ?></div>
-                <div class="points"><span class="user-points-container"><?= $user->points ?></span> <?=
-                    Yii::t('app', '{n, plural, one{балл} few{балла} many{баллов} other{баллов}}', array(
-                        'n' => $user->points,
-                    ))?></div>
+                <div class="points"><span class="user-points-container"><?= $user->points ?></span>
+                    <?= SiteHelper::plural($user->points, ['балл', 'балла', 'баллов']) ?></div>
                 <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
             </div>
         </li>

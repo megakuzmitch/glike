@@ -9,13 +9,10 @@
 namespace app\modules\user\controllers;
 
 
-use app\extended\eauth\VKontakteOAuth2Service;
 use app\modules\user\models\Task;
 use app\modules\user\models\User;
 use nodge\eauth\EAuth;
-use nodge\eauth\ErrorException;
-use nodge\eauth\oauth\SessionTokenStorage;
-use nodge\eauth\ServiceBase;
+use OAuth\Common\Storage\TokenStorageInterface;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -68,11 +65,11 @@ class SocialController extends Controller
     {
         /** @var $eauth EAuth */
         $eauth = Yii::$app->get('eauth');
-        /** @var VKontakteOAuth2Service $identity */
+        /** @var \nodge\eauth\oauth\ServiceBase $identity */
         $identity = $eauth->getIdentity($service);
 
         $tokenStorageConfig = $eauth->getTokenStorage();
-        /** @var SessionTokenStorage $tokenStorage */
+        /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = Yii::createObject($tokenStorageConfig['class']);
         $tokenStorage->clearToken($identity->getServiceName());
         $identity->redirect();
