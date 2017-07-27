@@ -27,7 +27,7 @@ class m170531_131523_create_task_table extends Migration
             'task_type' => $this->smallInteger()->notNull(),
             'need_count' => $this->integer()->defaultValue(0),
             'counter' => $this->integer()->defaultValue(0),
-            'user_id' => $this->integer()->notNull()
+            'user_id' => $this->integer()->notNull(),
         ], $tableOptions);
 
     }

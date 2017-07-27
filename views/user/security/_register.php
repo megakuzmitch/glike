@@ -36,13 +36,6 @@ use yii\bootstrap\Html;
         'class' => 'form-control input-lg'
     ]) ?>
 
-<?= $form->field($model, 'confirm_password')
-    ->label(false)
-    ->passwordInput([
-        'placeholder' => $model->getAttributeLabel('confirm_password'),
-        'class' => 'form-control input-lg'
-    ]) ?>
-
 <?= Html::submitButton('Зарегестрироваться и войти', ['class' => 'btn btn-lg btn-primary', 'name' => 'signup-button']) ?>
 
 <?php ActiveForm::end(); ?>

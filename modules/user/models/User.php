@@ -25,43 +25,41 @@ use yii\web\IdentityInterface;
  * @property string $password_hash
  * @property string $password_reset_token
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends \dektrium\user\models\User implements IdentityInterface
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_WAIT = 2;
-    const STATUS_BLOCKED = 3;
+//    const STATUS_ACTIVE = 1;
+//    const STATUS_WAIT = 2;
+//    const STATUS_BLOCKED = 3;
 
-    protected $_profile;
-
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return '{{%user}}';
-    }
-
-    public function getServices($serviceName = false, $identityId = false)
-    {
-        $query = $this->hasMany(Service::className(), ['user_id' => 'id']);
-        if ( $serviceName ) {
-            $query->where(['service_name' => $serviceName]);
-        }
-        if ( $identityId ) {
-            $query->andWhere(['identity_id' => $identityId]);
-        }
-        return $query;
-    }
-
-    public function getProfile($type = null) {
-        return $this->hasOne(Profile::className(), ['user_id' => 'id'])
-            ->where(['type' => $type]);
-    }
+//    protected $_profile;
+//
+//    public static function tableName()
+//    {
+//        return '{{%user}}';
+//    }
+//
+//    public function getServices($serviceName = false, $identityId = false)
+//    {
+//        $query = $this->hasMany(Service::className(), ['user_id' => 'id']);
+//        if ( $serviceName ) {
+//            $query->where(['service_name' => $serviceName]);
+//        }
+//        if ( $identityId ) {
+//            $query->andWhere(['identity_id' => $identityId]);
+//        }
+//        return $query;
+//    }
+//
+//    public function getProfile($type = null) {
+//        return $this->hasOne(Profile::className(), ['user_id' => 'id'])
+//            ->where(['type' => $type]);
+//    }
 
 
     public function getCurrentProfile()
     {
-        return $this->getProfile(Yii::$app->session->get('currentProfile'))->one();
+//        return $this->getProfile(Yii::$app->session->get('currentProfile'))->one();
+        return $this->profile;
     }
 
     public function setCurrentProfile($type)

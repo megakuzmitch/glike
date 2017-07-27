@@ -197,6 +197,61 @@ i.fa {
 }
 
 
+body.main-page {
+  .navbar-inverse {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+  }
+
+  .header-wrap {
+    margin-top: -100px;
+  }
+
+  @media (max-width: 768px) {
+    .header-wrap {
+      margin-top: -80px;
+    }
+  }
+}
+
+
+.btn {
+  &.btn-purple {
+    background-color: #ff7a7a;
+    border-color: #ff7a7a;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #e97575;
+      border-color: #e97575;
+      color: #ffffff;
+    }
+  }
+}
+
+
+.social-slider {
+  list-style: none;
+  position: relative;
+  height: 272px;
+  padding: 30px 0;
+  margin: 30px auto;
+
+  li {
+    width: 272px;
+    height: 272px;
+    position: absolute;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+  }
+}
+
+
+
 //.well {
 //  background-color: #fff;
 //  border-radius: 0;

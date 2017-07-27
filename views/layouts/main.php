@@ -10,14 +10,11 @@ use app\widgets\Alert;
 
     <div class="navbar navbar-inverse">
         <div class="container">
-
             <?= $this->render('_navbar') ?>
-
         </div>
     </div>
 
     <div class="main">
-        <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 

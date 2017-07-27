@@ -2,18 +2,25 @@
 
 /* @var $this yii\web\View */
 
+use yii\helpers\Url;
+
 $this->title = Yii::$app->name;
 ?>
 <div class="main-index">
 
-    <div class="main-header blue-wrap">
+    <div class="main-header header-wrap">
         <div class="container">
-            <div class="row centered">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <h1>Накрутка сайтов - это <b>ЛЕГКО</b></h1>
-                    <h2>Попробуй</h2>
-                </div>
-            </div><!-- row -->
+            <h1>Накрутка сайтов - это <b>ЛЕГКО</b></h1>
+            <h2>Попробуй сам</h2>
+            <?= \yii\helpers\Html::a('Войти', Url::to(['/user/security/login']), [
+                'class' => 'btn btn-purple btn-lg'
+            ]) ?>
+
+            <ul class="social-slider">
+                <li><img src="/img/vk.png" alt=""></li>
+                <li><img src="/img/yt.png" alt=""></li>
+                <li><img src="/img/in.png" alt=""></li>
+            </ul>
         </div><!-- container -->
     </div><!-- headerwrap -->
 
@@ -88,7 +95,8 @@ $this->title = Yii::$app->name;
             </div>
 
             <div class="row centered">
-                <?= \yii\helpers\Html::a('Войти', \yii\helpers\Url::to(['/user/default/login']), [
+                <?//= Url::to(['/user/security/auth', 'authclient' => 'google']) ?>
+                <?= \yii\helpers\Html::a('Войти', Url::to(['/user/security/login']), [
                         'class' => 'btn btn-danger btn-lg'
                 ]) ?>
             </div>

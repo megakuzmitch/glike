@@ -6,11 +6,15 @@
  * Time: 16:41
  *
  * @var \yii\web\View $this
+ * @var User $user
  * @var $content
  */
 
 use app\helpers\SiteHelper;
+use app\models\user\User;
 use yii\bootstrap\Nav;
+
+$user = Yii::$app->user->identity;
 
 ?>
 
@@ -24,20 +28,11 @@ use yii\bootstrap\Nav;
         <span class="icon-bar"></span>
     </button>
 
-    <?
-    /**
-     * @var $user \app\modules\user\models\User
-     * @var $profile \app\modules\user\models\Profile
-     */
-    $user = Yii::$app->user->getIdentity();
-    $profile = $user->getCurrentProfile();
-    ?>
-
     <ul class="nav navmenu-nav">
         <li class="account">
-            <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $profile->getAvatarPhoto() ?>" alt="avatar" class="avatar img-circle"></a>
+            <a href="<?= \yii\helpers\Url::to(['/user/profile']) ?>"><i class='fa fa-user-circle-o'></i><img src="<?= $user->getCurrentImageUrl() ?>" alt="avatar" class="avatar img-circle"></a>
             <div class="info">
-                <div class="name"><?= $profile->name ?></div>
+                <div class="name"><?= $user->getCurrentDisplayName() ?></div>
                 <div class="points"><span class="user-points-container"><?= $user->points ?></span>
                     <?= SiteHelper::plural($user->points, ['балл', 'балла', 'баллов']) ?></div>
                 <a href="#" class="btn btn-sm btn-danger">Пополнить</a>
@@ -56,7 +51,7 @@ use yii\bootstrap\Nav;
             ['label' => "<i class='fa fa-handshake-o'></i><span>Партнерка</span>", 'url' => ['/user/referal/view']],
             [
                 'label' => "<i class='fa fa-sign-out'></i><span>Выход</span>",
-                'url' => ['/user/default/logout'],
+                'url' => ['/user/security/logout'],
                 'linkOptions' => [
                     'data-method' => 'post'
                 ]

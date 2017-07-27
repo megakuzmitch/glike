@@ -29,7 +29,9 @@
         "kartik-v/yii2-tabs-x": "*",
         "nodge/yii2-eauth": "~2",
         "mouse0270/bootstrap-notify": "*",
-        "makeusabrew/bootbox": "*"
+        "makeusabrew/bootbox": "*",
+        "dektrium/yii2-user": "*",
+        "yiisoft/yii2-authclient": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0",

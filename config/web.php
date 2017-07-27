@@ -4,12 +4,20 @@ $config = [
     'id' => 'app',
     'language' => 'ru_RU',
     'defaultRoute' => 'main/default/index',
+    'on beforeAction' => function ($event) {
+        $controller = $event->action->controller;
+        if ( Yii::$app->user->isGuest ) {
+            $controller->layout = '@app/views/layouts/main';
+        } else {
+            $controller->layout = '@app/views/layouts/user';
+        }
+    },
     'components' => [
-        'user' => [
-            'identityClass' => 'app\modules\user\models\User',
-            'enableAutoLogin' => true,
-            'loginUrl' => '/user/default/login',
-        ],
+//        'user' => [
+//            'identityClass' => 'app\modules\user\models\User',
+//            'enableAutoLogin' => true,
+//            'loginUrl' => '/user/default/login',
+//        ],
         'request' => [
             'cookieValidationKey' => 'GZK683ggYTKtaIA9Ai0238rhfdshf',
         ],
@@ -24,6 +32,13 @@ $config = [
                 'yii\bootstrap\BootstrapPluginAsset' => [
                     'js' => [YII_DEBUG ? 'js/bootstrap.js' : 'js/bootstrap.min.js']
                 ]
+            ]
+        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@dektrium/user/views' => '@app/views/user'
+                ],
             ]
         ]
     ]

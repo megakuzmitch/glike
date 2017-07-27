@@ -26,6 +26,31 @@ return [
             'charset' => 'utf8',
         ],
         'eauth' => $eauth,
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'google' => [
+                    'class' => 'app\auth\Youtube',
+                    'clientId' => 'google_client_id',
+                    'clientSecret' => 'google_client_secret',
+                    'normalizeUserAttributeMap' => [
+//                        'displayName' => 'displayName',
+                        'imageUrl' => function($attributes) {
+                            return $attributes['image']['url'];
+                        }
+                    ]
+                ],
+                'instagram' => [
+                    'class' => 'app\auth\Instagram',
+                    'clientId' => 'instagramm_client_id',
+                    'clientSecret' => 'instagramm_client_secret',
+                    'normalizeUserAttributeMap' => [
+                        'displayName' => 'full_name',
+                        'imageUrl' => 'profile_picture'
+                    ]
+                ]
+            ],
+        ],
         'i18n' => [
             'translations' => [
                 'eauth' => [
@@ -41,14 +66,16 @@ return [
             'enableStrictParsing' => false,
             'rules' => [
                 '' => 'main/default/index',
+                '<_a:error>' => 'main/default/<_a>',
 
                 'page/<pageName:about|help>' => 'main/page/view',
 
-                '<_a:(auth)>/<service:vkontakte|google>' => 'user/social/<_a>',
-                '<_a:(login)>/<service:vkontakte|google>' => 'user/default/<_a>',
-                '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',
+//                '<_a:auth>/<authclient:[A-Za-z_-]>'=> 'user/security/<_a>',
 
-                '<_a:error>' => 'main/default/<_a>',
+//                '<_a:(auth)>/<service:vkontakte|google>' => 'user/social/<_a>',
+
+//                '<_a:(login)>/<service:vkontakte|google>' => 'user/default/<_a>',
+//                '<_a:(login|logout|signup|email-confirm|password-reset-request|password-reset)>' => 'user/default/<_a>',
 
                 '<_m:[\w\-]+>/<_c:[\w\-]+>' => '<_m>/<_c>/index',
                 '<_m:[\w\-]+>' => '<_m>/default/index',
@@ -71,8 +98,19 @@ return [
             'class' => 'app\modules\main\Module',
         ],
         'user' => [
-            'class' => 'app\modules\user\Module',
+            'class' => 'dektrium\user\Module',
+            'enableUnconfirmedLogin' => true,
+            'modelMap' => [
+                'User' => 'app\models\user\User',
+                'RegistrationForm' => 'app\models\user\RegistrationForm'
+            ],
+            'controllerMap' => [
+                'security' => 'app\controllers\user\SecurityController'
+            ]
         ],
+        'task' => [
+            'class' => 'app\modules\task\Module'
+        ]
     ],
     'params' => $params,
 ];

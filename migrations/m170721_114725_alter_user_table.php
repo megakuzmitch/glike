@@ -2,16 +2,16 @@
 
 use yii\db\Migration;
 
-class m170713_131305_add_type_to_profile_table extends Migration
+class m170721_114725_alter_user_table extends Migration
 {
     public function safeUp()
     {
-        $this->addColumn('{{%profile}}', 'type', $this->string());
+        $this->alterColumn('{{%user}}', 'username', $this->string(25)->null());
     }
 
     public function safeDown()
     {
-        $this->dropColumn('{{%profile}}', 'type');
+        $this->alterColumn('{{%user}}', 'username', $this->string(25)->notNull());
     }
 
     /*
@@ -23,7 +23,7 @@ class m170713_131305_add_type_to_profile_table extends Migration
 
     public function down()
     {
-        echo "m170713_131305_add_type_to_profile_table cannot be reverted.\n";
+        echo "m170721_114725_alter_user_table cannot be reverted.\n";
 
         return false;
     }

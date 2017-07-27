@@ -7,8 +7,10 @@ use app\widgets\EAuthWidget;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 AppAsset::register($this);
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -20,7 +22,14 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body>
+
+<?
+    $isMainPage = $this->context->module->id == 'main'
+        && $this->context->id == 'default'
+        && $this->context->action->id == 'index';
+?>
+
+<body<? echo $isMainPage ? ' class="main-page"' : "" ?>>
 <?php $this->beginBody() ?>
 
 <?= $content ?>

@@ -99,3 +99,81 @@
     }
   }
 }
+
+
+.auth-clients {
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: block;
+    text-align: center;
+    margin: 0 0 5px;
+    float: none;
+
+    .auth-link {
+      display: block;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      font-weight: bold;
+      position: relative;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      .auth-icon {
+        display: block;
+        width: auto;
+        height: auto;
+        background: none;
+        border: none;
+        margin: 0 auto;
+
+        &:before {
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          content: "";
+          padding: 0;
+          margin: -9px 0 0;
+          position: absolute;
+          left: 10px;
+          top: 50%;
+        }
+      }
+    }
+
+    .auth-link.google {
+      color: #fff;
+      background-color: #dd4b39;
+      border-color: #dd4b39;
+
+      .auth-icon:before {
+        content: "\f16a";
+      }
+    }
+
+
+    .auth-link.instagram {
+      color: #ffffff;
+      background-color: #517fa4;
+      border-color: #517fa4;
+
+      .auth-icon:before {
+        content: "\f16d";
+      }
+    }
+
+
+    .auth-link.twitter {
+      color: #ffffff;
+      background-color: #00aced;
+      border-color: #00aced;
+
+      .auth-icon:before {
+        content: "\f099";
+      }
+    }
+  }
+}
