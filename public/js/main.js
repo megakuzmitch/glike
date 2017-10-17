@@ -2,7 +2,6 @@
 
 (function($) {
 
-
     var LikesManager = function() {
 
 
@@ -413,6 +412,20 @@
 
 
     $(document).ready(function() {
+
+
+        $("#social-carousel").Cloud9Carousel( {
+            bringToFront: true,
+            speed: 1,
+            autoPlay: true,
+            autoPlayDelay: 4000,
+            mirror: {
+                gap: 12,     /* 12 pixel gap between item and reflection */
+                height: 0.2, /* 20% of item height */
+                opacity: 0.4 /* 40% opacity at the top */
+            }
+        } );
+
 
         $('.user-sidebar').mobilesidebar();
 

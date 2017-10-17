@@ -230,23 +230,30 @@ body.main-page {
 }
 
 
-.social-slider {
-  list-style: none;
-  position: relative;
-  height: 272px;
+#social-carousel {
+  width: 100%;
+  height: 500px;
   padding: 30px 0;
   margin: 30px auto;
 
-  li {
-    width: 272px;
-    height: 272px;
-    position: absolute;
+  img {
+    width: 270px;
+    height: 270px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  #social-carousel {
+    width: 100%;
+    height: 500px;
+    padding: 30px 0;
+    margin: 30px auto;
 
     img {
-      width: 100%;
-      height: 100%;
+      width: 100px;
+      height: 100px;
     }
-
   }
 }
 

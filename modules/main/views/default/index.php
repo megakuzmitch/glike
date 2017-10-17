@@ -16,11 +16,13 @@ $this->title = Yii::$app->name;
                 'class' => 'btn btn-purple btn-lg'
             ]) ?>
 
-            <ul class="social-slider">
-                <li><img src="/img/vk.png" alt=""></li>
-                <li><img src="/img/yt.png" alt=""></li>
-                <li><img src="/img/in.png" alt=""></li>
-            </ul>
+            <div id="social-carousel">
+                <img class="cloud9-item" src="/img/vk.png" alt="">
+                <img class="cloud9-item" src="/img/yt.png" alt="">
+                <img class="cloud9-item" src="/img/in.png" alt="">
+                <img class="cloud9-item" src="/img/tw.png" alt="">
+                <img class="cloud9-item" src="/img/fb.png" alt="">
+            </div>
         </div><!-- container -->
     </div><!-- headerwrap -->
 

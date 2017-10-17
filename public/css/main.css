@@ -390,21 +390,27 @@ body.main-page .header-wrap {
   border-color: #e97575;
   color: #ffffff;
 }
-.social-slider {
-  list-style: none;
-  position: relative;
-  height: 272px;
+#social-carousel {
+  width: 100%;
+  height: 500px;
   padding: 30px 0;
   margin: 30px auto;
 }
-.social-slider li {
-  width: 272px;
-  height: 272px;
-  position: absolute;
+#social-carousel img {
+  width: 270px;
+  height: 270px;
 }
-.social-slider li img {
-  width: 100%;
-  height: 100%;
+@media (max-width: 768px) {
+  #social-carousel {
+    width: 100%;
+    height: 500px;
+    padding: 30px 0;
+    margin: 30px auto;
+  }
+  #social-carousel img {
+    width: 100px;
+    height: 100px;
+  }
 }
 .navbar-inverse .navbar-toggle {
   border-color: #555;

@@ -12,11 +12,15 @@
         "irc": "irc://irc.freenode.net/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "repositories": [
         {
             "url": "https://github.com/mouse0270/bootstrap-notify.git",
             "type": "git"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
     ],
     "require": {
@@ -28,16 +32,16 @@
         "kartik-v/yii2-widget-select2": "*",
         "kartik-v/yii2-tabs-x": "*",
         "nodge/yii2-eauth": "~2",
-        "mouse0270/bootstrap-notify": "*",
-        "makeusabrew/bootbox": "*",
         "dektrium/yii2-user": "*",
-        "yiisoft/yii2-authclient": "*"
+        "yiisoft/yii2-authclient": "*",
+        "bower-asset/remarkable-bootstrap-notify": "*",
+        "bower-asset/bootbox": "*",
+        "bower-asset/cloud9carousel": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0",
         "yiisoft/yii2-gii": "~2.0",
         "yiisoft/yii2-faker": "~2.0",
-
         "codeception/base": "^2.2.3",
         "codeception/verify": "~0.3",
         "codeception/specify": "~0.4"
@@ -62,12 +66,6 @@
             "generateCookieValidationKey": [
                 "config/web.php"
             ]
-        },
-        "repositories": [
-            {
-                "type": "composer",
-                "url": "https://asset-packagist.org"
-            }
-        ]
+        }
     }
 }

@@ -31,6 +31,7 @@ class AppAsset extends AssetBundle
         'js/mobilesidebar.js',
         'js/ajax-modal-popup.js',
         'js/bootbox.min.js',
+        'js/reflection.js',
         'js/main.js'
     ];
     public $depends = [
@@ -40,5 +41,6 @@ class AppAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
         'app\assets\BootstrapNotifyAsset',
+        'app\assets\Cloud9Carousel',
     ];
 }
